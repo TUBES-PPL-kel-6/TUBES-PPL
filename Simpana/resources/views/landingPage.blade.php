@@ -30,11 +30,11 @@
                         radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
 
-        .glass-nav {
+        /* .glass-nav {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        }
+        } */
 
         .btn-primary {
             transition: all 0.3s ease;
@@ -64,7 +64,7 @@
 
     <!-- Navigation -->
     <nav class="glass-nav sticky top-0 z-50 py-2 px-6 flex justify-between items-center">
-        <img src="{{ asset('images/LOGO Simpana.png') }}" alt="Logo" class="h-16 w-auto transition-transform hover:scale-105">
+        <img src="{{ asset('images/LOGO Simpana.png') }}" alt="Logo" class="h-20 w-auto transition-transform hover:scale-100">
         <a href="#" class="bg-white text-[#873434] px-4 py-2 rounded-lg font-semibold hover:bg-[#FFDFA8] transition-all shadow-md hover:shadow-lg flex items-center text-sm">
             <i class="fas fa-envelope text-lg mr-2"></i>Hubungi Kami
         </a>
