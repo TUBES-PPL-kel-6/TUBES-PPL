@@ -10,7 +10,7 @@ Route::post('/register', [RegistController::class, 'submitForm']);
 
 Route::get('/dashboard', function () {
     return view('layout.index');
-  
+});  
   
 Route::get('/', function () {
     return view('landingPage');
