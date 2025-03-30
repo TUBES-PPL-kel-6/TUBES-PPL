@@ -1,7 +1,5 @@
 <?php
+use App\Http\Controllers\RegistController;
 
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/register', [RegistController::class, 'showForm']);
+Route::post('/register', [RegistController::class, 'submitForm']);
