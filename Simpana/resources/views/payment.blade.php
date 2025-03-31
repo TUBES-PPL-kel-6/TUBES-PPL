@@ -9,16 +9,16 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background: white;
+            background: #FFF6DA;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .container {
-            background: white;
+            background: #FFF6DA;
             width: 100%;
-            max-width: 800px;
+            max-width: 1500px;
             min-height: 100vh;
             padding: 40px;
             display: flex;
@@ -26,26 +26,26 @@
         }
 
         .user-info {
-            background: #808080;
+            background: #F4D793;
             padding: 20px;
             border-radius: 25px;
-            color: black;
+            color: #BLACK;
             height: fit-content;
             width: 200px;
             line-height: 1.5;
         }
 
         .payment-section {
-            background: #808080;
+            background: rgb(255, 255, 255);
             padding: 30px;
             border-radius: 25px;
             width: 400px;
-            height: 250px;
+            height: fit-content;
             flex-grow: 1;
         }
 
         .payment-title {
-            background: white;
+            background: #F4D793;
             padding: 10px;
             border-radius: 25px;
             text-align: center;
@@ -55,21 +55,35 @@
         .payment-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
         }
 
         .payment-option {
-            background: white;
-            padding: 15px;
-            border-radius: 25px;
+            background: #F4D793;
+            padding: 10px 15px;
+            border-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 35px;
+            width: auto;
+        }
+
+        .payment-option.selected {
+            background:rgb(255, 255, 255);
+            color: Black;
+            border: 2px solid #F4D793;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .pay-button {
-            background: white;
+            background: #A94A4A;
+            color: white;
             padding: 10px;
             border-radius: 25px;
             text-align: center;
@@ -108,10 +122,10 @@
         }
 
         .detail-container {
-            background: #808080;
+            background: #889E73;
             padding: 20px;
             border-radius: 15px;
-            color: black;
+            color: white;
         }
 
         .detail-header {
@@ -134,7 +148,7 @@
         }
 
         .back-button {
-            background: white;
+            background: #F4D793;
             padding: 8px 20px;
             border-radius: 20px;
             border: none;
@@ -142,54 +156,126 @@
         }
 
         .confirm-button {
-            background: #808080;
+            background: #A94A4A;
             color: white;
             padding: 8px 20px;
             border-radius: 20px;
             border: none;
             cursor: pointer;
         }
+
+        .payment-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+        }
+
+        .payment-logo img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-right: 20px;
+        }
+
+        .payment-logo span {
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .payment-price {
+            font-size: 13px;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .payment-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .payment-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #A94A4A;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- User Info Section -->
         <div class="user-info">
             <div>Nama Anggota : Khalisa</div>
             <div>Nomor : 0812--------</div>
             <div>Email : Khal@....</div>
         </div>
 
-        <!-- Payment Section -->
+
         <div class="payment-section">
-            <div class="payment-title">
+            <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
                 Metode Pembayaran
             </div>
 
+            <!-- E-Wallet -->
+            <div class="payment-section-title">E-Wallet</div>
             <div class="payment-options">
                 <div class="payment-option">
-                    <div>(LOGO) Gopay</div>
-                    <div>Nominal</div>
+                    <div class="payment-logo">
+                        <img src="{{ asset('images/payment-logos/gopay.png') }}" alt="gopay">
+                        <span>GoPay</span>
+                    </div>
+                    <div class="payment-price">Rp 100.000</div>
                 </div>
                 <div class="payment-option">
-                    <div>(LOGO) Gopay</div>
-                    <div>Nominal</div>
+                    <div class="payment-logo">
+                        <img src="{{ asset('images/payment-logos/ovo.png') }}" alt="ovo">
+                        <span>OVO</span>
+                    </div>
+                    <div class="payment-price">Rp 1.500.000</div>
                 </div>
                 <div class="payment-option">
-                    <div>(LOGO) Gopay</div>
-                    <div>Nominal</div>
-                </div>
-                <div class="payment-option">
-                    <div>(LOGO) Gopay</div>
-                    <div>Nominal</div>
+                    <div class="payment-logo">
+                        <img src="path/to/dana-logo.png" alt="Dana">
+                        <span>Dana</span>
+                    </div>
+                    <div class="payment-price">Rp 250.000</div>
                 </div>
             </div>
 
-            <button class="pay-button">Bayar</button>
+            <!-- Bank -->
+            <div class="payment-section-title">Bank Transfer</div>
+            <div class="payment-options">
+                <div class="payment-option">
+                    <div class="payment-logo">
+                        <img src="path/to/bca-logo.png" alt="BCA">
+                        <span>Bank BCA</span>
+                    </div>
+                    <div class="payment-price">Rp 2.000.000</div>
+                </div>
+                <div class="payment-option">
+                    <div class="payment-logo">
+                        <img src="path/to/bni-logo.png" alt="BNI">
+                        <span>Bank BNI</span>
+                    </div>
+                    <div class="payment-price">Rp 2.000.000</div>
+                </div>
+                <div class="payment-option">
+                    <div class="payment-logo">
+                        <img src="path/to/mandiri-logo.png" alt="Mandiri">
+                        <span>Bank Mandiri</span>
+                    </div>
+                    <div class="payment-price">Rp 2.000.000</div>
+                </div>
+            </div>
+
+            <button class="pay-button" style="margin-top: 20px;">Bayar</button>
         </div>
     </div>
 
-    <!-- Confirmation Popup -->
+    <!-- popup konfirmasi -->
     <div class="popup-overlay" id="confirmationPopup">
         <div class="popup-content">
             <div class="popup-title">
@@ -211,7 +297,7 @@
                 </div>
                 <div class="detail-row">
                     <div>Payment method</div>
-                    <div>(LOGO)GoPay</div>
+                    <div>(LOGO)</div>
                 </div>
                 <div class="button-container">
                     <button class="back-button" onclick="closePopup()">Back</button>
@@ -222,8 +308,22 @@
     </div>
 
     <script>
-        // Function to show popup
+        function formatPrice(nominal) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(nominal);
+        }
+
+        // show popup
         function showPopup() {
+            if (!selectedPayment) {
+                alert('Silakan pilih metode pembayaran terlebih dahulu');
+                return;
+            }
+
             const popup = document.getElementById('confirmationPopup');
             popup.style.display = 'flex';
             
@@ -248,6 +348,27 @@
 
         // Add click event to Bayar button
         document.querySelector('.pay-button').addEventListener('click', showPopup);
+
+        // Handle payment option selection
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        let selectedPayment = null;
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from previously selected option
+                if (selectedPayment) {
+                    selectedPayment.classList.remove('selected');
+                }
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                selectedPayment = this;
+                
+                // Update payment method in popup
+                const paymentMethod = this.querySelector('.payment-logo span').textContent;
+                document.querySelector('.detail-row:last-of-type div:last-child').textContent = paymentMethod;
+            });
+        });
     </script>
 </body>
 </html>
