@@ -18,7 +18,7 @@
         .container {
             background: #FFF6DA;
             width: 100%;
-            max-width: 1500px;
+            max-width: 1500px; 
             min-height: 100vh;
             padding: 40px;
             display: flex;
@@ -89,7 +89,7 @@
             text-align: center;
             cursor: pointer;
             border: none;
-            width: 100%;
+            width: 40%;
             font-size: 16px;
         }
 
@@ -215,7 +215,7 @@
 
 
         <div class="payment-section">
-            <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">
+            <div style="font-size: 50px; font-weight: bold; margin-bottom: 20px;">
                 Metode Pembayaran
             </div>
 
@@ -238,7 +238,7 @@
                 </div>
                 <div class="payment-option">
                     <div class="payment-logo">
-                        <img src="path/to/dana-logo.png" alt="Dana">
+                        <img src="{{ asset('images/payment-logos/dana.png') }}" alt="dana">
                         <span>Dana</span>
                     </div>
                     <div class="payment-price">Rp 250.000</div>
@@ -250,28 +250,30 @@
             <div class="payment-options">
                 <div class="payment-option">
                     <div class="payment-logo">
-                        <img src="path/to/bca-logo.png" alt="BCA">
+                        <img src="{{ asset('images/payment-logos/bca.png') }}" alt="bca">
                         <span>Bank BCA</span>
                     </div>
                     <div class="payment-price">Rp 2.000.000</div>
                 </div>
                 <div class="payment-option">
                     <div class="payment-logo">
-                        <img src="path/to/bni-logo.png" alt="BNI">
+                        <img src="{{ asset('images/payment-logos/bni.png') }}" alt="bni">
                         <span>Bank BNI</span>
                     </div>
                     <div class="payment-price">Rp 2.000.000</div>
                 </div>
                 <div class="payment-option">
                     <div class="payment-logo">
-                        <img src="path/to/mandiri-logo.png" alt="Mandiri">
+                        <img src="{{ asset('images/payment-logos/mandiri.png') }}" alt="mandiri">
                         <span>Bank Mandiri</span>
                     </div>
                     <div class="payment-price">Rp 2.000.000</div>
                 </div>
             </div>
 
-            <button class="pay-button" style="margin-top: 20px;">Bayar</button>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="pay-button">Bayar</button>
+            </div>
         </div>
     </div>
 
