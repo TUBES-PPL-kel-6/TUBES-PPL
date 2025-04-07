@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class RegistController extends Controller
 {
@@ -11,20 +13,33 @@ class RegistController extends Controller
         return view('register');
     }
 
-    public function submitForm(Request $request)
+    public function store(Request $request)
     {
         // Validasi input
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'nama' => 'required',
-            'alamat' => 'required',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string',
             'no_telp' => 'required|numeric',
-            'nik' => 'required|numeric|digits:16',
-            'ktp' => 'required|file|mimes:jpg,png,pdf|max:2048'
+            'nik' => 'required|digits:16|numeric|unique:users,nik',
+            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
-        // Simpan atau proses data (tanpa database)
-        return redirect()->back()->with('success', 'Pendaftaran berhasil!');
+        // Upload file KTP
+        $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
+
+        // Simpan ke database
+        User::create([
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'no_telp' => $request->no_telp,
+            'nik' => $request->nik,
+            'ktp' => $ktpPath
+        ]);
+
+        return redirect('/')->with('success', 'Pendaftaran berhasil!');
     }
 }

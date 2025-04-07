@@ -53,46 +53,75 @@
     </style>
     <script>
         function nextStep() {
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-            let confirmPassword = document.getElementById("confirmPassword").value;
-            
-            if (email === "" || password === "" || confirmPassword === "") {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (!email || !password || !confirmPassword) {
                 alert("Harap isi email dan password sebelum melanjutkan.");
-                return false;
+                return;
             }
-            
+
             if (password !== confirmPassword) {
                 alert("Konfirmasi password tidak cocok.");
-                return false;
+                return;
             }
-            
-            document.getElementById('emailForm').style.display = 'none';
-            document.getElementById('dataDiriForm').style.display = 'block';
+
+            document.getElementById("emailForm").style.display = "none";
+            document.getElementById("dataDiriForm").style.display = "block";
+
+            document.getElementById("emailHidden").value = email;
+            document.getElementById("passwordHidden").value = password;
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h3 class="text-center text-white">Registrasi Anggota Koperasi</h3>
+        <h3 class="text-center text-white mb-4">Registrasi Anggota Koperasi</h3>
+
+        {{-- Feedback Pesan --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        <!-- STEP 1: Email & Password -->
         <form id="emailForm" onsubmit="event.preventDefault(); nextStep();" class="card p-3 shadow-sm">
             <div class="mb-3">
                 <label class="form-label">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <input type="email" id="email" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <input type="password" id="password" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Konfirmasi Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                <input type="password" id="confirmPassword" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Regist</button>
+            <button type="submit" class="btn btn-primary w-100">Lanjut</button>
         </form>
 
+        <!-- STEP 2: Data Diri -->
         <form id="dataDiriForm" action="{{ url('/register') }}" method="POST" enctype="multipart/form-data" class="card p-3 shadow-sm mt-3" style="display: none;">
             @csrf
+            <!-- Hidden email & password -->
+            <input type="hidden" name="email" id="emailHidden">
+            <input type="hidden" name="password" id="passwordHidden">
+
             <div class="mb-3">
                 <label class="form-label">Nama:</label>
                 <input type="text" name="nama" class="form-control" required>
@@ -106,7 +135,6 @@
                 <input type="text" name="no_telp" class="form-control" required>
             </div>
 
-            <!-- NIK dan Upload KTP dalam satu baris -->
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label">NIK:</label>
@@ -114,12 +142,14 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Upload KTP:</label>
-                    <input type="file" name="ktp" class="form-control" accept=".jpg,.png,.pdf" required>
+                    <input type="file" name="ktp" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">Check Data</button>
+            <button type="submit" class="btn btn-success w-100">Kirim</button>
         </form>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
