@@ -1,9 +1,9 @@
-@extends('layout.app')
+@extends('admin.app')
 
 @section('content')
 <div class="container">
     <h1 class="my-4 text-center text-dark">Dashboard Pengurus</h1>
-    
+
     <div class="row">
         <div class="col-md-4">
             <div class="card bg-danger text-white mb-3">
