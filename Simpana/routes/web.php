@@ -3,15 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-<<<<<<< Updated upstream
-=======
 // Public routes
->>>>>>> Stashed changes
 Route::get('/', function () {
     return view('welcome');
 });
-<<<<<<< Updated upstream
-=======
 
 Route::get('/login', function () {
     return view('login');
@@ -47,4 +42,3 @@ Route::get('/user', function () {
     return view('layouts.dashboard');
 });
 
->>>>>>> Stashed changes
