@@ -34,24 +34,32 @@
             <img src="{{ asset('images/LOGO Simpana.png') }}" alt="Simpana Logo" class="h-12 w-12"> <span class="sidebar-text">SIMPANA</span>
         </div>
         <nav class="flex-1 px-4 pt-6 space-y-1">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
                 <i class="fa-solid fa-house-chimney"></i> <span class="sidebar-text">Dashboard</span>
             </a>
-            <a href="{{ route('dashboard.profile') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+                <i class="fa-solid fa-money-bill-trend-up"></i> <span class="sidebar-text">Riwayat Simpanan</span>
+            </a>
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+                <i class="fa-solid fa-money-bill-transfer"></i> <span class="sidebar-text">Setor Simpanan</span>
+            </a>
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+                <i class="fa-solid fa-file-invoice-dollar"></i> <span class="sidebar-text">Pinjaman</span>
+            </a>
+
+            <div class="pt-4 pb-2 px-4 text-xs uppercase font-bold text-white/60 sidebar-text">
+                Akun
+            </div>
+
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
                 <i class="fa-solid fa-user"></i> <span class="sidebar-text">Profil</span>
             </a>
-            <a href="{{ route('dashboard.simpanan') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
-                <i class="fa-solid fa-wallet"></i> <span class="sidebar-text">Simpanan</span>
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+                <i class="fa-solid fa-gear"></i> <span class="sidebar-text">Pengaturan</span>
             </a>
-            <a href="{{ route('dashboard.transactions') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
-                <i class="fa-solid fa-receipt"></i> <span class="sidebar-text">Transaksi</span>
+            <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+                <i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">Keluar</span>
             </a>
-            <form action="{{ route('logout') }}" method="POST" class="mt-auto">
-                @csrf
-                <button type="submit" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition w-full">
-                    <i class="fa-solid fa-right-from-bracket"></i> <span class="sidebar-text">Keluar</span>
-                </button>
-            </form>
         </nav>
         <div class="p-4 text-xs text-center opacity-70 border-t border-white/10 sidebar-text">© 2025 Simpana</div>
     </aside>
@@ -81,14 +89,8 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        @if(auth()->user()->ktp)
-                            <img src="{{ asset('storage/' . auth()->user()->ktp) }}" alt="Profile" class="w-full h-full object-cover">
-                        @else
-                            <span class="text-gray-600 font-medium">{{ substr(auth()->user()->nama, 0, 1) }}</span>
-                        @endif
-                    </div>
-                    <span class="font-medium">{{ auth()->user()->nama }}</span>
+                    <img src="/api/placeholder/40/40" alt="Avatar" class="h-8 w-8 rounded-full object-cover">
+                    <span class="font-medium">John Doe</span>
                     <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
                 </div>
             </div>

@@ -3,8 +3,8 @@
 @section('content')
 <!-- Welcome Section -->
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, {{ $user->name }}!</h1>
-    <p class="text-gray-600">Berikut ringkasan keuangan Anda per {{ now()->format('d F Y') }}</p>
+    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, John!</h1>
+    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal 13 April 2025</p>
 </div>
 
 <!-- Stats Cards -->
@@ -19,7 +19,7 @@
         <!-- Text Content -->
         <div class="text-right">
             <p class="text-gray-500 text-sm font-medium">Total Simpanan</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalSimpananPokok + $totalSimpananWajib + $totalSimpananSukarela, 0, ',', '.') }}</h2>
+            <h2 class="text-3xl font-bold text-slate-800">Rp 53.250.000</h2>
         </div>
 
         <div class="mt-4 text-right">
@@ -37,12 +37,12 @@
 
         <!-- Text Content -->
         <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Simpanan Pokok</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalSimpananPokok, 0, ',', '.') }}</h2>
+            <p class="text-gray-500 text-sm font-medium">Total Pinjaman</p>
+            <h2 class="text-3xl font-bold text-slate-800">Rp 15.000.000</h2>
         </div>
 
         <div class="mt-4 text-right">
-            <span class="text-green-500 font-semibold text-sm">+5%</span>
+            <span class="text-red-500 font-semibold text-sm">-8%</span>
             <span class="text-gray-400 text-sm">dari bulan lalu</span>
         </div>
     </div>
@@ -51,17 +51,17 @@
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
         <!-- Floating Icon -->
         <div class="absolute -top-4 left-4 bg-gradient-to-br from-green-600 to-green-800 shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-piggy-bank text-white"></i>
+            <i class="fa-solid fa-chart-line text-white"></i>
         </div>
 
         <!-- Text Content -->
         <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Simpanan Wajib</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalSimpananWajib, 0, ',', '.') }}</h2>
+            <p class="text-gray-500 text-sm font-medium">Keuntungan</p>
+            <h2 class="text-3xl font-bold text-slate-800">Rp 1.850.000</h2>
         </div>
 
         <div class="mt-4 text-right">
-            <span class="text-green-500 font-semibold text-sm">+8%</span>
+            <span class="text-green-500 font-semibold text-sm">+23%</span>
             <span class="text-gray-400 text-sm">dari bulan lalu</span>
         </div>
     </div>
@@ -69,29 +69,30 @@
     <!-- Card 4 -->
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
         <!-- Floating Icon -->
-        <div class="absolute -top-4 left-4 bg-gradient-to-br from-purple-600 to-purple-800 shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-hand-holding-dollar text-white"></i>
+        <div class="absolute -top-4 left-4 bg-gradient-to-br from-amber-500 to-amber-700 shadow-md rounded-xl p-3">
+            <i class="fa-solid fa-clock text-white"></i>
         </div>
 
         <!-- Text Content -->
         <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Simpanan Sukarela</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalSimpananSukarela, 0, ',', '.') }}</h2>
+            <p class="text-gray-500 text-sm font-medium">Sisa Angsuran</p>
+            <h2 class="text-3xl font-bold text-slate-800">12 <span class="text-lg">bulan</span></h2>
         </div>
 
         <div class="mt-4 text-right">
-            <span class="text-green-500 font-semibold text-sm">+15%</span>
-            <span class="text-gray-400 text-sm">dari bulan lalu</span>
+            <span class="text-blue-500 font-semibold text-sm">On Track</span>
+            <span class="text-gray-400 text-sm">jatuh tempo bulanan</span>
         </div>
     </div>
 </div>
 
+<!-- Recent Transactions and Quick Actions -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Recent Transactions -->
     <div class="bg-white p-6 rounded-xl shadow-md col-span-2">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-lg text-gray-800">Transaksi Terbaru</h3>
-            <a href="{{ route('dashboard.transactions') }}" class="text-primary text-sm font-medium hover:underline">Lihat Semua</a>
+            <button class="text-primary text-sm font-medium hover:underline">Lihat Semua</button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -103,71 +104,106 @@
                         <th class="pb-3 font-medium">Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($transaksiTerbaru as $transaksi)
-                    <tr class="border-b">
+                <tbody class="text-sm">
+                    <tr class="border-b hover:bg-gray-50">
                         <td class="py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <i class="fa-solid fa-money-bill-transfer text-primary"></i>
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-down text-green-600"></i>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-800">{{ ucfirst($transaksi->jenis_transaksi) }}</p>
-                                    <p class="text-sm text-gray-500">{{ $transaksi->keterangan }}</p>
+                                    <p class="font-medium">Setor Simpanan</p>
+                                    <p class="text-gray-500 text-xs">Transfer Bank</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="py-4 text-gray-600">{{ $transaksi->tanggal->format('d M Y') }}</td>
-                        <td class="py-4 font-medium {{ $transaksi->jenis_transaksi === 'setor' ? 'text-green-600' : 'text-red-600' }}">
-                            Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }}
-                        </td>
+                        <td class="py-4">12 Apr 2025</td>
+                        <td class="py-4 font-medium">+ Rp 1.500.000</td>
+                        <td class="py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Selesai</span></td>
+                    </tr>
+                    <tr class="border-b hover:bg-gray-50">
                         <td class="py-4">
-                            <span class="px-2 py-1 rounded-full text-xs font-medium
-                                {{ $transaksi->status === 'approved' ? 'bg-green-100 text-green-800' : 
-                                   ($transaksi->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                {{ ucfirst($transaksi->status) }}
-                            </span>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-up text-red-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Bayar Angsuran</p>
+                                    <p class="text-gray-500 text-xs">Auto Debit</p>
+                                </div>
+                            </div>
                         </td>
+                        <td class="py-4">05 Apr 2025</td>
+                        <td class="py-4 font-medium">- Rp 850.000</td>
+                        <td class="py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Selesai</span></td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="py-4 text-center text-gray-500">Belum ada transaksi</td>
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-down text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Setor Simpanan</p>
+                                    <p class="text-gray-500 text-xs">Transfer Bank</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4">01 Apr 2025</td>
+                        <td class="py-4 font-medium">+ Rp 1.500.000</td>
+                        <td class="py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Selesai</span></td>
                     </tr>
-                    @endforelse
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-money-check text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Ambil Pinjaman</p>
+                                    <p class="text-gray-500 text-xs">Pinjaman Baru</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4">25 Mar 2025</td>
+                        <td class="py-4 font-medium">+ Rp 15.000.000</td>
+                        <td class="py-4"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Selesai</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Quick Actions and Notifications -->
     <div class="space-y-6">
         <!-- Quick Actions -->
         <div class="bg-white p-6 rounded-xl shadow-md">
             <h3 class="font-bold text-lg text-gray-800 mb-4">Aksi Cepat</h3>
             <div class="grid grid-cols-2 gap-4">
-                <a href="{{ route('dashboard.simpanan.create') }}" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
                         <i class="fa-solid fa-money-bill-transfer text-primary"></i>
                     </div>
                     <span class="text-sm font-medium">Setor Simpanan</span>
-                </a>
-                <a href="{{ route('dashboard.simpanan') }}" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                </button>
+                <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
                         <i class="fa-solid fa-hand-holding-dollar text-blue-600"></i>
                     </div>
-                    <span class="text-sm font-medium">Lihat Simpanan</span>
-                </a>
-                <a href="{{ route('dashboard.transactions') }}" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <span class="text-sm font-medium">Ajukan Pinjaman</span>
+                </button>
+                <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-2">
                         <i class="fa-solid fa-receipt text-green-600"></i>
                     </div>
-                    <span class="text-sm font-medium">Riwayat Transaksi</span>
-                </a>
-                <a href="{{ route('dashboard.profile') }}" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <span class="text-sm font-medium">Bayar Angsuran</span>
+                </button>
+                <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-2">
-                        <i class="fa-solid fa-user text-amber-600"></i>
+                        <i class="fa-solid fa-chart-pie text-amber-600"></i>
                     </div>
-                    <span class="text-sm font-medium">Profil</span>
-                </a>
+                    <span class="text-sm font-medium">Rencana Keuangan</span>
+                </button>
             </div>
         </div>
 

@@ -55,7 +55,7 @@ class RegistController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/dashboard')
+            return redirect()->intended('/user') // Ganti dengan halaman tujuan
                 ->with('success', 'Login berhasil!');
         }
 
