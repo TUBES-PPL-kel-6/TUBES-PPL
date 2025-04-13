@@ -8,9 +8,13 @@ Route::get('/register', [RegistController::class, 'showForm']);
 Route::post('/register', [RegistController::class, 'store']);
 
 
-Route::get('/dashboard', function () {
-    return view('admin.index');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
+Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
+Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
+Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
+Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])->name('dashboard.transactions');
 
 Route::get('/', function () {
     return view('landingPage');
