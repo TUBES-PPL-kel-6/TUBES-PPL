@@ -3,7 +3,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/register', [RegistController::class, 'showForm']);
 Route::post('/register', [RegistController::class, 'store']);
 

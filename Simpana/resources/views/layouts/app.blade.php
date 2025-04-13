@@ -31,7 +31,7 @@
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-primary text-white min-h-screen flex flex-col fixed shadow-lg z-10 transition-all duration-300 ease-in-out">
         <div class="p-6 font-bold text-2xl border-b border-white/20 flex items-center gap-2">
-            <i class="fa-solid fa-landmark"></i> <span class="sidebar-text">SIMPANA</span>
+            <img src="{{ asset('images/LOGO Simpana.png') }}" alt="Simpana Logo" class="h-12 w-12"> <span class="sidebar-text">SIMPANA</span>
         </div>
         <nav class="flex-1 px-4 pt-6 space-y-1">
             <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
