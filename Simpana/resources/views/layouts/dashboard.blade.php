@@ -3,7 +3,7 @@
 @section('content')
 <!-- Welcome Section -->
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, {{ $user->nama }}!</h1>
+    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, {{ $user->name }}!</h1>
     <p class="text-gray-600">Berikut ringkasan keuangan Anda per {{ now()->format('d F Y') }}</p>
 </div>
 

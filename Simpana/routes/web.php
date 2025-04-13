@@ -1,11 +1,12 @@
 <?php
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RegistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
 Route::get('/', function () {
-    return view('welcome');
+    return view('landingPage');
 });
 
 Route::get('/login', function () {

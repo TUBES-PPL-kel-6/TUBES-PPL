@@ -7,15 +7,11 @@
         <div class="w-full md:w-1/4">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center space-x-4 mb-6">
-                    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        @if($user->ktp)
-                            <img src="{{ asset('storage/' . $user->ktp) }}" alt="Profile" class="w-full h-full object-cover">
-                        @else
-                            <span class="text-2xl font-bold text-gray-600">{{ substr($user->nama, 0, 1) }}</span>
-                        @endif
+                    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span class="text-2xl font-bold text-gray-600">{{ substr($user->name, 0, 1) }}</span>
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold">{{ $user->nama }}</h2>
+                        <h2 class="text-xl font-semibold">{{ $user->name }}</h2>
                         <p class="text-gray-600">Anggota</p>
                     </div>
                 </div>
@@ -53,8 +49,8 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                            <input type="text" name="nama" id="nama" value="{{ $user->nama }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                            <input type="text" name="name" id="name" value="{{ $user->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
                         <div>
@@ -63,18 +59,13 @@
                         </div>
                         
                         <div>
-                            <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                            <input type="tel" name="no_telp" id="no_telp" value="{{ $user->no_telp }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                            <input type="tel" name="phone" id="phone" value="{{ $user->phone ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
                         <div>
-                            <label for="nik" class="block text-sm font-medium text-gray-700">NIK</label>
-                            <input type="text" name="nik" id="nik" value="{{ $user->nik }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" readonly>
-                        </div>
-                        
-                        <div class="md:col-span-2">
-                            <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
-                            <textarea name="alamat" id="alamat" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ $user->alamat }}</textarea>
+                            <label for="address" class="block text-sm font-medium text-gray-700">Alamat</label>
+                            <textarea name="address" id="address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ $user->address ?? '' }}</textarea>
                         </div>
                     </div>
 
