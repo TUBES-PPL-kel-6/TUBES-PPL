@@ -30,8 +30,13 @@
 
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-primary text-white min-h-screen flex flex-col fixed shadow-lg z-10 transition-all duration-300 ease-in-out">
-        <div class="p-6 font-bold text-2xl border-b border-white/20 flex items-center gap-2">
-            <img src="{{ asset('images/LOGO Simpana.png') }}" alt="Simpana Logo" class="h-12 w-12"> <span class="sidebar-text">SIMPANA</span>
+        <div class="p-4 font-bold text-2xl border-b border-white/20">
+            <div class="flex items-center justify-start h-20">
+                <div class="flex items-center gap-0">
+                    <img src="{{ asset('images/Simpana white.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3"> 
+                    <span class="sidebar-text -ml-1">SIMPANA</span>
+                </div>
+            </div>
         </div>
         <nav class="flex-1 px-4 pt-6 space-y-1">
             <a href="" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
