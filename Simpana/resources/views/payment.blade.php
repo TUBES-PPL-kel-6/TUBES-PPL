@@ -3,313 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metode Pembayaran</title>
+    <title>Metode Pembayaran - Simpana</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8C1414',
+                        secondary: '#641010',
+                        gold: '#FFD500',
+                        white: '#FFFFFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background: #FFF6DA;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .gold-gradient {
+            background: linear-gradient(to right, #FFD500, #FFC107);
         }
-
-        .container {
-            background: #FFF6DA;
-            width: 100%;
-            max-width: 1500px; 
-            min-height: 100vh;
-            padding: 40px;
-            display: flex;
-            gap: 20px;
+        .crimson-gradient {
+            background: linear-gradient(to right, #8C1414, #641010);
         }
-
-        .user-info {
-            background: #F4D793;
-            padding: 20px;
-            border-radius: 25px;
-            color: #BLACK;
-            height: fit-content;
-            width: 200px;
-            line-height: 1.5;
+        .selected-payment {
+            border: 2px solid #8C1414;
+            box-shadow: 0 0 0 2px rgba(140, 20, 20, 0.3);
         }
-
-        .payment-section {
-            background: rgb(255, 255, 255);
-            padding: 30px;
-            border-radius: 25px;
-            width: 400px;
-            height: fit-content;
-            flex-grow: 1;
-        }
-
-        .payment-title {
-            background: #F4D793;
-            padding: 10px;
-            border-radius: 25px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .payment-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .payment-option {
-            background: #F4D793;
-            padding: 10px 15px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            height: 35px;
-            width: auto;
-        }
-
-        .payment-option.selected {
-            background:rgb(255, 255, 255);
-            color: Black;
-            border: 2px solid #F4D793;
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .pay-button {
-            background: #A94A4A;
-            color: white;
-            padding: 10px;
-            border-radius: 25px;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            width: 40%;
-            font-size: 16px;
-        }
-
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .popup-content {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            width: 400px;
-        }
-
-        .popup-title {
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .detail-container {
-            background: #889E73;
-            padding: 20px;
-            border-radius: 15px;
-            color: white;
-        }
-
-        .detail-header {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #000;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .button-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-
-        .back-button {
-            background: #F4D793;
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .confirm-button {
-            background: #A94A4A;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .payment-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: auto;
-        }
-
-        .payment-logo img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-right: 20px;
-        }
-
-        .payment-logo span {
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .payment-price {
-            font-size: 13px;
-            margin-left: 10px;
-            white-space: nowrap;
-        }
-
-        .payment-header {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .payment-section-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 20px 0 10px 0;
-            color: #A94A4A;
+        .button-success {
+            background: linear-gradient(to right, #10B981, #059669);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="user-info">
-            <div>Nama Anggota : Khalisa</div>
-            <div>Nomor : 0812--------</div>
-            <div>Email : Khal@....</div>
-        </div>
-
-
-        <div class="payment-section">
-            <div style="font-size: 50px; font-weight: bold; margin-bottom: 20px;">
-                Metode Pembayaran
-            </div>
-
-            <!-- E-Wallet -->
-            <div class="payment-section-title">E-Wallet</div>
-            <div class="payment-options">
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/gopay.png') }}" alt="gopay">
-                        <span>GoPay</span>
-                    </div>
-                    <div class="payment-price">Rp 100.000</div>
+<body class="bg-white text-gray-800 font-sans">
+    <div class="flex justify-center items-center min-h-screen p-4">
+        <div class="container flex flex-col md:flex-row gap-6 max-w-6xl">
+            <!-- User Info Card -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full md:w-64 h-fit">
+                <div class="bg-primary text-white p-4 font-bold text-lg">
+                    <i class="fas fa-user-circle mr-2"></i>Informasi Anggota
                 </div>
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/ovo.png') }}" alt="ovo">
-                        <span>OVO</span>
+                <div class="p-5 border-t border-gray-200 space-y-3">
+                    <div class="flex items-center text-sm">
+                        <span class="font-semibold w-32">Nama Anggota:</span>
+                        <span>Khalisa</span>
                     </div>
-                    <div class="payment-price">Rp 1.500.000</div>
-                </div>
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/dana.png') }}" alt="dana">
-                        <span>Dana</span>
+                    <div class="flex items-center text-sm">
+                        <span class="font-semibold w-32">Nomor:</span>
+                        <span>0812--------</span>
                     </div>
-                    <div class="payment-price">Rp 250.000</div>
+                    <div class="flex items-center text-sm">
+                        <span class="font-semibold w-32">Email:</span>
+                        <span>Khal@....</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="text-xs text-gray-500">Member sejak</div>
+                        <div class="text-sm font-medium">01 Januari 2025</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bank -->
-            <div class="payment-section-title">Bank Transfer</div>
-            <div class="payment-options">
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/bca.png') }}" alt="bca">
-                        <span>Bank BCA</span>
-                    </div>
-                    <div class="payment-price">Rp 2.000.000</div>
+            <!-- Payment Section -->
+            <div class="bg-white rounded-xl shadow-lg flex-grow overflow-hidden">
+                <div class="bg-primary text-white p-5">
+                    <h1 class="text-3xl font-bold">Metode Pembayaran</h1>
+                    <p class="text-sm mt-1 opacity-90">Pilih metode pembayaran yang Anda inginkan</p>
                 </div>
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/bni.png') }}" alt="bni">
-                        <span>Bank BNI</span>
-                    </div>
-                    <div class="payment-price">Rp 2.000.000</div>
-                </div>
-                <div class="payment-option">
-                    <div class="payment-logo">
-                        <img src="{{ asset('images/payment-logos/mandiri.png') }}" alt="mandiri">
-                        <span>Bank Mandiri</span>
-                    </div>
-                    <div class="payment-price">Rp 2.000.000</div>
-                </div>
-            </div>
 
-            <div style="text-align: right; margin-top: 20px;">
-                <button class="pay-button">Bayar</button>
+                <div class="p-6">
+                    <!-- E-Wallet Section -->
+                    <div class="mb-6">
+                        <h2 class="flex items-center text-primary font-bold text-lg mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            E-Wallet
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\gopay.png" alt="GoPay" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">GoPay</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 100.000</div>
+                            </div>
+
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\ovo.png" alt="OVO" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">OVO</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 1.500.000</div>
+                            </div>
+
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\dana.png" alt="Dana" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">Dana</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 250.000</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Section -->
+                    <div class="mb-8">
+                        <h2 class="flex items-center text-primary font-bold text-lg mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            Bank Transfer
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\bca.png" alt="BCA" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">Bank BCA</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 2.000.000</div>
+                            </div>
+
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\bni.png" alt="BNI" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">Bank BNI</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 2.000.000</div>
+                            </div>
+
+                            <div class="payment-option border bg-white hover:bg-gray-50 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                                <div class="flex items-center">
+                                    <img src="images\payment-logos\mandiri.png" alt="Mandiri" class="w-10 h-10 object-contain mr-3" />
+                                    <span class="font-medium">Bank Mandiri</span>
+                                </div>
+                                <div class="text-sm font-semibold">Rp 2.000.000</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Card -->
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Metode Pembayaran:</span>
+                            <span class="font-medium text-primary" id="summaryMethod">-</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-600">Total:</span>
+                            <span class="font-bold text-lg" id="summaryAmount">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Pay Button -->
+                    <div class="flex justify-end">
+                        <button class="gold-gradient hover:brightness-105 text-primary font-bold py-3 px-12 rounded-full transition-all shadow-md">
+                            Bayar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- popup konfirmasi -->
-    <div class="popup-overlay" id="confirmationPopup">
-        <div class="popup-content">
-            <div class="popup-title">
-                Konfirmasi Pembayaran
+    <!-- Confirmation Popup -->
+    <div class="popup-overlay fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50" id="confirmationPopup">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="popupContent">
+            <div class="bg-gray-50 border-b border-gray-200 text-gray-800 p-4 relative">
+                <h3 class="text-xl font-bold text-center">Konfirmasi Pembayaran</h3>
+                <button onclick="closePopup()" class="absolute right-4 top-4 text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="detail-container">
-                <div class="detail-header">
-                    <div>Nama Anggota : <span id="popupNama"></span></div>
-                    <div>Nomor : <span id="popupNomor"></span></div>
-                    <div>Email : <span id="popupEmail"></span></div>
+
+            <div class="p-6">
+                <!-- Payment icon and method -->
+                <div class="flex items-center justify-center mb-5">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3">
+                        <i class="fas fa-credit-card text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-500">Metode Pembayaran</div>
+                        <div id="popupPaymentMethod" class="font-bold text-lg text-blue-600"></div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <div>Tanggal</div>
-                    <div id="currentDate"></div>
+
+                <!-- Payment details card -->
+                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <!-- User Info Section -->
+                    <div class="border-b border-gray-200 pb-4 mb-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500">Nama Anggota</div>
+                                <div id="popupNama" class="font-medium text-gray-800">Khalisa</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-phone text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500">Nomor Telepon</div>
+                                <div id="popupNomor" class="font-medium text-gray-800">0812--------</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-envelope text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500">Email</div>
+                                <div id="popupEmail" class="font-medium text-gray-800">Khal@....</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Time Section -->
+                    <div class="mb-4">
+                        <div class="flex justify-between py-2">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Tanggal
+                            </div>
+                            <div id="currentDate" class="text-gray-800"></div>
+                        </div>
+
+                        <div class="flex justify-between py-2">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-clock mr-2 text-blue-600"></i>Waktu
+                            </div>
+                            <div id="currentTime" class="text-gray-800"></div>
+                        </div>
+                    </div>
+
+                    <!-- Total Section -->
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                        <div class="text-lg font-medium text-gray-700">Total Pembayaran</div>
+                        <div id="popupAmount" class="font-bold text-xl text-blue-600">Rp 2.000.000</div>
+                    </div>
                 </div>
-                <div class="detail-row">
-                    <div>Total Pembayaran</div>
-                    <div>Rp.100.000</div>
+
+                <!-- Warning text -->
+                <div class="mt-4 text-sm text-gray-500 flex items-start">
+                    <i class="fas fa-info-circle mt-1 mr-2 text-blue-600"></i>
+                    <span>Pastikan data pembayaran sudah benar sebelum melanjutkan. Pembayaran yang telah dikonfirmasi tidak dapat dibatalkan.</span>
                 </div>
-                <div class="detail-row">
-                    <div>Payment method</div>
-                    <div>(LOGO)</div>
-                </div>
-                <div class="button-container">
-                    <button class="back-button" onclick="closePopup()">Back</button>
-                    <button class="confirm-button">Bayar</button>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg transition-colors flex items-center" onclick="closePopup()">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2 rounded-lg transition-all flex items-center shadow-md" id="confirmPaymentBtn">
+                        Konfirmasi<i class="fas fa-check ml-2"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Keep the existing Confirmation Popup HTML structure and add this updated JavaScript -->
     <script>
+        // Format price function
         function formatPrice(nominal) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -319,7 +279,37 @@
             }).format(nominal);
         }
 
-        // show popup
+        // Payment option selection
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        let selectedPayment = null;
+        let selectedAmount = null;
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from previously selected option
+                if (selectedPayment) {
+                    selectedPayment.classList.remove('selected-payment');
+                    selectedPayment.classList.remove('bg-gray-50');
+                }
+
+                // Add selected class to clicked option
+                this.classList.add('selected-payment');
+                this.classList.add('bg-gray-50');
+                selectedPayment = this;
+
+                // Get payment method and amount
+                const paymentMethod = this.querySelector('.flex span').textContent;
+                selectedAmount = this.querySelector('.text-sm').textContent;
+
+                // Update summary and popup
+                document.getElementById('summaryMethod').textContent = paymentMethod;
+                document.getElementById('summaryAmount').textContent = selectedAmount;
+                document.getElementById('popupPaymentMethod').textContent = paymentMethod;
+                document.getElementById('popupAmount').textContent = selectedAmount;
+            });
+        });
+
+        // Show popup function
         function showPopup() {
             if (!selectedPayment) {
                 alert('Silakan pilih metode pembayaran terlebih dahulu');
@@ -327,49 +317,104 @@
             }
 
             const popup = document.getElementById('confirmationPopup');
-            popup.style.display = 'flex';
-            
-            // Set user details from the main screen
-            document.getElementById('popupNama').textContent = 'Khalisa';
-            document.getElementById('popupNomor').textContent = '0812--------';
-            document.getElementById('popupEmail').textContent = 'Khal@....';
-            
-            // Set current date
+            const popupContent = document.getElementById('popupContent');
+
+            // Show overlay first
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+
+            // Reset confirm button state (in case it was previously modified)
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            if (confirmBtn) {
+                confirmBtn.innerHTML = 'Konfirmasi<i class="fas fa-check ml-2"></i>';
+                confirmBtn.disabled = false;
+                confirmBtn.classList.add('crimson-gradient');
+                confirmBtn.classList.remove('bg-green-600');
+            }
+
+            // Animate content after a small delay (allows the display:flex to take effect first)
+            setTimeout(() => {
+                popupContent.classList.remove('scale-95', 'opacity-0');
+                popupContent.classList.add('scale-100', 'opacity-100');
+            }, 50);
+
+            // Set current date and time
             const today = new Date();
             const dateString = today.getDate().toString().padStart(2, '0') + '/' +
-                             (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
-                             today.getFullYear();
+                            (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                            today.getFullYear();
             document.getElementById('currentDate').textContent = dateString;
-        }
 
-        // Function to close popup
+            const timeString = today.getHours().toString().padStart(2, '0') + ':' +
+                            today.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentTime').textContent = timeString;
+        }
+        // Add this to your existing script (keeping your other functions intact)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event for confirmation button
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+                    this.disabled = true;
+
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-check mr-2"></i>Berhasil!';
+                        this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        this.classList.add('bg-green-600', 'hover:bg-green-700');
+
+                        setTimeout(() => {
+                            closePopup();
+                            // Here you would redirect or show a success message
+                        }, 1500);
+                    }, 2000);
+                });
+            }
+        });
+
+        // Close popup function with animation
         function closePopup() {
             const popup = document.getElementById('confirmationPopup');
-            popup.style.display = 'none';
+            const popupContent = document.getElementById('popupContent');
+
+            // Animate content out
+            popupContent.classList.remove('scale-100', 'opacity-100');
+            popupContent.classList.add('scale-95', 'opacity-0');
+
+            // Hide overlay after animation
+            setTimeout(() => {
+                popup.classList.add('hidden');
+                popup.classList.remove('flex');
+            }, 300);
         }
 
-        // Add click event to Bayar button
-        document.querySelector('.pay-button').addEventListener('click', showPopup);
+        // Add click event to pay button when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event to Pay button
+            const payButton = document.querySelector('button.gold-gradient');
+            if (payButton) {
+                payButton.addEventListener('click', showPopup);
+            }
 
-        // Handle payment option selection
-        const paymentOptions = document.querySelectorAll('.payment-option');
-        let selectedPayment = null;
+            // Add click event for confirmation button
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function() {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+                    this.disabled = true;
 
-        paymentOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                // Remove selected class from previously selected option
-                if (selectedPayment) {
-                    selectedPayment.classList.remove('selected');
-                }
-                
-                // Add selected class to clicked option
-                this.classList.add('selected');
-                selectedPayment = this;
-                
-                // Update payment method in popup
-                const paymentMethod = this.querySelector('.payment-logo span').textContent;
-                document.querySelector('.detail-row:last-of-type div:last-child').textContent = paymentMethod;
-            });
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-check mr-2"></i>Berhasil!';
+                        this.classList.remove('crimson-gradient');
+                        this.classList.add('bg-green-600');
+
+                        setTimeout(() => {
+                            closePopup();
+                            // Here you would redirect or show a success message
+                        }, 1500);
+                    }, 2000);
+                });
+            }
         });
     </script>
 </body>
