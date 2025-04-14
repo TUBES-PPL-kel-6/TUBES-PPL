@@ -61,12 +61,13 @@
     </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 bg-gray-50">
-    <div class="container max-w-md mx-auto py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-primary mb-2 flex justify-center items-center gap-2">
-                <i class="fa-solid fa-landmark"></i> SIMPANA
-            </h1>
-            <p class="text-gray-600">Registrasi Anggota Koperasi</p>
+    <div class="w-full max-w-md flex-grow flex flex-col justify-center">
+        <div class="text-center mb-5">
+            <div class="flex justify-center items-center gap-0 mb-1">
+                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">  
+                <span class="text-4xl font-bold text-primary -ml-1">SIMPANA</span>
+            </div>
+            <p class="text-gray-600 text-base">Please sign in to your account</p>
         </div>
 
         {{-- Feedback Pesan --}}
@@ -189,7 +190,7 @@
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 Sudah memiliki akun?
-                <a href="#" class="font-semibold text-primary hover:text-secondary transition-colors duration-200">
+                <a href="{{ route('login') }}" class="font-semibold text-primary hover:text-secondary transition-colors duration-200">
                     Masuk
                 </a>
             </p>

@@ -3,7 +3,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/register', [RegistController::class, 'showForm']);
+Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
 
 
@@ -19,7 +19,7 @@ Route::get('/login', function () {
     return view('login');
 });
 // web.php
-Route::post('/login', [RegistController::class, 'login']);
+Route::post('/login', [RegistController::class, 'login'])->name('login');
 
 
 Route::get('/payment', function () {
