@@ -37,7 +37,8 @@ class RegistController extends Controller
             'alamat' => $request->alamat,
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
-            'ktp' => $ktpPath
+            'ktp' => $ktpPath,
+            'role' => 'member' // Default role untuk user baru
         ]);
 
         return redirect('/')->with('success', 'Pendaftaran berhasil!');
@@ -54,9 +55,16 @@ class RegistController extends Controller
         // Coba autentikasi user
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $user = Auth::user();
 
-            return redirect()->intended('/user') // Ganti dengan halaman tujuan
-                ->with('success', 'Login berhasil!');
+            // Cek role user
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard')
+                    ->with('success', 'Selamat datang Admin!');
+            } else {
+                return redirect()->intended('/user/dashboard')
+                    ->with('success', 'Selamat datang Member!');
+            }
         }
 
         // Jika gagal login
@@ -65,4 +73,12 @@ class RegistController extends Controller
         ])->withInput();
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
+    }
 }
