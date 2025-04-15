@@ -1,22 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Welcome Section -->
+<!-- Welcome -->
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Selamat datang, John!</h1>
     <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal 13 April 2025</p>
 </div>
 
-<!-- Stats Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Card 1 -->
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
+        <!-- icon  -->
         <div class="absolute -top-4 left-4 bg-gradient-to-br from-primary to-secondary shadow-md rounded-xl p-3">
             <i class="fa-solid fa-wallet text-white"></i>
         </div>
 
-        <!-- Text Content -->
+        <!-- Text  -->
         <div class="text-right">
             <p class="text-gray-500 text-sm font-medium">Total Simpanan</p>
             <h2 class="text-3xl font-bold text-slate-800">Rp 53.250.000</h2>
@@ -30,12 +29,12 @@
 
     <!-- Card 2 -->
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
+        <!-- Icon -->
         <div class="absolute -top-4 left-4 bg-gradient-to-br from-blue-600 to-blue-800 shadow-md rounded-xl p-3">
             <i class="fa-solid fa-money-bill-wave text-white"></i>
         </div>
 
-        <!-- Text Content -->
+        <!-- Text -->
         <div class="text-right">
             <p class="text-gray-500 text-sm font-medium">Total Pinjaman</p>
             <h2 class="text-3xl font-bold text-slate-800">Rp 15.000.000</h2>
@@ -49,12 +48,12 @@
 
     <!-- Card 3 -->
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
+        <!-- Icon -->
         <div class="absolute -top-4 left-4 bg-gradient-to-br from-green-600 to-green-800 shadow-md rounded-xl p-3">
             <i class="fa-solid fa-chart-line text-white"></i>
         </div>
 
-        <!-- Text Content -->
+        <!-- Text -->
         <div class="text-right">
             <p class="text-gray-500 text-sm font-medium">Keuntungan</p>
             <h2 class="text-3xl font-bold text-slate-800">Rp 1.850.000</h2>
@@ -68,12 +67,12 @@
 
     <!-- Card 4 -->
     <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
+        <!-- Icon -->
         <div class="absolute -top-4 left-4 bg-gradient-to-br from-amber-500 to-amber-700 shadow-md rounded-xl p-3">
             <i class="fa-solid fa-clock text-white"></i>
         </div>
 
-        <!-- Text Content -->
+        <!-- Text -->
         <div class="text-right">
             <p class="text-gray-500 text-sm font-medium">Sisa Angsuran</p>
             <h2 class="text-3xl font-bold text-slate-800">12 <span class="text-lg">bulan</span></h2>
@@ -86,9 +85,8 @@
     </div>
 </div>
 
-<!-- Recent Transactions and Quick Actions -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Recent Transactions -->
+    <!-- Recent -->
     <div class="bg-white p-6 rounded-xl shadow-md col-span-2">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-lg text-gray-800">Transaksi Terbaru</h3>
@@ -174,7 +172,6 @@
         </div>
     </div>
 
-    <!-- Quick Actions and Notifications -->
     <div class="space-y-6">
         <!-- Quick Actions -->
         <div class="bg-white p-6 rounded-xl shadow-md">
@@ -207,7 +204,7 @@
             </div>
         </div>
 
-        <!-- Notifications -->
+        <!-- Notif -->
         <div class="bg-white p-6 rounded-xl shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg text-gray-800">Pemberitahuan</h3>

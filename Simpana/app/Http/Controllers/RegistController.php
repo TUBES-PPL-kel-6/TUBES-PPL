@@ -15,7 +15,7 @@ class RegistController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
+        // Validasi
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
@@ -29,7 +29,7 @@ class RegistController extends Controller
         // Upload file KTP
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
-        // Simpan ke database
+        // save ke database
         User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
