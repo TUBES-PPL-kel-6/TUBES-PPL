@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metode Pembayaran - Simpana</title>
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -21,7 +21,7 @@
             }
         }
     </script>
-    <!-- Font Awesome -->
+    <!-- Font -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         .gold-gradient {
@@ -42,7 +42,7 @@
 <body class="bg-white text-gray-800 font-sans">
     <div class="flex justify-center items-center min-h-screen p-4">
         <div class="container flex flex-col md:flex-row gap-6 max-w-6xl">
-            <!-- User Info Card -->
+            <!-- User Info -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full md:w-64 h-fit">
                 <div class="bg-primary text-white p-4 font-bold text-lg">
                     <i class="fas fa-user-circle mr-2"></i>Informasi Anggota
@@ -70,7 +70,7 @@
             </div>
 
 
-            <!-- Payment Section -->
+            <!-- Payment -->
             <div class="bg-white rounded-xl shadow-lg flex-grow overflow-hidden">
                 <div class="bg-primary text-white p-5">
                     <h1 class="text-3xl font-bold">Metode Pembayaran</h1>
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="p-6">
-                    <!-- E-Wallet Section -->
+                    <!-- E-Wallet -->
                     <div class="mb-6">
                         <h2 class="flex items-center text-primary font-bold text-lg mb-4">
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                    <!-- Bank Transfer Section -->
+                    <!-- Bank Transfer -->
                     <div class="mb-8">
                         <h2 class="flex items-center text-primary font-bold text-lg mb-4">
                             <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center mr-2">
@@ -148,7 +148,7 @@
                         </div>
                     </div>
 
-                    <!-- Summary Card -->
+                    <!-- Summary -->
                     <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200">
                         <div class="flex justify-between items-center">
                             <span class="text-gray-600">Metode Pembayaran:</span>
@@ -171,7 +171,7 @@
         </div>
     </div>
 
-    <!-- Confirmation Popup -->
+    <!-- popup -->
     <div class="popup-overlay fixed inset-0 bg-black bg-opacity-60 hidden justify-center items-center z-50" id="confirmationPopup">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="popupContent">
             <div class="bg-gray-50 border-b border-gray-200 text-gray-800 p-4 relative">
@@ -182,7 +182,7 @@
             </div>
 
             <div class="p-6">
-                <!-- Payment icon and method -->
+                <!-- icon & method -->
                 <div class="flex items-center justify-center mb-5">
                     <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3">
                         <i class="fas fa-credit-card text-xl"></i>
@@ -193,9 +193,9 @@
                     </div>
                 </div>
 
-                <!-- Payment details card -->
+                <!-- Payment details -->
                 <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-                    <!-- User Info Section -->
+                    <!-- User Info -->
                     <div class="border-b border-gray-200 pb-4 mb-4">
                         <div class="flex items-center mb-3">
                             <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
@@ -228,7 +228,7 @@
                         </div>
                     </div>
 
-                    <!-- Date Time Section -->
+                    <!-- Waktu  -->
                     <div class="mb-4">
                         <div class="flex justify-between py-2">
                             <div class="flex items-center text-gray-600">
@@ -245,14 +245,14 @@
                         </div>
                     </div>
 
-                    <!-- Total Section -->
+                    <!-- Total -->
                     <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
                         <div class="text-lg font-medium text-gray-700">Total Pembayaran</div>
                         <div id="popupAmount" class="font-bold text-xl text-blue-600">Rp 70000</div>
                     </div>
                 </div>
 
-                <!-- Warning text -->
+                <!-- Warning -->
                 <div class="mt-4 text-sm text-gray-500 flex items-start">
                     <i class="fas fa-info-circle mt-1 mr-2 text-blue-600"></i>
                     <span>Pastikan data pembayaran sudah benar sebelum melanjutkan. Pembayaran yang telah dikonfirmasi tidak dapat dibatalkan.</span>
@@ -270,9 +270,8 @@
         </div>
     </div>
 
-    <!-- Keep the existing Confirmation Popup HTML structure and add this updated JavaScript -->
     <script>
-        // Format price function
+        // Format price
         function formatPrice(nominal) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -282,29 +281,28 @@
             }).format(nominal);
         }
 
-        // Payment option selection
+        // Payment option
         const paymentOptions = document.querySelectorAll('.payment-option');
         let selectedPayment = null;
         let selectedAmount = null;
 
         paymentOptions.forEach(option => {
             option.addEventListener('click', function() {
-                // Remove selected class from previously selected option
                 if (selectedPayment) {
                     selectedPayment.classList.remove('selected-payment');
                     selectedPayment.classList.remove('bg-gray-50');
                 }
 
-                // Add selected class to clicked option
+                // clicked option
                 this.classList.add('selected-payment');
                 this.classList.add('bg-gray-50');
                 selectedPayment = this;
 
-                // Get payment method and amount
+                // payment & amount
                 const paymentMethod = this.querySelector('.flex span').textContent;
                 selectedAmount = this.querySelector('.text-sm').textContent;
 
-                // Update summary and popup
+                // Update summary & popup
                 document.getElementById('summaryMethod').textContent = paymentMethod;
                 document.getElementById('summaryAmount').textContent = selectedAmount;
                 document.getElementById('popupPaymentMethod').textContent = paymentMethod;
@@ -312,7 +310,7 @@
             });
         });
 
-        // Show popup function
+        // Show popup
         function showPopup() {
             if (!selectedPayment) {
                 alert('Silakan pilih metode pembayaran terlebih dahulu');
@@ -322,11 +320,11 @@
             const popup = document.getElementById('confirmationPopup');
             const popupContent = document.getElementById('popupContent');
 
-            // Show overlay first
+            // Show overlay
             popup.classList.remove('hidden');
             popup.classList.add('flex');
 
-            // Reset confirm button state (in case it was previously modified)
+
             const confirmBtn = document.getElementById('confirmPaymentBtn');
             if (confirmBtn) {
                 confirmBtn.innerHTML = 'Konfirmasi<i class="fas fa-check ml-2"></i>';
@@ -335,13 +333,13 @@
                 confirmBtn.classList.remove('bg-green-600');
             }
 
-            // Animate content after a small delay (allows the display:flex to take effect first)
+            // Animate content
             setTimeout(() => {
                 popupContent.classList.remove('scale-95', 'opacity-0');
                 popupContent.classList.add('scale-100', 'opacity-100');
             }, 50);
 
-            // Set current date and time
+            // date and time
             const today = new Date();
             const dateString = today.getDate().toString().padStart(2, '0') + '/' +
                             (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
@@ -352,9 +350,9 @@
                             today.getMinutes().toString().padStart(2, '0');
             document.getElementById('currentTime').textContent = timeString;
         }
-        // Add this to your existing script (keeping your other functions intact)
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Add click event for confirmation button
+            // click for confirm button
             const confirmBtn = document.getElementById('confirmPaymentBtn');
             if (confirmBtn) {
                 confirmBtn.addEventListener('click', function() {
@@ -368,32 +366,31 @@
 
                         setTimeout(() => {
                             closePopup();
-                            // Here you would redirect or show a success message
+                            // redirect or success
                         }, 1500);
                     }, 2000);
                 });
             }
         });
 
-        // Close popup function with animation
+        // Close popup
         function closePopup() {
             const popup = document.getElementById('confirmationPopup');
             const popupContent = document.getElementById('popupContent');
 
-            // Animate content out
+            // Animate out
             popupContent.classList.remove('scale-100', 'opacity-100');
             popupContent.classList.add('scale-95', 'opacity-0');
 
-            // Hide overlay after animation
+            // Hide overlay
             setTimeout(() => {
                 popup.classList.add('hidden');
                 popup.classList.remove('flex');
             }, 300);
         }
 
-        // Add click event to pay button when the DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Add click event to Pay button
+            // click event to Pay button
             const payButton = document.querySelector('button.gold-gradient');
             if (payButton) {
                 payButton.addEventListener('click', showPopup);
@@ -413,7 +410,6 @@
 
                         setTimeout(() => {
                             closePopup();
-                            // Here you would redirect or show a success message
                         }, 1500);
                     }, 2000);
 
