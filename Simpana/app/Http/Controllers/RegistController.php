@@ -30,17 +30,20 @@ class RegistController extends Controller
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
         // Simpan ke database
-        User::create([
+        $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
-            'ktp' => $ktpPath
+            'ktp' => $ktpPath,
+            // 'has_paid' => false, // optional if default is already false in migration
         ]);
 
-        return redirect('/')->with('success', 'Pendaftaran berhasil!');
+        Auth::login($user);
+
+        return redirect()->route('payment.show')->with('success', 'Pendaftaran berhasil!');
     }
 
     public function login(Request $request)
@@ -63,6 +66,12 @@ class RegistController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->withInput();
+    }
+
+    public function showPaymentPage()
+    {
+        $user = Auth::user(); // Get the authenticated user
+        return view('payment', compact('user')); // Pass the user to the payment view
     }
 
 }
