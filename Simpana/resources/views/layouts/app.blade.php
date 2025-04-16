@@ -6,7 +6,7 @@
     <title>Simpana Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,7 +23,7 @@
             }
         }
     </script>
-    <!-- Font Awesome -->
+    <!-- Font  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body class="flex bg-gray-50 text-gray-800 font-sans">
@@ -69,7 +69,7 @@
         <div class="p-4 text-xs text-center opacity-70 border-t border-white/10 sidebar-text">© 2025 Simpana</div>
     </aside>
 
-    <!-- Main content area -->
+    <!-- Main -->
     <div id="main-content" class="flex-1 ml-64 min-h-screen flex flex-col transition-all duration-300 ease-in-out">
 
         <!-- Topbar -->
@@ -118,13 +118,13 @@
     </div>
 
     <script>
-        // Sidebar toggle functionality
+        // toggle sidebar
         document.getElementById('sidebar-toggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
             const sidebarTexts = document.querySelectorAll('.sidebar-text');
 
-            // Check if sidebar is collapsed
+            // Cek sidebar ketutup
             const isCollapsed = sidebar.classList.contains('w-16');
 
             if (isCollapsed) {
@@ -139,7 +139,7 @@
                     text.classList.remove('hidden');
                 });
             } else {
-                // Collapse sidebar
+                // tutup sidebar
                 sidebar.classList.remove('w-64');
                 sidebar.classList.add('w-16');
                 mainContent.classList.remove('ml-64');
@@ -152,7 +152,7 @@
             }
         });
 
-        // Mobile menu toggle for smaller screens
+        // tes toggle screen yang beda ukuran
         document.getElementById('menu-toggle')?.addEventListener('click', function() {
             const sidebar = document.querySelector('aside');
             sidebar.classList.toggle('-translate-x-full');

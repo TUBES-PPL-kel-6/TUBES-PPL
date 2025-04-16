@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Simpana') }}</title>
 
-    <!-- Fonts -->
+    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CDN -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -62,7 +62,7 @@
 <body class="gradient-background min-h-screen font-['Plus_Jakarta_Sans'] relative">
     <div class="overlay-pattern"></div>
 
-    <!-- Navigation -->
+    <!-- NAV -->
     <nav class="glass-nav sticky top-0 z-50 py-2 px-6 flex justify-between items-center">
         <img src="{{ asset('images/Simpana white.png') }}" alt="Logo" class="h-20 w-auto transition-transform hover:scale-100">
         <a href="#" class="bg-white text-[#873434] px-4 py-2 rounded-lg font-semibold hover:bg-[#FFDFA8] transition-all shadow-md hover:shadow-lg flex items-center text-sm">
@@ -70,7 +70,7 @@
         </a>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <div class="container mx-auto px-6 relative z-10">
         <div class="flex items-start justify-between py-16">
             <div class="max-w-2xl">

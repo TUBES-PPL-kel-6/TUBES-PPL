@@ -15,7 +15,7 @@ class RegistController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
+        // Validasi
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
@@ -29,8 +29,10 @@ class RegistController extends Controller
         // Upload file KTP
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
+
         // Simpan ke database
-        User::create([
+        $user = User::create([
+
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'nama' => $request->nama,
@@ -39,9 +41,13 @@ class RegistController extends Controller
             'nik' => $request->nik,
             'ktp' => $ktpPath,
             'role' => 'member' // Default role untuk user baru
+
+
         ]);
 
-        return redirect('/')->with('success', 'Pendaftaran berhasil!');
+        Auth::login($user);
+
+        return redirect()->route('payment.show')->with('success', 'Pendaftaran berhasil!');
     }
 
     public function login(Request $request)
@@ -81,4 +87,12 @@ class RegistController extends Controller
         
         return redirect('/')->with('success', 'Anda telah berhasil logout.');
     }
+
+    public function showPaymentPage()
+    {
+        $user = Auth::user(); // Get the authenticated user
+        return view('payment', compact('user')); // Pass the user to the payment view
+    }
+
+
 }

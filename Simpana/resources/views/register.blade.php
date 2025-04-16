@@ -93,7 +93,7 @@
             </div>
         @endif
 
-        <!-- STEP 1: Email & Password -->
+        <!-- Email & Password -->
         <form id="emailForm" onsubmit="event.preventDefault(); nextStep();" class="bg-white shadow-xl rounded-2xl px-8 pt-8 pb-6 border border-gray-200">
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Email:</label>
@@ -130,7 +130,7 @@
             </button>
         </form>
 
-        <!-- STEP 2: Data Diri -->
+        <!-- Data Diri -->
         <form id="dataDiriForm" action="{{ url('/register') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-xl rounded-2xl px-8 pt-8 pb-6 border border-gray-200 mt-6" style="display: none;">
             @csrf
             <!-- Hidden email & password -->
