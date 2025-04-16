@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
+use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
@@ -22,9 +23,13 @@ Route::get('/login', function () {
 Route::post('/login', [RegistController::class, 'login'])->name('login');
 
 
-Route::get('/payment', function () {
-    return view('payment');
-});
+// Route::get('/payment', function () {
+//     return view('payment');
+// });
+Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
+Route::post('/payment', [simpPokokController::class, 'process'])->name('payment.process');
+Route::get('/payment', [RegistController::class, 'showPaymentPage'])->name('payment.show');
+
 
 
 Route::get('/user', function () {

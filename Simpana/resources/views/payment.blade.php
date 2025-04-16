@@ -50,22 +50,25 @@
                 <div class="p-5 border-t border-gray-200 space-y-3">
                     <div class="flex items-center text-sm">
                         <span class="font-semibold w-32">Nama Anggota:</span>
-                        <span>Khalisa</span>
+                        <span>{{ $user->nama }}</span>
                     </div>
                     <div class="flex items-center text-sm">
                         <span class="font-semibold w-32">Nomor:</span>
-                        <span>0812--------</span>
+                        <span>{{ $user->no_telp }}</span>
                     </div>
                     <div class="flex items-center text-sm">
                         <span class="font-semibold w-32">Email:</span>
-                        <span>Khal@....</span>
+                        <span>{{ $user->email }}</span>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <div class="text-xs text-gray-500">Member sejak</div>
-                        <div class="text-sm font-medium">01 Januari 2025</div>
+                        <div class="text-sm font-medium">
+                            {{ \Carbon\Carbon::parse($user->created_at)->translatedFormat('d F Y') }}
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Payment -->
             <div class="bg-white rounded-xl shadow-lg flex-grow overflow-hidden">
@@ -186,7 +189,7 @@
                     </div>
                     <div>
                         <div class="text-sm text-gray-500">Metode Pembayaran</div>
-                        <div id="popupPaymentMethod" class="font-bold text-lg text-blue-600"></div>
+                        <div id="popupPaymentMethod" class="font-bold text-lg text-blue-600">Credit Card</div>
                     </div>
                 </div>
 
@@ -200,7 +203,7 @@
                             </div>
                             <div>
                                 <div class="text-xs text-gray-500">Nama Anggota</div>
-                                <div id="popupNama" class="font-medium text-gray-800">Khalisa</div>
+                                <div id="popupNama" class="font-medium text-gray-800">{{ $user->nama }}</div>
                             </div>
                         </div>
 
@@ -210,7 +213,7 @@
                             </div>
                             <div>
                                 <div class="text-xs text-gray-500">Nomor Telepon</div>
-                                <div id="popupNomor" class="font-medium text-gray-800">0812--------</div>
+                                <div id="popupNomor" class="font-medium text-gray-800">{{ $user->no_telp }}</div>
                             </div>
                         </div>
 
@@ -220,7 +223,7 @@
                             </div>
                             <div>
                                 <div class="text-xs text-gray-500">Email</div>
-                                <div id="popupEmail" class="font-medium text-gray-800">Khal@....</div>
+                                <div id="popupEmail" class="font-medium text-gray-800">{{ $user->email }}</div>
                             </div>
                         </div>
                     </div>
@@ -231,21 +234,21 @@
                             <div class="flex items-center text-gray-600">
                                 <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>Tanggal
                             </div>
-                            <div id="currentDate" class="text-gray-800"></div>
+                            <div id="currentDate" class="text-gray-800">{{ now()->format('d-m-Y') }}</div>
                         </div>
 
                         <div class="flex justify-between py-2">
                             <div class="flex items-center text-gray-600">
                                 <i class="fas fa-clock mr-2 text-blue-600"></i>Waktu
                             </div>
-                            <div id="currentTime" class="text-gray-800"></div>
+                            <div id="currentTime" class="text-gray-800">{{ now()->format('H:i') }}</div>
                         </div>
                     </div>
 
                     <!-- Total -->
                     <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
                         <div class="text-lg font-medium text-gray-700">Total Pembayaran</div>
-                        <div id="popupAmount" class="font-bold text-xl text-blue-600">Rp 2.000.000</div>
+                        <div id="popupAmount" class="font-bold text-xl text-blue-600">Rp 70000</div>
                     </div>
                 </div>
 
@@ -409,9 +412,14 @@
                             closePopup();
                         }, 1500);
                     }, 2000);
+
+                    setTimeout(() => {
+                        window.location.href = "{{ route('login') }}"; // Laravel route helper
+                    }, 3000);
                 });
             }
         });
+
     </script>
 </body>
 </html>
