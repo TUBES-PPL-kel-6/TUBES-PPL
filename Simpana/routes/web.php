@@ -36,3 +36,7 @@ Route::get('/user', function () {
     return view('layouts.dashboard');
 });
 
+Route::get('/admin/loan-applications', function () {
+    return view('admin.loan-applications');
+});
+
