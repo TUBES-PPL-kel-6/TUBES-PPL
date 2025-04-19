@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoanApplicationController;
 
 // Public routes
 Route::get('/', function () {
@@ -60,4 +61,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/transactions', [UserController::class, 'transactions'])->name('user.transactions');
     Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
+
+// Gunakan resource route saja
+Route::resource('loan', LoanApplicationController::class);
 
