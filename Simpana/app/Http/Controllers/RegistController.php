@@ -26,7 +26,7 @@ class RegistController extends Controller
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
-        // Upload file KTP
+
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
 
@@ -40,12 +40,10 @@ class RegistController extends Controller
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
             'ktp' => $ktpPath,
-            // 'has_paid' => false, // optional if default is already false in migration
+            'status' => 'pending' // set default status
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('payment.show')->with('success', 'Pendaftaran berhasil!');
+        return redirect('/')->with('success', 'Pendaftaran berhasil!');
     }
 
     public function login(Request $request)

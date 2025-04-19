@@ -3,9 +3,14 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AcceptanceController;
 
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
+Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
+Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
+Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
+
 
 
 Route::get('/dashboard', function () {

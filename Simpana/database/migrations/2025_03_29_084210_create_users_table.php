@@ -15,9 +15,11 @@ return new class extends Migration {
             $table->text('alamat');
             $table->string('no_telp');
             $table->string('nik')->unique();
-            $table->string('ktp'); // path file KTP
+            $table->string('ktp');
+            $table->string('status')->default('pending'); // ← Tambahkan ini
             $table->timestamps();
         });
+        
     }
 
     public function down(): void
