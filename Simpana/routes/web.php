@@ -62,6 +62,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
 
-// Gunakan resource route saja
 Route::resource('loan', LoanApplicationController::class);
 
+Route::get('/admin/loan-applications', function () {
+    return view('admin.loan-applications');
+});
