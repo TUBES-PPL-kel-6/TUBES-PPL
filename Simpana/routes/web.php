@@ -3,6 +3,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AcceptanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -25,56 +26,48 @@ Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])
 Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 
 
-Route::get('/dashboard', function () {
-    return view('admin.index');
-});
-
+// Home route
 Route::get('/', function () {
     return view('landingPage');
 });
 
+// Login routes
 Route::get('/login', function () {
-    return view('login');
-});
-// web.php
-Route::post('/login', [RegistController::class, 'login'])->name('login');
+    return view('login'); 
+})->name('login');
 
+Route::post('/login', [RegistController::class, 'login'])->name('login.post');
 
-// Route::get('/payment', function () {
-//     return view('payment');
-// });
-Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
-Route::post('/payment', [simpPokokController::class, 'process'])->name('payment.process');
+// Payment routes - fixed duplicate routes
 Route::get('/payment', [RegistController::class, 'showPaymentPage'])->name('payment.show');
+Route::post('/payment', [simpPokokController::class, 'process'])->name('payment.process');
 
+// Dashboard route - this will handle the redirection based on role
+Route::get('/dashboard', function () {
+    if (auth()->user() && auth()->user()->role === 'admin') {
+        return redirect()->route('admin.index');
+    }
+    return redirect()->route('user.dashboard');
+})->middleware('auth')->name('dashboard');
 
-Route::get('/user', function () {
-    return view('layouts.dashboard');})->name('user.dashboard');
+// User dashboard - requires authentication
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user', function () {
+        return view('layouts.dashboard');
+    })->name('user.dashboard');
+});
 
-Route::group(['middleware' => ['auth', 'admin']], function () {
-    Route::get('/admin', function () {
-        return view('admin.index');
-    })->name('admin.index');
+// Admin routes - requires admin role
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     // Add other admin routes here
 });
 
-// Admin routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
-});
+// Add this route for debugging
+Route::get('/check-role', function () {
+    if (Auth::check()) {
+        return "User is logged in. Role: " . Auth::user()->role;
+    }
+    return "User is not logged in.";
+})->middleware('auth');
 
-// Member routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
-    Route::get('/user/transactions', [UserController::class, 'transactions'])->name('user.transactions');
-    Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
-});
-
-Route::resource('loan', LoanApplicationController::class);
-
-Route::get('/admin/loan-applications', function () {
-    return view('admin.loan-applications');
-});
