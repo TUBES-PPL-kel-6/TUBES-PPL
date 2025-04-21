@@ -18,5 +18,6 @@ class User extends Authenticatable
         'nik',
         'ktp',
         'role',
+        'has_paid',
     ];
 }
