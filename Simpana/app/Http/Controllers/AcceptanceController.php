@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 
 class AcceptanceController extends Controller
 {
+
     public function index()
     {
-        $pendingUsers = User::where('status', 'pending')->get();
-        return view('acceptance', compact('pendingUsers'));
+        $pendingUsers  = User::where('status', 'pending')->get();
+        $acceptedUsers = User::where('status', 'approved')->get();
+        $rejectedUsers = User::where('status', 'rejected')->get();
+
+        return view('acceptance', compact('pendingUsers', 'acceptedUsers', 'rejectedUsers'));
     }
 
     public function approve($id)
