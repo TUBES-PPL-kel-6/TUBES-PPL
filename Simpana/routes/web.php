@@ -4,9 +4,27 @@ use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AcceptanceController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoanApplicationController;
+
+// Public routes
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
+Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
+Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
+Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
+
 
 // Home route
 Route::get('/', function () {
@@ -44,12 +62,3 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     // Add other admin routes here
 });
-
-// Add this route for debugging
-Route::get('/check-role', function () {
-    if (Auth::check()) {
-        return "User is logged in. Role: " . Auth::user()->role;
-    }
-    return "User is not logged in.";
-})->middleware('auth');
-
