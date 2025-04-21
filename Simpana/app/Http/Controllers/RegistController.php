@@ -26,7 +26,7 @@ class RegistController extends Controller
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
-        // Upload file KTP
+
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
         // Simpan ke database
@@ -39,11 +39,11 @@ class RegistController extends Controller
             'nik' => $request->nik,
             'ktp' => $ktpPath,
             'role' => 'user',
+            'status' => 'pending' // set default status
         ]);
-
         Auth::login($user);
-
         return redirect()->route('payment.show')->with('success', 'Registration successful!');
+
     }
 
     public function login(Request $request)
