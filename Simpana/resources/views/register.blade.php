@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi - Simpana</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Remove the extra script tag -->
     <script>
         tailwind.config = {
             theme: {
@@ -36,11 +37,12 @@
             box-shadow: 0 4px 6px -1px rgba(140, 20, 20, 0.1), 0 2px 4px -1px rgba(140, 20, 20, 0.06);
         }
     </style>
+    <!-- Move the function outside the nested script tags -->
     <script>
         function nextStep() {
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
+            const confirmPassword = document.getElementById("password_confirmation").value;
 
             if (!email || !password || !confirmPassword) {
                 alert("Harap isi email dan password sebelum melanjutkan.");
@@ -52,11 +54,12 @@
                 return;
             }
 
-            document.getElementById("emailForm").style.display = "none";
-            document.getElementById("dataDiriForm").style.display = "block";
-
             document.getElementById("emailHidden").value = email;
             document.getElementById("passwordHidden").value = password;
+            document.getElementById("passwordConfirmationHidden").value = confirmPassword;
+
+            document.getElementById("emailForm").style.display = "none";
+            document.getElementById("dataDiriForm").style.display = "block";
         }
     </script>
 </head>
@@ -98,7 +101,7 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Email:</label>
                 <div class="relative">
-                    <input type="email" id="email" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="email" id="email" name="email" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-envelope text-gray-400"></i>
                     </div>
@@ -108,7 +111,7 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Password:</label>
                 <div class="relative">
-                    <input type="password" id="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="password" id="password" name="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-lock text-gray-400"></i>
                     </div>
@@ -118,7 +121,7 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Konfirmasi Password:</label>
                 <div class="relative">
-                    <input type="password" id="confirmPassword" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-lock-open text-gray-400"></i>
                     </div>
@@ -136,6 +139,7 @@
             <!-- Hidden email & password -->
             <input type="hidden" name="email" id="emailHidden">
             <input type="hidden" name="password" id="passwordHidden">
+            <input type="hidden" name="password_confirmation" id="passwordConfirmationHidden">  <!-- Changed this line -->
 
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Nama:</label>
