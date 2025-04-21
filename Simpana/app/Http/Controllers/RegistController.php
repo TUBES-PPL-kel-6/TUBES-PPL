@@ -57,9 +57,16 @@ class RegistController extends Controller
         // Coba autentikasi user
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $user = Auth::user();
 
-            return redirect()->intended('/user') // Ganti dengan halaman tujuan
-                ->with('success', 'Login berhasil!');
+            // Cek role user
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard')
+                    ->with('success', 'Selamat datang Admin!');
+            } else {
+                return redirect()->intended('/user/dashboard')
+                    ->with('success', 'Selamat datang Member!');
+            }
         }
 
         // Jika gagal login
@@ -68,10 +75,20 @@ class RegistController extends Controller
         ])->withInput();
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
+    }
+
     public function showPaymentPage()
     {
         $user = Auth::user(); // Get the authenticated user
         return view('payment', compact('user')); // Pass the user to the payment view
     }
+
 
 }
