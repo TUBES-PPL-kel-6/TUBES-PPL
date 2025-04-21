@@ -74,10 +74,20 @@ class RegistController extends Controller
         ])->withInput();
     }
 
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
+    }
+
     public function showPaymentPage()
     {
         $user = Auth::user(); // Get the authenticated user
         return view('payment', compact('user')); // Pass the user to the payment view
     }
+
 
 }
