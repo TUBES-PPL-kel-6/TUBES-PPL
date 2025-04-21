@@ -13,11 +13,10 @@ return new class extends Migration {
             $table->string('password');
             $table->string('nama');
             $table->text('alamat');
-            $table->string('no_telp')
+            $table->string('no_telp');
             $table->string('nik', 16)->unique();
             $table->string('ktp'); // path file KTP
             $table->string('status')->default('pending'); // ← Tambahkan ini
-            $table->string('role')->default('member');
             $table->rememberToken();
             $table->timestamps();
         });

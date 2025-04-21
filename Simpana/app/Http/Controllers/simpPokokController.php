@@ -10,7 +10,9 @@ class simpPokokController extends Controller
 {
     public function show()
     {
-        return view('payment');
+        // Get the authenticated user and pass it to the view
+        $user = Auth::user();
+        return view('payment', compact('user'));
     }
 
     public function process(Request $request)
@@ -18,9 +20,10 @@ class simpPokokController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Simulate payment logic
-        $user->has_paid = true;
-        $user->save();
+        // Update the user's payment status
+        $user->update([
+            'has_paid' => true,
+        ]);
 
         return redirect()->route('login')->with('success', 'Payment successful. You can now log in.');
     }
