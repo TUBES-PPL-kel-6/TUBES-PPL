@@ -38,7 +38,6 @@ class RegistController extends Controller
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
             'ktp' => $ktpPath,
-            'role' => 'user',
             'status' => 'pending' // set default status
         ]);
         Auth::login($user);

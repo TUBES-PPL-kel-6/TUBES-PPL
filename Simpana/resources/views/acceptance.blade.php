@@ -198,39 +198,85 @@
             }
         }
 
-        .alert {
+        /* Updated Notification Styles */
+        .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1000;
-            min-width: 300px;
+            z-index: 1060;
         }
 
-        .status-message {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
+        .toast {
+            min-width: 350px;
+            background: white;
+            border-left: 5px solid;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .toast.success {
+            border-left-color: #28a745;
+        }
+
+        .toast.error {
+            border-left-color: #dc3545;
+        }
+
+        .toast-header {
+            background: none;
+            border: none;
+            padding: 15px 15px 5px 15px;
+        }
+
+        .toast-body {
+            padding: 5px 15px 15px 15px;
             font-size: 14px;
-            margin-left: 10px;
+            color: #333;
+        }
+
+        .toast i {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .toast.success i {
+            color: #28a745;
+        }
+
+        .toast.error i {
+            color: #dc3545;
         }
     </style>
 </head>
 <body>
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        <i class="bi bi-check-circle me-2"></i>
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
+    <!-- Toast Container -->
+    <div class="toast-container">
+        @if(session('success'))
+            <div class="toast success" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <strong class="me-auto">Sukses</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
 
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
-        <i class="bi bi-exclamation-circle me-2"></i>
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @if(session('error'))
+            <div class="toast error" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <strong class="me-auto">Peringatan</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
     </div>
-    @endif
 
     <div class="container-fluid">
         <div class="row">
@@ -240,15 +286,12 @@
                 <div class="nav flex-column nav-pills" id="status-tabs" role="tablist">
                     <button class="nav-link active" id="pending-tab" data-bs-toggle="pill" data-bs-target="#pending" type="button" role="tab">
                         <i class="bi bi-clock"></i> Pending
-                        <span class="badge bg-secondary ms-2">{{ $pendingUsers->count() }}</span>
                     </button>
                     <button class="nav-link" id="accepted-tab" data-bs-toggle="pill" data-bs-target="#accepted" type="button" role="tab">
                         <i class="bi bi-check-circle"></i> Accepted
-                        <span class="badge bg-success ms-2">{{ $acceptedUsers->count() }}</span>
                     </button>
                     <button class="nav-link" id="rejected-tab" data-bs-toggle="pill" data-bs-target="#rejected" type="button" role="tab">
                         <i class="bi bi-x-circle"></i> Rejected
-                        <span class="badge bg-danger ms-2">{{ $rejectedUsers->count() }}</span>
                     </button>
                 </div>
             </div>
@@ -412,6 +455,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Initialize all toasts
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+            });
+            
+            // Show all toasts
+            toastList.forEach(toast => toast.show());
+        });
+
         function toggleDetails(el) {
             const details = el.nextElementSibling;
             const icon = el.querySelector('.rotate-icon');
@@ -419,15 +476,6 @@
             icon.classList.toggle('rotated');
             el.querySelector('span').textContent = details.classList.contains('show') ? 'Sembunyikan Detail' : 'Lihat Detail Data';
         }
-
-        // Auto-hide alerts after 3 seconds
-        setTimeout(function() {
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                if (alert) {
-                    bootstrap.Alert.getOrCreateInstance(alert).close();
-                }
-            });
-        }, 3000);
     </script>
 </body>
 </html>

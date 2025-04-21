@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class AcceptanceController extends Controller
 {
-
     public function index()
     {
         $pendingUsers  = User::where('status', 'pending')->get();
@@ -19,19 +18,31 @@ class AcceptanceController extends Controller
 
     public function approve($id)
     {
-        $user = User::findOrFail($id);
-        $user->status = 'approved';
-        $user->save();
+        try {
+            $user = User::findOrFail($id);
+            $user->status = 'approved';
+            $user->save();
 
-        return redirect()->route('acceptance.index')->with('success', 'Pengguna disetujui!');
+            return redirect()->route('acceptance.index')
+                ->with('success', $user->nama . ' telah DITERIMA');
+        } catch (\Exception $e) {
+            return redirect()->route('acceptance.index')
+                ->with('error', 'Gagal mengubah status anggota. Silakan coba lagi.');
+        }
     }
 
     public function reject($id)
     {
-        $user = User::findOrFail($id);
-        $user->status = 'rejected';
-        $user->save();
+        try {
+            $user = User::findOrFail($id);
+            $user->status = 'rejected';
+            $user->save();
 
-        return redirect()->route('acceptance.index')->with('error', 'Pengguna ditolak!');
+            return redirect()->route('acceptance.index')
+                ->with('error', $user->nama . ' telah DITOLAK');
+        } catch (\Exception $e) {
+            return redirect()->route('acceptance.index')
+                ->with('error', 'Gagal mengubah status anggota. Silakan coba lagi.');
+        }
     }
 }
