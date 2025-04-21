@@ -81,67 +81,76 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h4>SIMPANA</h4>
-        <a href="#" class="active">Dashboard</a>
-        <a href="#">Riwayat Simpanan</a>
-        <a href="#">Setor Simpanan</a>
-        <a href="#">Pinjaman</a>
-        <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
-        <a href="#">Profil</a>
-        <a href="#">Pengaturan</a>
-        <a href="#">Keluar</a>
-    </div>
-
-    <div class="main-content">
-        <div class="navbar">
-            <div class="title">Dashbord Pengurus</div>
-            <div class="d-flex align-items-center">
-                <input type="text" class="form-control me-3" placeholder="Search...">
-                <span class="me-3">🔔</span>
-                <span>John Doe ▼</span>
-            </div>
+    @if(Auth::check() && Auth::user()->role === 'admin')
+        <div class="sidebar">
+            <h4>SIMPANA</h4>
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Riwayat Simpanan</a>
+            <a href="#">Setor Simpanan</a>
+            <a href="#">Pinjaman</a>
+            <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
+            <a href="#">Profil</a>
+            <a href="#">Pengaturan</a>
+            <a href="#">Keluar</a>
         </div>
 
-        <h5 class="mb-3">Transaksi Terbaru</h5>
-        <div class="card p-3">
-            <div class="list-group">
-                <div class="list-group-item d-flex justify-content-between">
-                    <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                    <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                </div>
-                <div class="list-group-item d-flex justify-content-between">
-                    <div>Bayar Angsuran <small class="text-muted">Auto Debit</small></div>
-                    <div>- Rp 850.000 <span class="badge bg-success">Selesai</span></div>
-                </div>
-                <div class="list-group-item d-flex justify-content-between">
-                    <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                    <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                </div>
-                <div class="list-group-item d-flex justify-content-between">
-                    <div>Ambil Pinjaman <small class="text-muted">Pinjaman Baru</small></div>
-                    <div>+ Rp 15.000.000 <span class="badge bg-success">Selesai</span></div>
+        <div class="main-content">
+            <div class="navbar">
+                <div class="title">Dashbord Pengurus</div>
+                <div class="d-flex align-items-center">
+                    <input type="text" class="form-control me-3" placeholder="Search...">
+                    <span class="me-3">🔔</span>
+                    <span>John Doe ▼</span>
                 </div>
             </div>
-        </div>
 
-        <h5 class="mb-3">Pemberitahuan</h5>
-        <div class="p-4 bg-white rounded shadow-sm mb-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <span class="text-danger">Pembayaran Angsuran Jatuh Tempo</span>
-        <span class="badge bg-danger">3 Hari Lagi</span>
-    </div>
-</div>
-<div class="p-4 bg-white rounded shadow-sm mb-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <span class="text-success">Setoran Bulanan Berhasil</span>
-        <span class="badge bg-success">12 Apr 2025</span>
-    </div>
-</div>
-<div class="p-4 bg-white rounded shadow-sm mb-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <span class="text-warning">Program Simpanan Baru</span>
-        <span class="badge bg-warning">Lihat detail</span>
-    </div>
+            <h5 class="mb-3">Transaksi Terbaru</h5>
+            <div class="card p-3">
+                <div class="list-group">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
+                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <div>Bayar Angsuran <small class="text-muted">Auto Debit</small></div>
+                        <div>- Rp 850.000 <span class="badge bg-success">Selesai</span></div>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
+                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <div>Ambil Pinjaman <small class="text-muted">Pinjaman Baru</small></div>
+                        <div>+ Rp 15.000.000 <span class="badge bg-success">Selesai</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mb-3">Pemberitahuan</h5>
+            <div class="p-4 bg-white rounded shadow-sm mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-danger">Pembayaran Angsuran Jatuh Tempo</span>
+                    <span class="badge bg-danger">3 Hari Lagi</span>
+                </div>
+            </div>
+            <div class="p-4 bg-white rounded shadow-sm mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-success">Setoran Bulanan Berhasil</span>
+                    <span class="badge bg-success">12 Apr 2025</span>
+                </div>
+            </div>
+            <div class="p-4 bg-white rounded shadow-sm mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-warning">Program Simpanan Baru</span>
+                    <span class="badge bg-warning">Lihat detail</span>
+                </div>
+            </div>
+
+            <!-- Add a button to route to /user -->
+            <a href="{{ url('/user') }}" class="btn btn-primary">Go to User Dashboard</a>
+        </div>
+    @else
+        <!-- Redirect or show user content -->
+    @endif
 </body>
 </html>

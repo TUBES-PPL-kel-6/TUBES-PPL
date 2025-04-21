@@ -44,7 +44,13 @@ Route::get('/payment', [RegistController::class, 'showPaymentPage'])->name('paym
 
 
 Route::get('/user', function () {
-    return view('layouts.dashboard');
+    return view('layouts.dashboard');})->name('user.dashboard');
+
+Route::group(['middleware' => ['auth', 'admin']], function () {
+    Route::get('/admin', function () {
+        return view('admin.index');
+    })->name('admin.index');
+    // Add other admin routes here
 });
 
 // Admin routes

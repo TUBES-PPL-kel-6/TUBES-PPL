@@ -18,7 +18,7 @@ class RegistController extends Controller
         // Validasi
         $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed',  // This expects password_confirmation field
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'no_telp' => 'required|numeric',
@@ -29,10 +29,8 @@ class RegistController extends Controller
         // Upload file KTP
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
-
         // Simpan ke database
         $user = User::create([
-
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'nama' => $request->nama,
@@ -40,14 +38,12 @@ class RegistController extends Controller
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
             'ktp' => $ktpPath,
-            'role' => 'member' // Default role untuk user baru
-
-
+            'role' => 'user',
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('payment.show')->with('success', 'Pendaftaran berhasil!');
+        return redirect()->route('payment.show')->with('success', 'Registration successful!');
     }
 
     public function login(Request $request)
