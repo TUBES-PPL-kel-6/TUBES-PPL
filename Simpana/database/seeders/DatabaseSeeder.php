@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Call the AdminUserSeeder
-        $this->call(AdminUserSeeder::class);
+        $this->call(AdminSeeder::class);
         
         // Create a test user with the correct field names
         User::create([

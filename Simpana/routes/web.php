@@ -38,9 +38,9 @@ Route::get('/login', function () {
 
 Route::post('/login', [RegistController::class, 'login'])->name('login.post');
 
-// Payment routes - fixed duplicate routes
-Route::get('/payment', [RegistController::class, 'showPaymentPage'])->name('payment.show');
-Route::post('/payment', [simpPokokController::class, 'process'])->name('payment.process');
+// Payment routes
+Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
+Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
 
 // Dashboard route - this will handle the redirection based on role
 Route::get('/dashboard', function () {
@@ -62,12 +62,3 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     // Add other admin routes here
 });
-
-// Add this route for debugging
-Route::get('/check-role', function () {
-    if (Auth::check()) {
-        return "User is logged in. Role: " . Auth::user()->role;
-    }
-    return "User is not logged in.";
-})->middleware('auth');
-
