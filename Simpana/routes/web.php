@@ -57,8 +57,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('user.dashboard');
 
     // Loan Application Routes
-    Route::get('/loan', action: [LoanApplicationController::class, 'create'])->name('loan.create');
-    Route::post('/loan', action: [LoanApplicationController::class, 'store'])->name('loan.store');
+    Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
+    Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
     Route::get('/loan/{loanApplication}', [LoanApplicationController::class, 'show'])->name('loan.show');
     Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
     Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
@@ -67,10 +67,11 @@ Route::middleware(['auth'])->group(function () {
 
 // Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 
     // Loan Approval Routes
-    Route::get('/loanApproval', [App\Http\Controllers\LoanApplicationController::class, 'index'])->name('loan.approval');
-    Route::post('/loanApproval/{loanApplication}/approve', [App\Http\Controllers\LoanApplicationController::class, 'approve'])->name('loan.approve');
-    Route::post('/loanApproval/{loanApplication}/reject', [App\Http\Controllers\LoanApplicationController::class, 'reject'])->name('loan.reject');
+    Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
+    Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
+    Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 });
+

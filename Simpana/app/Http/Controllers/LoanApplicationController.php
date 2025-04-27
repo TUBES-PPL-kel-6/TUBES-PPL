@@ -24,7 +24,7 @@ class LoanApplicationController extends Controller
             Log::info('LoanApplicationController@index: Successfully retrieved loans', [
                 'count' => $loans->count()
             ]);
-            return view('loan-approval', compact('loans'));
+            return view('loanApproval', compact('loans'));
         } catch (\Exception $e) {
             Log::error('LoanApplicationController@index: Error retrieving loans', [
                 'error' => $e->getMessage()
@@ -99,7 +99,8 @@ class LoanApplicationController extends Controller
      */
     public function show(LoanApplication $loanApplication)
     {
-        return view('loan-application', compact('loanApplication'));
+        // Tampilkan detail pinjaman untuk halaman detail
+        return view('loan-detail', compact('loanApplication'));
     }
 
     /**
@@ -144,7 +145,7 @@ class LoanApplicationController extends Controller
     public function approve(LoanApplication $loanApplication)
     {
         $loanApplication->update(['status' => 'approved']);
-        return redirect()->route('loanAppproval')
+        return redirect()->route('loanApproval')
             ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
     }
 
