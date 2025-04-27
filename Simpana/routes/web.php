@@ -62,3 +62,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     // Add other admin routes here
 });
+Route::resource('loan', LoanApplicationController::class)->names([
+    'index' => 'loan.index',
+    'create' => 'loan.create',
+    'store' => 'loan.store',
+    'show' => 'loan.show',
+    'edit' => 'loan.edit',
+    'update' => 'loan.update',
+    'destroy' => 'loan.destroy',
+]);
+
+Route::get('/notifications', function () {
+    return view('notifications');
+});

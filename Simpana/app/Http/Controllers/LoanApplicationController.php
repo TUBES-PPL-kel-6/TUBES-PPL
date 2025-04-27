@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LoanApplication;
 use Illuminate\Http\Request;
+use App\Services\NotificationService;
 
 class LoanApplicationController extends Controller
 {
@@ -66,7 +67,14 @@ class LoanApplicationController extends Controller
             'documents' => $documents
         ]);
 
-        return redirect()->route('loan-application')
+        // Create notification for loan application
+        NotificationService::createTransactionConfirmation(
+            auth()->user(),
+            $loanApplication->id,
+            $request->loan_amount
+        );
+
+        return redirect()->route('user.dashboard')
             ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
     }
 

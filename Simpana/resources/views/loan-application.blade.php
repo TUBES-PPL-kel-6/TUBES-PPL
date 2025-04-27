@@ -223,4 +223,4 @@
     });
 </script>
 @endpush
-@endsection 
+@endsection

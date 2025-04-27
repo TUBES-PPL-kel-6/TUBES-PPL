@@ -42,4 +42,4 @@ class UserController extends Controller
 
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
-} 
+}
