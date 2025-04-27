@@ -88,10 +88,18 @@
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-600">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        @if(Auth::check() && Auth::user()->ktp && file_exists(public_path('storage/ktp/' . Auth::user()->ktp)))
+                            <img src="{{ asset('storage/ktp/' . Auth::user()->ktp) }}" alt="Foto Profil" class="w-8 h-8 object-cover rounded-full">
+                        @elseif(Auth::check())
+                            <span class="text-sm font-bold text-gray-600">{{ strtoupper(substr(Auth::user()->nama ?? Auth::user()->name, 0, 1)) }}</span>
+                        @else
+                            <span class="text-sm font-bold text-gray-600">?</span>
+                        @endif
                     </div>
-                    <span class="text-sm font-medium">{{ Auth::user()->name }}</span>
+                    <span class="text-sm font-medium">
+                        {{ Auth::check() ? (Auth::user()->nama ?? Auth::user()->name) : '' }}
+                    </span>
                 </div>
             </div>
         </header>

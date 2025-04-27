@@ -18,8 +18,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-
+            'nama' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
@@ -27,6 +26,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'alamat' => ['required', 'string'],
+            'no_telp' => ['required', 'string', 'max:20'],
         ])->validateWithBag('updateProfileInformation');
 
         if ($input['email'] !== $user->email &&
@@ -34,8 +35,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
-                'name' => $input['name'],
+                'nama' => $input['nama'],
                 'email' => $input['email'],
+                'alamat' => $input['alamat'],
+                'no_telp' => $input['no_telp'],
             ])->save();
         }
     }
@@ -48,8 +51,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
-            'name' => $input['name'],
+            'nama' => $input['nama'],
             'email' => $input['email'],
+            'alamat' => $input['alamat'],
+            'no_telp' => $input['no_telp'],
             'email_verified_at' => null,
         ])->save();
 

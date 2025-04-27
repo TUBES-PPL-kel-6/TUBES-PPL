@@ -50,7 +50,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                            <input type="text" name="name" id="name" value="{{ $user->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <input type="text" name="nama" id="nama" value="{{ $user->nama }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
                         <div>
@@ -59,13 +59,13 @@
                         </div>
                         
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
-                            <input type="tel" name="phone" id="phone" value="{{ $user->phone ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <label for="no_telp" class="block text-sm font-medium text-gray-700">Nomor Telepon</label>
+                            <input type="tel" name="no_telp" id="no_telp" value="{{ $user->no_telp ?? '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
                         <div>
-                            <label for="address" class="block text-sm font-medium text-gray-700">Alamat</label>
-                            <textarea name="address" id="address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ $user->address ?? '' }}</textarea>
+                            <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                            <textarea name="alamat" id="alamat" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ $user->alamat ?? '' }}</textarea>
                         </div>
                     </div>
 

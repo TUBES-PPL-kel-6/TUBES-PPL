@@ -35,3 +35,7 @@ Route::get('/user', function () {
     return view('layouts.dashboard');
 });
 
+Route::get('/discussion', function () {
+    return view('discussion');
+});
+
