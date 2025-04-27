@@ -25,6 +25,7 @@
     </script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body class="flex bg-gray-50 text-gray-800 font-sans">
     <!-- Sidebar -->
@@ -47,6 +48,24 @@
             <a href="#" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
                 <i class="fa-solid fa-file-invoice-dollar"></i> <span class="sidebar-text">Pinjaman</span>
             </a>
+            <!-- Dropdown Discussion & Feedback -->
+            <div x-data="{ open: false }">
+                <button @click="open = !open" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition w-full">
+                    <i class="fa-solid fa-comments"></i>
+                    <span class="sidebar-text">Komunitas</span>
+                    <i class="fa-solid fa-chevron-down ml-auto text-xs"></i>
+                </button>
+                <div x-show="open" class="space-y-1 mt-1 px-4">
+                    <a href="/discussion" class="flex items-center gap-2 py-2 px-2 rounded-lg hover:bg-white/10 transition w-full">
+                        <i class="fa-regular fa-comments"></i>
+                        <span>Diskusi</span>
+                    </a>
+                    <a href="/feedback" class="flex items-center gap-2 py-2 px-2 rounded-lg hover:bg-white/10 transition w-full">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <span>Feedback</span>
+                    </a>
+                </div>
+            </div>
 
             <div class="pt-4 pb-2 px-4 text-xs uppercase font-bold text-white/60 sidebar-text">
                 Akun

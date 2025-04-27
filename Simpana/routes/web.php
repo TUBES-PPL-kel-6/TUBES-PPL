@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
+use App\Http\Controllers\DiscussionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,11 +32,13 @@ Route::get('/payment', function () {
     return view('payment');
 });
 
-Route::get('/user', function () {
-    return view('layouts.dashboard');
-});
+Route::get('/user', [DashboardController::class, 'index']);
 
-Route::get('/discussion', function () {
-    return view('discussion');
-});
+Route::get('/discussion', [DiscussionController::class, 'index'])->name('discussion.index');
+Route::post('/discussion', [DiscussionController::class, 'store'])->name('discussion.store');
+Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
+Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
+Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
+
+Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
