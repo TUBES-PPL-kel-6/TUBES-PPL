@@ -8,6 +8,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoanApplicationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ComplaintController;
+
 
 // Public routes
 Route::get('/', function () {
@@ -24,6 +27,9 @@ Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('accepta
 Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
 Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 
+// Complaint Routes
+Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
+Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 Route::get('/dashboard', function () {
     return view('admin.index');
@@ -71,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/user/transactions', [UserController::class, 'transactions'])->name('user.transactions');
     Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
+
 });
 
 Route::resource('loan', LoanApplicationController::class);
@@ -78,3 +85,5 @@ Route::resource('loan', LoanApplicationController::class);
 Route::get('/admin/loan-applications', function () {
     return view('admin.loan-applications');
 });
+
+
