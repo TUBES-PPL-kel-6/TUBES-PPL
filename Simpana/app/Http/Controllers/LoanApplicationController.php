@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\LoanApplication;
 use Illuminate\Http\Request;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 
 class LoanApplicationController extends Controller
 {
@@ -90,6 +92,12 @@ class LoanApplicationController extends Controller
             'status' => 'pending'
         ]);
 
+        // Create notification for loan application
+        NotificationService::createTransactionConfirmation(
+            auth()->user(),
+            $loanApplication->id,
+            $request->loan_amount
+        );
         return redirect()->route('user.dashboard')
             ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
     }

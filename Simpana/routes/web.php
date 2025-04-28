@@ -75,3 +75,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 });
 
+Route::resource('loan', LoanApplicationController::class)->names([
+    'index' => 'loan.index',
+    'create' => 'loan.create',
+    'store' => 'loan.store',
+    'show' => 'loan.show',
+    'edit' => 'loan.edit',
+    'update' => 'loan.update',
+    'destroy' => 'loan.destroy',
+]);
+
+Route::get('/notifications', function () {
+    return view('notifications');
+});
