@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->string('nik', 16)->unique();
             $table->string('ktp'); // path file KTP
             $table->string('status')->default('pending'); // ← Tambahkan ini
-            $table->string('role')->default('member');
             $table->rememberToken();
             $table->timestamps();
         });

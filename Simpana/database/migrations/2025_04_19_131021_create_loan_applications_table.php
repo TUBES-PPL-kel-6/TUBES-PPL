@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('loan_applications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('loan_product'); // pendidikan, usaha, konsumtif
             $table->text('application_note')->nullable();
             $table->decimal('loan_amount', 15, 2);
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->enum('payment_method', ['cash', 'transfer', 'debit']);
             $table->text('collateral')->nullable();
             $table->json('documents')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });
     }

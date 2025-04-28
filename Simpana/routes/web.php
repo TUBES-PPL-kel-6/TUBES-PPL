@@ -3,6 +3,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AcceptanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -31,45 +32,48 @@ Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->
 Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
 Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
-Route::get('/dashboard', function () {
-    return view('admin.index');
-});
-
+// Home route
 Route::get('/', function () {
     return view('landingPage');
 });
 
+// Login routes
 Route::get('/login', function () {
     return view('login');
-});
-// web.php
-Route::post('/login', [RegistController::class, 'login'])->name('login');
+})->name('login');
 
+Route::post('/login', [RegistController::class, 'login'])->name('login.post');
 
-// Route::get('/payment', function () {
-//     return view('payment');
-// });
+// Payment routes
 Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
-Route::post('/payment', [simpPokokController::class, 'process'])->name('payment.process');
-Route::get('/payment', [RegistController::class, 'showPaymentPage'])->name('payment.show');
+Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
 
+// Dashboard route - this will handle the redirection based on role
+Route::get('/dashboard', function () {
+    if (auth()->user() && auth()->user()->role === 'admin') {
+        return redirect()->route('admin.index');
+    }
+    return redirect()->route('user.dashboard');
+})->middleware('auth')->name('dashboard');
 
-Route::get('/user', function () {
-    return view('layouts.dashboard');})->name('user.dashboard');
+// User dashboard - requires authentication
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user', function () {
+        return view('layouts.dashboard');
+    })->name('user.dashboard');
 
-Route::group(['middleware' => ['auth', 'admin']], function () {
-    Route::get('/admin', function () {
-        return view('admin.index');
-    })->name('admin.index');
-    // Add other admin routes here
+    // Loan Application Routes
+    Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
+    Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
+    Route::get('/loan/{loanApplication}', [LoanApplicationController::class, 'show'])->name('loan.show');
+    Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
+    Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
+    Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
 });
 
-// Admin routes
+// Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/index', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
-});
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 
 // Member routes
 Route::middleware(['auth'])->group(function () {
@@ -78,12 +82,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/transactions', [UserController::class, 'transactions'])->name('user.transactions');
     Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
 
+    // Loan Approval Routes
+    Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
+    Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
+    Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 });
 
-Route::resource('loan', LoanApplicationController::class);
+Route::resource('loan', LoanApplicationController::class)->names([
+    'index' => 'loan.index',
+    'create' => 'loan.create',
+    'store' => 'loan.store',
+    'show' => 'loan.show',
+    'edit' => 'loan.edit',
+    'update' => 'loan.update',
+    'destroy' => 'loan.destroy',
+]);
 
-Route::get('/admin/loan-applications', function () {
-    return view('admin.loan-applications');
+Route::get('/notifications', function () {
+    return view('notifications');
 });
 
 

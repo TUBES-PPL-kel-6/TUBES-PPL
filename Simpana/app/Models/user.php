@@ -20,6 +20,7 @@ class User extends Authenticatable
         'ktp',
         'status',
         'role',
+        'has_paid',
     ];
 
     protected $hidden = [

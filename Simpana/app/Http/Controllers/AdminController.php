@@ -2,40 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoanApplication;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function __construct()
+    public function index()
     {
-        $this->middleware(['auth', 'admin']);
+        $pendingLoans = LoanApplication::where('status', 'pending')->count();
+        $totalLoans = LoanApplication::count();
+
+        return view('admin_dashboard', compact('pendingLoans', 'totalLoans'));
     }
-
-    public function dashboard()
-    {
-        $totalUsers = User::where('role', 'member')->count();
-        $recentUsers = User::where('role', 'member')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-
-        return view('admin.index', compact('totalUsers', 'recentUsers'));
-    }
-
-    public function users()
-    {
-        $users = User::where('role', 'member')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('admin.index', compact('index'));
-    }
-
-    public function profile()
-    {
-        $admin = Auth::user();
-        return view('admin.index', compact('index'));
-    }
-} 
+}

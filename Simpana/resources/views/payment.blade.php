@@ -262,9 +262,12 @@
                     <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-lg transition-colors flex items-center" onclick="closePopup()">
                         <i class="fas fa-arrow-left mr-2"></i>Kembali
                     </button>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2 rounded-lg transition-all flex items-center shadow-md" id="confirmPaymentBtn">
-                        Konfirmasi<i class="fas fa-check ml-2"></i>
-                    </button>
+                    <form action="{{ route('payment.process') }}" method="POST" id="paymentForm">
+                        @csrf
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2 rounded-lg transition-all flex items-center shadow-md" id="confirmPaymentBtn">
+                            Konfirmasi<i class="fas fa-check ml-2"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -399,7 +402,10 @@
             // Add click event for confirmation button
             const confirmBtn = document.getElementById('confirmPaymentBtn');
             if (confirmBtn) {
-                confirmBtn.addEventListener('click', function() {
+                confirmBtn.addEventListener('click', function(e) {
+                    // Prevent the default form submission
+                    e.preventDefault();
+                    
                     this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
                     this.disabled = true;
 
@@ -409,13 +415,10 @@
                         this.classList.add('bg-green-600');
 
                         setTimeout(() => {
-                            closePopup();
+                            // Submit the form after showing success message
+                            document.getElementById('paymentForm').submit();
                         }, 1500);
                     }, 2000);
-
-                    setTimeout(() => {
-                        window.location.href = "{{ route('login') }}"; // Laravel route helper
-                    }, 3000);
                 });
             }
         });
