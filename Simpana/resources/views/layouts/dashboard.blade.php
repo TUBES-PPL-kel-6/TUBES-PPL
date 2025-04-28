@@ -3,8 +3,8 @@
 @section('content')
 <!-- Welcome Section -->
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, {{ $user->nama ?? $user->name }}!</h1>
-    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal {{ date('d F Y') }}</p>
+    <h1 class="text-2xl font-bold text-gray-800">Selamat datang</h1>
+    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal</p>
 </div>
 
 <!-- Stats Cards -->
