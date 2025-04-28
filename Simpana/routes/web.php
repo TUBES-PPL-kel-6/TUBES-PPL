@@ -9,6 +9,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoanApplicationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ComplaintController;
+
 
 // Public routes
 Route::get('/', function () {
@@ -25,6 +28,9 @@ Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('accepta
 Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
 Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 
+// Complaint Routes
+Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
+Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 // Home route
 Route::get('/', function () {
@@ -69,6 +75,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 
+// Member routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::get('/user/transactions', [UserController::class, 'transactions'])->name('user.transactions');
+    Route::post('/user/profile/update', [UserController::class, 'updateProfile'])->name('user.profile.update');
+
     // Loan Approval Routes
     Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
     Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
@@ -88,3 +101,5 @@ Route::resource('loan', LoanApplicationController::class)->names([
 Route::get('/notifications', function () {
     return view('notifications');
 });
+
+
