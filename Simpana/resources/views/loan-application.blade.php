@@ -9,29 +9,25 @@
             <div>
                 <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">Nomor Anggota</label>
-                    <p class="font-medium">AG001</p>
+                    <p class="font-medium">{{ Auth::user()->id }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">Nama Lengkap</label>
-                    <p class="font-medium">John Doe</p>
+                    <p class="font-medium">{{ Auth::user()->nama }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">NIK</label>
-                    <p class="font-medium">3273082304990001</p>
+                    <p class="font-medium">{{ Auth::user()->nik }}</p>
                 </div>
             </div>
             <div>
                 <div class="mb-4">
-                    <label class="block text-sm text-gray-600 mb-1">Tempat, Tanggal Lahir</label>
-                    <p class="font-medium">Bandung, 23 April 1999</p>
-                </div>
-                <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">Alamat</label>
-                    <p class="font-medium">Jl. Sukabirus No. 123, Bandung</p>
+                    <p class="font-medium">{{ Auth::user()->alamat }}</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">No. Telepon</label>
-                    <p class="font-medium">081234567890</p>
+                    <p class="font-medium">{{ Auth::user()->no_telp }}</p>
                 </div>
             </div>
         </div>
@@ -42,7 +38,8 @@
         <h2 class="text-xl font-semibold mb-4">Form Pengajuan Pinjaman</h2>
         <form method="POST" action="{{ route('loan.store') }}" enctype="multipart/form-data">
             @csrf
-            
+            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+
             <!-- Row 1 -->
             <div class="grid grid-cols-2 gap-6 mb-4">
                 <!-- Pilih Produk Pinjaman -->
@@ -66,11 +63,12 @@
             <!-- Upload Dokumen -->
             <div class="mb-6">
                 <label class="block text-sm mb-2">Upload dokumen pendukung</label>
+                <p class="text-xs text-gray-500 mb-2">Format yang diterima: PDF, JPG, JPEG, PNG (Maksimal 2MB per file)</p>
                 <div class="flex flex-wrap gap-4">
                     <!-- Upload Button -->
                     <div class="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed relative cursor-pointer">
                         <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJmZWF0aGVyIGZlYXRoZXItcGx1cyI+PGxpbmUgeDE9IjEyIiB5MT0iNSIgeDI9IjEyIiB5Mj0iMTkiPjwvbGluZT48bGluZSB4MT0iNSIgeTE9IjEyIiB4Mj0iMTkiIHkyPSIxMiI+PC9saW5lPjwvc3ZnPg==" class="w-8 h-8 text-blue-500">
-                        <input type="file" name="supporting_documents[]" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(event)">
+                        <input type="file" name="supporting_documents[]" multiple accept=".pdf,.jpg,.jpeg,.png" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(event)">
                     </div>
                     <!-- Preview Container -->
                     <div id="preview-container" class="flex flex-wrap gap-4">
@@ -84,7 +82,10 @@
                 <!-- Nominal Pinjaman -->
                 <div>
                     <label for="loan_amount" class="block text-sm mb-1">Masukkan nominal pinjaman</label>
-                    <input type="text" name="loan_amount" id="loan_amount" class="w-full p-2 border rounded-md" placeholder="500.000">
+                    <div class="relative">
+                        <span class="absolute left-3 top-2 text-gray-500">Rp</span>
+                        <input type="text" name="loan_amount" id="loan_amount" class="w-full pl-8 p-2 border rounded-md" placeholder="500.000" onkeyup="formatCurrency(this)">
+                    </div>
                 </div>
 
                 <!-- Tenor -->
@@ -140,6 +141,9 @@
 
             <!-- Buttons -->
             <div class="flex justify-end space-x-2">
+                <a href="{{ route('user.dashboard') }}" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+                    Kembali
+                </a>
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                     Ajukan
                 </button>
@@ -150,6 +154,28 @@
 
 @push('scripts')
 <script>
+    function formatCurrency(input) {
+        // Remove non-numeric characters
+        let value = input.value.replace(/[^0-9]/g, '');
+
+        // Format with thousand separators
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        // Update input value
+        input.value = value;
+
+        // Calculate total
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        const loanAmount = parseFloat(document.getElementById('loan_amount').value.replace(/[^0-9]/g, '')) || 0;
+        const total = loanAmount;
+
+        document.getElementById('total_amount').textContent =
+            'Rp' + total.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+    }
+
     function handleFileSelect(event) {
         const files = event.target.files;
         const previewContainer = document.getElementById('preview-container');
@@ -157,14 +183,14 @@
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 const preview = document.createElement('div');
                 preview.className = 'relative w-24 h-24 group';
-                
+
                 const content = document.createElement('div');
                 content.className = 'w-full h-full rounded-lg border-2 border-gray-200 overflow-hidden';
-                
+
                 if (file.type.startsWith('image/')) {
                     // If it's an image, show image preview
                     const img = document.createElement('img');
@@ -195,11 +221,8 @@
                 previewContainer.appendChild(preview);
             };
 
-            if (file.type.startsWith('image/')) {
-                reader.readAsDataURL(file);
-            } else {
-                reader.readAsText(file);
-            }
+            // Always read as data URL for preview
+            reader.readAsDataURL(file);
         }
     }
 
@@ -209,8 +232,8 @@
             const loanAmount = parseFloat(document.getElementById('loan_amount').value.replace(/[^0-9]/g, '')) || 0;
             const total = loanAmount;
 
-            document.getElementById('total_amount').textContent = 
-                'Rp' + total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('total_amount').textContent =
+                'Rp' + total.toLocaleString('id-ID', {minimumFractionDigits: 0, maximumFractionDigits: 0});
         }
 
         // Add event listener to loan amount input
@@ -223,4 +246,5 @@
     });
 </script>
 @endpush
+
 @endsection
