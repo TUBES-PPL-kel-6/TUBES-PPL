@@ -1,95 +1,277 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="flex flex-col md:flex-row gap-6">
-        <!-- Sidebar -->
-        <div class="w-full md:w-1/4">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center space-x-4 mb-6">
-                    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span class="text-2xl font-bold text-gray-600">{{ substr($user->name, 0, 1) }}</span>
+<div class="container mx-auto p-4">
+    <div class="flex justify-center items-center min-h-[calc(100vh-200px)]">
+        <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6">
+            <!-- User Info Panel -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden w-full md:w-64 h-fit">
+                <div class="bg-primary text-white p-4 font-bold text-lg">
+                    <i class="fas fa-user-circle mr-2"></i>Informasi Anggota
+                </div>
+                <div class="p-5 border-t border-gray-200 space-y-3">
+                    <div class="flex items-center text-sm">
+                        <span class="text-gray-500 w-24">Nomor Anggota</span>
+                        <span class="font-medium">AG001024</span>
                     </div>
-                    <div>
-                        <h2 class="text-xl font-semibold">{{ $user->name }}</h2>
-                        <p class="text-gray-600">Anggota</p>
+                    <div class="flex items-center text-sm">
+                        <span class="text-gray-500 w-24">Nama</span>
+                        <span class="font-medium">John Doe</span>
+                    </div>
+                    <div class="flex items-center text-sm">
+                        <span class="text-gray-500 w-24">Status</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Aktif</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-500">Total Simpanan</span>
+                            <span class="font-bold text-primary">Rp4.835.207</span>
+                        </div>
                     </div>
                 </div>
-                <nav class="space-y-2">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="{{ route('dashboard.profile') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                        <span>Profil</span>
-                    </a>
-                    <a href="{{ route('dashboard.simpanan') }}" class="flex items-center space-x-2 p-2 rounded-lg bg-blue-50 text-blue-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <span>Simpanan</span>
-                    </a>
-                    <a href="{{ route('dashboard.transactions') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                        <span>Transaksi</span>
-                    </a>
-                </nav>
             </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="w-full md:w-3/4">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <h1 class="text-2xl font-bold mb-6">Setor Simpanan</h1>
-                
-                <form action="{{ route('dashboard.simpanan.store') }}" method="POST" class="space-y-6">
-                    @csrf
+            <!-- Payment Form Panel -->
+            <div class="bg-white rounded-xl shadow-lg flex-grow overflow-hidden">
+                <div class="bg-primary text-white p-5">
+                    <!-- Payment Type Tabs -->
+                    <div class="flex mb-3 space-x-2">
+                        <a href="#" onclick="switchPaymentType('pokok')" id="tab-pokok" class="px-4 py-1 rounded-full text-sm bg-white text-primary font-medium">Simpanan Pokok</a>
+                        <a href="#" onclick="switchPaymentType('sukarela')" id="tab-sukarela" class="px-4 py-1 rounded-full text-sm bg-opacity-20 bg-white text-white hover:bg-opacity-30 transition">Simpanan Sukarela</a>
+                    </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="jenis_simpanan" class="block text-sm font-medium text-gray-700">Jenis Simpanan</label>
-                            <select name="jenis_simpanan" id="jenis_simpanan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                                <option value="">Pilih Jenis Simpanan</option>
-                                <option value="pokok">Simpanan Pokok</option>
-                                <option value="wajib">Simpanan Wajib</option>
-                                <option value="sukarela">Simpanan Sukarela</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label for="jumlah" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                            <div class="mt-1 relative rounded-md shadow-sm">
+                    <h1 class="text-3xl font-bold" id="payment-title">Simpanan Pokok</h1>
+                    <p class="text-sm mt-1 opacity-90" id="payment-description">
+                        Setoran simpanan pokok dengan jumlah tetap.
+                    </p>
+                </div>
+
+                <div class="p-6">
+                    <form action="#" method="POST" id="payment-form">
+                        <!-- Amount Input Section -->
+                        <div class="mb-6">
+                            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nominal Simpanan</label>
+                            <div class="relative" id="amount-container">
+                                <input type="text" id="amount" name="amount" value="50.000" 
+                                       class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed" 
+                                       readonly>
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                                    <span class="text-gray-500">Rp</span>
                                 </div>
-                                <input type="number" name="jumlah" id="jumlah" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0" required>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1" id="amount-description">Simpanan pokok memiliki jumlah tetap sesuai ketentuan.</p>
+                        </div>
+
+                        <!-- Payment Method Section -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Metode Pembayaran</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div class="payment-option border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition border-primary bg-blue-50">
+                                    <div class="flex items-center mb-2">
+                                        <input type="radio" name="payment_method" value="transfer" class="mr-2" checked>
+                                        <span class="font-medium">Transfer Bank</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Transfer dari rekening bank</div>
+                                </div>
+                                
+                                <div class="payment-option border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition">
+                                    <div class="flex items-center mb-2">
+                                        <input type="radio" name="payment_method" value="ewallet" class="mr-2">
+                                        <span class="font-medium">E-Wallet</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">DANA, GoPay, OVO, dll</div>
+                                </div>
+                                
+                                <div class="payment-option border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition">
+                                    <div class="flex items-center mb-2">
+                                        <input type="radio" name="payment_method" value="cash" class="mr-2">
+                                        <span class="font-medium">Tunai</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Setor langsung di kantor</div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="md:col-span-2">
-                            <label for="keterangan" class="block text-sm font-medium text-gray-700">Keterangan</label>
-                            <textarea name="keterangan" id="keterangan" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
-                        </div>
-                    </div>
 
-                    <div class="pt-4">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Setor Simpanan
-                        </button>
-                        <a href="{{ route('dashboard.simpanan') }}" class="ml-4 text-gray-600 hover:text-gray-800">
-                            Batal
-                        </a>
-                    </div>
-                </form>
+                        <!-- Summary Section -->
+                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-600">Jumlah Setoran</span>
+                                <span class="font-medium" id="summary-amount">
+                                    Rp50.000
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-gray-600">Biaya Admin</span>
+                                <span class="font-medium">Rp0</span>
+                            </div>
+                            <div class="flex items-center justify-between font-bold">
+                                <span>Total</span>
+                                <span class="text-primary" id="summary-total">
+                                    Rp50.000
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end">
+                            <button type="button" onclick="showPaymentSuccess()" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition">
+                                Bayar Sekarang
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal (hidden by default) -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Pembayaran Berhasil!</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500">
+                        Simpanan Anda telah berhasil ditambahkan ke akun Anda.
+                    </p>
+                </div>
+                <div class="mt-5">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition">
+                        Kembali
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-@endsection 
+
+<script>
+    function switchPaymentType(type) {
+        const titleElement = document.getElementById('payment-title');
+        const descriptionElement = document.getElementById('payment-description');
+        const amountElement = document.getElementById('amount');
+        const amountContainer = document.getElementById('amount-container');
+        const amountDescription = document.getElementById('amount-description');
+        const summaryAmount = document.getElementById('summary-amount');
+        const summaryTotal = document.getElementById('summary-total');
+        const tabPokok = document.getElementById('tab-pokok');
+        const tabSukarela = document.getElementById('tab-sukarela');
+        
+        if (type === 'pokok') {
+            // Update title and description
+            titleElement.textContent = 'Simpanan Pokok';
+            descriptionElement.textContent = 'Setoran simpanan pokok dengan jumlah tetap.';
+            
+            // Update amount input
+            amountElement.value = '50.000';
+            amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
+            amountElement.setAttribute('readonly', true);
+            amountDescription.textContent = 'Simpanan pokok memiliki jumlah tetap sesuai ketentuan.';
+            
+            // Update summary
+            summaryAmount.textContent = 'Rp50.000';
+            summaryTotal.textContent = 'Rp50.000';
+            
+            // Update tabs
+            tabPokok.classList.add('bg-white', 'text-primary');
+            tabPokok.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+            tabSukarela.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+            tabSukarela.classList.remove('bg-white', 'text-primary');
+        } else {
+            // Update title and description
+            titleElement.textContent = 'Simpanan Sukarela';
+            descriptionElement.textContent = 'Pilih jumlah setoran simpanan sukarela sesuai keinginan Anda.';
+            
+            // Update amount input
+            amountElement.value = '';
+            amountElement.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            amountElement.removeAttribute('readonly');
+            amountDescription.textContent = 'Minimal simpanan sukarela Rp10.000';
+            
+            // Update summary
+            summaryAmount.textContent = 'Rp0';
+            summaryTotal.textContent = 'Rp0';
+            
+            // Update tabs
+            tabSukarela.classList.add('bg-white', 'text-primary');
+            tabSukarela.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+            tabPokok.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+            tabPokok.classList.remove('bg-white', 'text-primary');
+        }
+    }
+    
+    // Format currency input
+    function formatCurrency(input) {
+        // Remove non-digit characters
+        let value = input.value.replace(/\D/g, '');
+        
+        // Format with thousand separators
+        if (value !== '') {
+            value = parseInt(value).toLocaleString('id-ID');
+        }
+        
+        input.value = value;
+        
+        // Update summary
+        updateSummary();
+    }
+    
+    function updateSummary() {
+        const amountInput = document.getElementById('amount');
+        const summaryAmount = document.getElementById('summary-amount');
+        const summaryTotal = document.getElementById('summary-total');
+        
+        // Get input value and remove non-digits
+        let value = amountInput.value.replace(/\D/g, '');
+        
+        if (value === '') {
+            value = '0';
+        }
+        
+        // Format for display
+        const formattedValue = parseInt(value).toLocaleString('id-ID');
+        
+        summaryAmount.textContent = `Rp${formattedValue}`;
+        summaryTotal.textContent = `Rp${formattedValue}`;
+    }
+    
+    // Initialize payment method selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        
+        paymentOptions.forEach(option => {
+            const radio = option.querySelector('input[type="radio"]');
+            
+            option.addEventListener('click', function() {
+                radio.checked = true;
+                
+                // Remove selected styling from all options
+                paymentOptions.forEach(opt => {
+                    opt.classList.remove('border-primary', 'bg-blue-50');
+                });
+                
+                // Add selected styling
+                option.classList.add('border-primary', 'bg-blue-50');
+            });
+        });
+        
+        // Add input event listener
+        const amountInput = document.getElementById('amount');
+        amountInput.addEventListener('input', function() {
+            formatCurrency(this);
+        });
+    });
+    
+    function showPaymentSuccess() {
+        document.getElementById('success-modal').classList.remove('hidden');
+    }
+    
+    function closeModal() {
+        document.getElementById('success-modal').classList.add('hidden');
+    }
+</script>
+@endsection
