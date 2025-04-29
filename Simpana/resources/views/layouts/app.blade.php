@@ -63,7 +63,7 @@
                          <i class="fa-regular fa-comments"></i>
                          <span>Diskusi</span>
                      </a>
-                     <a href="/feedback" class="flex items-center gap-2 py-2 px-2 rounded-lg hover:bg-white/10 transition w-full">
+                     <a href="/complaint" class="flex items-center gap-2 py-2 px-2 rounded-lg hover:bg-white/10 transition w-full">
                          <i class="fa-regular fa-comment-dots"></i>
                          <span>Feedback</span>
                      </a>
