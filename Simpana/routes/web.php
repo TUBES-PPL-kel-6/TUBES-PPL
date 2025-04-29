@@ -12,6 +12,8 @@
  use App\Http\Controllers\DiscussionCommentController;
  use App\Http\Controllers\ComplaintController;
  use App\Http\Controllers\DiscussionController;
+ use App\Http\Controllers\PaymentController;
+ use App\Http\Controllers\ProfileController;
  
  // Public routes
  Route::get('/', function () {
@@ -96,7 +98,6 @@
  Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
  Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
- 
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
 // Notification routes
@@ -107,3 +108,7 @@ Route::get('/notifications/simpanan', function () {
 Route::get('/notifications/pinjaman', function () {
     return view('notifications', ['type' => 'pinjaman']);
 })->name('notifications.pinjaman');
+
+route::get ('/general', function () {
+    return view('payment-form');
+})->name('payment-form');
