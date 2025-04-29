@@ -2,9 +2,12 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SetoranController;
 
 Route::get('/register', [RegistController::class, 'showForm']);
 Route::post('/register', [RegistController::class, 'store']);
+Route::resource('setoran', SetoranController::class);
+
 
 
 Route::get('/dashboard', function () {
