@@ -82,19 +82,6 @@
      Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
  });
  
- Route::resource('loan', LoanApplicationController::class)->names([
-     'index' => 'loan.index',
-     'create' => 'loan.create',
-     'store' => 'loan.store',
-     'show' => 'loan.show',
-     'edit' => 'loan.edit',
-     'update' => 'loan.update',
-     'destroy' => 'loan.destroy',
- ]);
- 
- Route::get('/notifications', function () {
-     return view('notifications');
- });
 
  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
  Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
@@ -112,58 +99,11 @@
  
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-// Home route
-Route::get('/', function () {
-    return view('landingPage');
-});
+// Notification routes
+Route::get('/notifications/simpanan', function () {
+    return view('notifications', ['type' => 'simpanan']);
+})->name('notifications.simpanan');
 
-// Login routes
-Route::get('/login', function () {
-    return view('login'); 
-})->name('login');
-
-Route::post('/login', [RegistController::class, 'login'])->name('login.post');
-
-// Payment routes
-Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
-Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
-
-// Dashboard route - this will handle the redirection based on role
-Route::get('/dashboard', function () {
-    if (auth()->user() && auth()->user()->role === 'admin') {
-        return redirect()->route('admin.index');
-    }
-    return redirect()->route('user.dashboard');
-})->middleware('auth')->name('dashboard');
-
-// User dashboard - requires authentication
-Route::middleware(['auth'])->group(function () {
-    Route::get('/user', function () {
-        return view('layouts.dashboard');
-    })->name('user.dashboard');
-});
-
-// Admin routes - requires admin role
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
-    // Add other admin routes here
-});
-
-
-Route::resource('loan', LoanApplicationController::class)->names([
-    'index' => 'loan.index',
-    'create' => 'loan.create',
-    'store' => 'loan.store',
-    'show' => 'loan.show',
-    'edit' => 'loan.edit',
-    'update' => 'loan.update',
-    'destroy' => 'loan.destroy',
-]);
-
-Route::get('/admin-loan-applications', function () {
-    return view('admin-loan-application');
-});
-
-route::get ('/general', function () {
-    return view('payment-form');
-})->name('payment-form');
+Route::get('/notifications/pinjaman', function () {
+    return view('notifications', ['type' => 'pinjaman']);
+})->name('notifications.pinjaman');
