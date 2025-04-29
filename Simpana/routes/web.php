@@ -100,6 +100,10 @@
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
+Route::get('/admin-loan-applications', function () {
+    return view('admin-loan-application');
+});
+
 // Notification routes
 Route::get('/notifications/simpanan', function () {
     return view('notifications', ['type' => 'simpanan']);
