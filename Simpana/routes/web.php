@@ -84,19 +84,6 @@
      Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
  });
  
- Route::resource('loan', LoanApplicationController::class)->names([
-     'index' => 'loan.index',
-     'create' => 'loan.create',
-     'store' => 'loan.store',
-     'show' => 'loan.show',
-     'edit' => 'loan.edit',
-     'update' => 'loan.update',
-     'destroy' => 'loan.destroy',
- ]);
- 
- Route::get('/notifications', function () {
-     return view('notifications');
- });
 
  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
  Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
@@ -111,13 +98,18 @@
  Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
  Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
- 
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-Route::get('/admin-loan-applications', function () {
-    return view('admin-loan-application');
-});
+// Notification routes
+Route::get('/notifications/simpanan', function () {
+    return view('notifications', ['type' => 'simpanan']);
+})->name('notifications.simpanan');
+
+Route::get('/notifications/pinjaman', function () {
+    return view('notifications', ['type' => 'pinjaman']);
+})->name('notifications.pinjaman');
 
 route::get ('/general', function () {
     return view('payment-form');
 })->name('payment-form');
+
