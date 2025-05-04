@@ -1,19 +1,23 @@
 <?php
- use App\Http\Controllers\DashboardController;
- use App\Http\Controllers\RegistController;
- use App\Http\Controllers\simpPokokController;
- use Illuminate\Support\Facades\Route;
- use Illuminate\Support\Facades\Auth;
- use App\Http\Controllers\AcceptanceController;
- use App\Http\Controllers\AdminController;
- use App\Http\Controllers\UserController;
- use App\Http\Controllers\AuthController;
- use App\Http\Controllers\LoanApplicationController;
- use App\Http\Controllers\DiscussionCommentController;
- use App\Http\Controllers\ComplaintController;
- use App\Http\Controllers\DiscussionController;
- use App\Http\Controllers\PaymentController;
- use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RegistController;
+use App\Http\Controllers\simpPokokController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AcceptanceController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoanApplicationController;
+use App\Http\Controllers\DiscussionCommentController;
+use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\View;
+use App\Models\Notification;
+
+
  
  // Public routes
  Route::get('/', function () {
@@ -82,6 +86,9 @@
      Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
      Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
      Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
+ 
+     Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
+     Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
  });
  
 
@@ -109,6 +116,18 @@ Route::get('/notifications/simpanan', function () {
     return view('notifications', ['type' => 'simpanan']);
 })->name('notifications.simpanan');
 
+Route::get('/notifications', [UserController::class, 'showNotifications'])->name('notifications');
+
+// Notification routes
+Route::get('/notifications/simpanan', function () {
+    return view('notifications', ['type' => 'simpanan']);
+})->name('notifications.simpanan');
+
+Route::get('/notifications/pinjaman', function () {
+    return view('notifications', ['type' => 'pinjaman']);
+})->name('notifications.pinjaman');
+
+Route::get('/notifications/general', [UserController::class, 'showGeneralNotifications'])->name('notifications.general');
 Route::get('/notifications/pinjaman', function () {
     return view('notifications', ['type' => 'pinjaman']);
 })->name('notifications.pinjaman');
