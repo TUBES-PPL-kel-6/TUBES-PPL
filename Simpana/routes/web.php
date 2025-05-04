@@ -14,6 +14,8 @@
  use App\Http\Controllers\DiscussionController;
  use App\Http\Controllers\PaymentController;
  use App\Http\Controllers\ProfileController;
+ use App\Http\Controllers\SimpananController;
+ 
  
  // Public routes
  Route::get('/', function () {
@@ -116,3 +118,10 @@ Route::get('/notifications/pinjaman', function () {
 route::get ('/general', function () {
     return view('payment-form');
 })->name('payment-form');
+
+// Add these routes for the simpanan functionality
+Route::prefix('dashboard')->name('dashboard.')->middleware(['auth'])->group(function() {
+    Route::get('/simpanan', [SimpananController::class, 'index'])->name('simpanan');
+    Route::get('/simpanan/create', [SimpananController::class, 'create'])->name('simpanan.create');
+    Route::post('/simpanan', [SimpananController::class, 'store'])->name('simpanan.store');
+});
