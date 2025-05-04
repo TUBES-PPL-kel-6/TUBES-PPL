@@ -1,9 +1,5 @@
 <?php
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\RegistController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SetoranController;
-use App\Http\Controllers\DashboardController;
+ use App\Http\Controllers\DashboardController;
  use App\Http\Controllers\RegistController;
  use App\Http\Controllers\simpPokokController;
  use Illuminate\Support\Facades\Route;
@@ -16,6 +12,8 @@ use App\Http\Controllers\DashboardController;
  use App\Http\Controllers\DiscussionCommentController;
  use App\Http\Controllers\ComplaintController;
  use App\Http\Controllers\DiscussionController;
+ use App\Http\Controllers\PaymentController;
+ use App\Http\Controllers\ProfileController;
  
  // Public routes
  Route::get('/', function () {
@@ -32,10 +30,6 @@ use App\Http\Controllers\DashboardController;
  Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
  Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
  Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
-
- Route::get('/register', [RegistController::class, 'showForm']);
-Route::post('/register', [RegistController::class, 'store']);
-Route::resource('setoran', SetoranController::class);
 
  Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
  Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
@@ -90,19 +84,6 @@ Route::resource('setoran', SetoranController::class);
      Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
  });
  
- Route::resource('loan', LoanApplicationController::class)->names([
-     'index' => 'loan.index',
-     'create' => 'loan.create',
-     'store' => 'loan.store',
-     'show' => 'loan.show',
-     'edit' => 'loan.edit',
-     'update' => 'loan.update',
-     'destroy' => 'loan.destroy',
- ]);
- 
- Route::get('/notifications', function () {
-     return view('notifications');
- });
 
  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
  Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
@@ -117,60 +98,20 @@ Route::resource('setoran', SetoranController::class);
  Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
  Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
- 
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
-
-// Home route
-Route::get('/', function () {
-    return view('landingPage');
-});
-
-// Login routes
-Route::get('/login', function () {
-    return view('login'); 
-})->name('login');
-
-Route::post('/login', [RegistController::class, 'login'])->name('login.post');
-
-// Payment routes
-Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
-Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
-
-// Dashboard route - this will handle the redirection based on role
-Route::get('/dashboard', function () {
-    if (auth()->user() && auth()->user()->role === 'admin') {
-        return redirect()->route('admin.index');
-    }
-    return redirect()->route('user.dashboard');
-})->middleware('auth')->name('dashboard');
-
-// User dashboard - requires authentication
-Route::middleware(['auth'])->group(function () {
-    Route::get('/user', function () {
-        return view('layouts.dashboard');
-    })->name('user.dashboard');
-});
-
-// Admin routes - requires admin role
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
-    // Add other admin routes here
-});
-
-
-Route::resource('loan', LoanApplicationController::class)->names([
-    'index' => 'loan.index',
-    'create' => 'loan.create',
-    'store' => 'loan.store',
-    'show' => 'loan.show',
-    'edit' => 'loan.edit',
-    'update' => 'loan.update',
-    'destroy' => 'loan.destroy',
-]);
 
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
 });
+
+// Notification routes
+Route::get('/notifications/simpanan', function () {
+    return view('notifications', ['type' => 'simpanan']);
+})->name('notifications.simpanan');
+
+Route::get('/notifications/pinjaman', function () {
+    return view('notifications', ['type' => 'pinjaman']);
+})->name('notifications.pinjaman');
 
 route::get ('/general', function () {
     return view('payment-form');
