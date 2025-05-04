@@ -6,6 +6,7 @@ use App\Models\LoanApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class LoanApplicationController extends Controller
 {
@@ -47,51 +48,26 @@ class LoanApplicationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'loan_product' => 'required',
-            'loan_amount' => 'required',
-            'tenor' => 'required|integer|min:1|max:100',
-            'application_date' => 'required|date',
-            'first_payment_date' => 'required|date|after_or_equal:application_date',
-            'payment_method' => 'required',
-            'supporting_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
+            'loan_product' => 'required|string',
+            'loan_amount' => 'required|numeric|min:0',
+            'tenor' => 'required|integer|min:1',
+            'payment_type' => 'required|in:installment,full_payment'
         ]);
 
-        // Handle file uploads
-        $documents = [];
-        if ($request->hasFile('supporting_documents')) {
-            foreach ($request->file('supporting_documents') as $file) {
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/documents', $fileName);
-
-                $documents[] = [
-                    'file_name' => $fileName,
-                    'original_name' => $file->getClientOriginalName(),
-                    'file_path' => 'storage/documents/' . $fileName
-                ];
-            }
-        }
-
-        // Format loan amount - remove dots and convert to integer
-        $loanAmount = str_replace('.', '', $request->loan_amount);
-        $loanAmount = (int) $loanAmount;
-
-        // Create loan application
-        $loanApplication = LoanApplication::create([
+        $loan = LoanApplication::create([
             'user_id' => Auth::id(),
             'loan_product' => $request->loan_product,
-            'application_note' => $request->application_note,
-            'loan_amount' => $loanAmount,
-            'tenor' => (int) $request->tenor,
-            'application_date' => $request->application_date,
-            'first_payment_date' => $request->first_payment_date,
-            'payment_method' => $request->payment_method,
-            'collateral' => $request->collateral,
-            'documents' => $documents,
-            'status' => 'pending'
+            'loan_amount' => $request->loan_amount,
+            'tenor' => $request->tenor,
+            'payment_type' => $request->payment_type,
+            'application_date' => Carbon::now(),
+            'first_payment_date' => Carbon::now()->addMonth(),
+            'status' => 'pending',
+            'remaining_amount' => $request->loan_amount,
+            'remaining_installments' => $request->payment_type === 'installment' ? $request->tenor : 1
         ]);
 
-        return redirect()->route('user.dashboard')
-            ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
+        return redirect()->route('loan.index')->with('success', 'Pengajuan pinjaman berhasil dibuat.');
     }
 
     /**

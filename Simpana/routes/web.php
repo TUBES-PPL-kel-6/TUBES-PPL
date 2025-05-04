@@ -11,6 +11,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoanApplicationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\EarlyRepaymentController;
 
 
 // Public routes
@@ -69,6 +70,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
     Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
     Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+
+    // Early Repayment Routes
+    Route::get('/loan/{loan}/early-repayment', [EarlyRepaymentController::class, 'show'])->name('early-repayment.show');
+    Route::post('/loan/{loan}/early-repayment/process', [EarlyRepaymentController::class, 'process'])->name('early-repayment.process');
 });
 
 // Admin routes - requires admin role
