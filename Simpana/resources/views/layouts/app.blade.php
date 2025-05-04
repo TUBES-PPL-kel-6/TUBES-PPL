@@ -104,10 +104,14 @@
              </div>
              <div class="flex items-center gap-4">
                  <div class="relative">
-                 <button class="text-gray-500 hover:text-primary">
+                 <a href="{{ route('notifications') }}" class="relative text-gray-500 hover:text-primary">
                          <i class="fa-solid fa-bell"></i>
-                     </button>
-                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                     </a>
+                     @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
+                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                             {{ $unreadNotificationCount }}
+                         </span>
+                     @endif
                  </div>
                  <div class="flex items-center gap-2">
                  <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
