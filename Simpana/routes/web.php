@@ -72,6 +72,7 @@
      Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
      Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
      Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+     Route::get('/loan/{loanApplication}/download-approval-letter', [LoanApplicationController::class, 'downloadApprovalLetter'])->name('loan.downloadApprovalLetter');
  });
  
  // Admin routes - requires admin role
