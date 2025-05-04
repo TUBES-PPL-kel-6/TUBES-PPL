@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi - Simpana</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Remove the extra script tag -->
     <script>
         tailwind.config = {
             theme: {
@@ -36,11 +37,12 @@
             box-shadow: 0 4px 6px -1px rgba(140, 20, 20, 0.1), 0 2px 4px -1px rgba(140, 20, 20, 0.06);
         }
     </style>
+    <!-- Move the function outside the nested script tags -->
     <script>
         function nextStep() {
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
+            const confirmPassword = document.getElementById("password_confirmation").value;
 
             if (!email || !password || !confirmPassword) {
                 alert("Harap isi email dan password sebelum melanjutkan.");
@@ -52,21 +54,23 @@
                 return;
             }
 
-            document.getElementById("emailForm").style.display = "none";
-            document.getElementById("dataDiriForm").style.display = "block";
-
             document.getElementById("emailHidden").value = email;
             document.getElementById("passwordHidden").value = password;
+            document.getElementById("passwordConfirmationHidden").value = confirmPassword;
+
+            document.getElementById("emailForm").style.display = "none";
+            document.getElementById("dataDiriForm").style.display = "block";
         }
     </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 bg-gray-50">
-    <div class="container max-w-md mx-auto py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-primary mb-2 flex justify-center items-center gap-2">
-                <i class="fa-solid fa-landmark"></i> SIMPANA
-            </h1>
-            <p class="text-gray-600">Registrasi Anggota Koperasi</p>
+    <div class="w-full max-w-md flex-grow flex flex-col justify-center">
+        <div class="text-center mb-5">
+            <div class="flex justify-center items-center gap-0 mb-1">
+                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">  
+                <span class="text-4xl font-bold text-primary -ml-1">SIMPANA</span>
+            </div>
+            <p class="text-gray-600 text-base">Please sign in to your account</p>
         </div>
 
         {{-- Feedback Pesan --}}
@@ -92,12 +96,12 @@
             </div>
         @endif
 
-        <!-- STEP 1: Email & Password -->
+        <!-- Email & Password -->
         <form id="emailForm" onsubmit="event.preventDefault(); nextStep();" class="bg-white shadow-xl rounded-2xl px-8 pt-8 pb-6 border border-gray-200">
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Email:</label>
                 <div class="relative">
-                    <input type="email" id="email" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="email" id="email" name="email" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-envelope text-gray-400"></i>
                     </div>
@@ -107,7 +111,7 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Password:</label>
                 <div class="relative">
-                    <input type="password" id="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="password" id="password" name="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-lock text-gray-400"></i>
                     </div>
@@ -117,7 +121,7 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Konfirmasi Password:</label>
                 <div class="relative">
-                    <input type="password" id="confirmPassword" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <i class="fa-solid fa-lock-open text-gray-400"></i>
                     </div>
@@ -129,12 +133,13 @@
             </button>
         </form>
 
-        <!-- STEP 2: Data Diri -->
+        <!-- Data Diri -->
         <form id="dataDiriForm" action="{{ url('/register') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-xl rounded-2xl px-8 pt-8 pb-6 border border-gray-200 mt-6" style="display: none;">
             @csrf
             <!-- Hidden email & password -->
             <input type="hidden" name="email" id="emailHidden">
             <input type="hidden" name="password" id="passwordHidden">
+            <input type="hidden" name="password_confirmation" id="passwordConfirmationHidden">  <!-- Changed this line -->
 
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Nama:</label>
@@ -189,7 +194,7 @@
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 Sudah memiliki akun?
-                <a href="#" class="font-semibold text-primary hover:text-secondary transition-colors duration-200">
+                <a href="{{ route('login') }}" class="font-semibold text-primary hover:text-secondary transition-colors duration-200">
                     Masuk
                 </a>
             </p>

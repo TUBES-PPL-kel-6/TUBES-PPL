@@ -3,85 +3,87 @@
 @section('content')
 <!-- Welcome Section -->
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, John!</h1>
-    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal 13 April 2025</p>
+    <h1 class="text-2xl font-bold text-gray-800">Selamat datang</h1>
+    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal</p>
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Card 1 -->
-    <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
-        <div class="absolute -top-4 left-4 bg-gradient-to-br from-primary to-secondary shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-wallet text-white"></i>
+<div class="w-full overflow-x-auto px-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 min-w-[600px]">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
+            <!-- Floating Icon -->
+            <div class="absolute -top-4 left-4 bg-gradient-to-br from-primary to-secondary shadow-md rounded-xl p-3">
+                <i class="fa-solid fa-wallet text-white"></i>
+            </div>
+
+            <!-- Text Content -->
+            <div class="text-right">
+                <p class="text-gray-500 text-sm font-medium">Total Simpanan</p>
+                <h2 class="text-3xl font-bold text-slate-800">Rp 53.250.000</h2>
+            </div>
+
+            <div class="mt-4 text-right">
+                <span class="text-green-500 font-semibold text-sm">+12%</span>
+                <span class="text-gray-400 text-sm">dari bulan lalu</span>
+            </div>
         </div>
 
-        <!-- Text Content -->
-        <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Total Simpanan</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp 53.250.000</h2>
+        <!-- Card 2 -->
+        <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
+            <!-- Floating Icon -->
+            <div class="absolute -top-4 left-4 bg-gradient-to-br from-blue-600 to-blue-800 shadow-md rounded-xl p-3">
+                <i class="fa-solid fa-money-bill-wave text-white"></i>
+            </div>
+
+            <!-- Text Content -->
+            <div class="text-right">
+                <p class="text-gray-500 text-sm font-medium">Total Pinjaman</p>
+                <h2 class="text-3xl font-bold text-slate-800">Rp 15.000.000</h2>
+            </div>
+
+            <div class="mt-4 text-right">
+                <span class="text-red-500 font-semibold text-sm">-8%</span>
+                <span class="text-gray-400 text-sm">dari bulan lalu</span>
+            </div>
         </div>
 
-        <div class="mt-4 text-right">
-            <span class="text-green-500 font-semibold text-sm">+12%</span>
-            <span class="text-gray-400 text-sm">dari bulan lalu</span>
-        </div>
-    </div>
+        <!-- Card 3 -->
+        <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
+            <!-- Floating Icon -->
+            <div class="absolute -top-4 left-4 bg-gradient-to-br from-green-600 to-green-800 shadow-md rounded-xl p-3">
+                <i class="fa-solid fa-chart-line text-white"></i>
+            </div>
 
-    <!-- Card 2 -->
-    <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
-        <div class="absolute -top-4 left-4 bg-gradient-to-br from-blue-600 to-blue-800 shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-money-bill-wave text-white"></i>
-        </div>
+            <!-- Text Content -->
+            <div class="text-right">
+                <p class="text-gray-500 text-sm font-medium">Keuntungan</p>
+                <h2 class="text-3xl font-bold text-slate-800">Rp 1.850.000</h2>
+            </div>
 
-        <!-- Text Content -->
-        <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Total Pinjaman</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp 15.000.000</h2>
-        </div>
-
-        <div class="mt-4 text-right">
-            <span class="text-red-500 font-semibold text-sm">-8%</span>
-            <span class="text-gray-400 text-sm">dari bulan lalu</span>
-        </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
-        <div class="absolute -top-4 left-4 bg-gradient-to-br from-green-600 to-green-800 shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-chart-line text-white"></i>
+            <div class="mt-4 text-right">
+                <span class="text-green-500 font-semibold text-sm">+23%</span>
+                <span class="text-gray-400 text-sm">dari bulan lalu</span>
+            </div>
         </div>
 
-        <!-- Text Content -->
-        <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Keuntungan</p>
-            <h2 class="text-3xl font-bold text-slate-800">Rp 1.850.000</h2>
-        </div>
+        <!-- Card 4 -->
+        <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
+            <!-- Floating Icon -->
+            <div class="absolute -top-4 left-4 bg-gradient-to-br from-amber-500 to-amber-700 shadow-md rounded-xl p-3">
+                <i class="fa-solid fa-clock text-white"></i>
+            </div>
 
-        <div class="mt-4 text-right">
-            <span class="text-green-500 font-semibold text-sm">+23%</span>
-            <span class="text-gray-400 text-sm">dari bulan lalu</span>
-        </div>
-    </div>
+            <!-- Text Content -->
+            <div class="text-right">
+                <p class="text-gray-500 text-sm font-medium">Sisa Angsuran</p>
+                <h2 class="text-3xl font-bold text-slate-800">12 <span class="text-lg">bulan</span></h2>
+            </div>
 
-    <!-- Card 4 -->
-    <div class="bg-white rounded-xl shadow-md p-5 relative overflow-hidden">
-        <!-- Floating Icon -->
-        <div class="absolute -top-4 left-4 bg-gradient-to-br from-amber-500 to-amber-700 shadow-md rounded-xl p-3">
-            <i class="fa-solid fa-clock text-white"></i>
-        </div>
-
-        <!-- Text Content -->
-        <div class="text-right">
-            <p class="text-gray-500 text-sm font-medium">Sisa Angsuran</p>
-            <h2 class="text-3xl font-bold text-slate-800">12 <span class="text-lg">bulan</span></h2>
-        </div>
-
-        <div class="mt-4 text-right">
-            <span class="text-blue-500 font-semibold text-sm">On Track</span>
-            <span class="text-gray-400 text-sm">jatuh tempo bulanan</span>
+            <div class="mt-4 text-right">
+                <span class="text-blue-500 font-semibold text-sm">On Track</span>
+                <span class="text-gray-400 text-sm">jatuh tempo bulanan</span>
+            </div>
         </div>
     </div>
 </div>

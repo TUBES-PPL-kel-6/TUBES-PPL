@@ -15,10 +15,10 @@ class RegistController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
+        // Validasi
         $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|confirmed',  // This expects password_confirmation field
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'no_telp' => 'required|numeric',
@@ -26,21 +26,23 @@ class RegistController extends Controller
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
-        // Upload file KTP
+
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
         // Simpan ke database
-        User::create([
+        $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_telp' => $request->no_telp,
             'nik' => $request->nik,
-            'ktp' => $ktpPath
+            'ktp' => $ktpPath,
+            'status' => 'pending' // set default status
         ]);
+        Auth::login($user);
+        return redirect()->route('payment.show')->with('success', 'Registration successful!');
 
-        return redirect('/')->with('success', 'Pendaftaran berhasil!');
     }
 
     public function login(Request $request)
@@ -55,7 +57,13 @@ class RegistController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/user') // Ganti dengan halaman tujuan
+            // Check user role and redirect accordingly
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.index');
+            }
+
+            // Default redirect for regular users
+            return redirect()->route('user.dashboard')
                 ->with('success', 'Login berhasil!');
         }
 
@@ -64,5 +72,21 @@ class RegistController extends Controller
             'email' => 'Email atau password salah.',
         ])->withInput();
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
+    }
+
+    public function showPaymentPage()
+    {
+        $user = Auth::user(); // Get the authenticated user
+        return view('payment', compact('user')); // Pass the user to the payment view
+    }
+
 
 }
