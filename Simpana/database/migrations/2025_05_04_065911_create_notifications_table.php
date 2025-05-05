@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('simpanans', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('jenis_simpanan', ['pokok', 'wajib', 'sukarela']);
-            $table->decimal('jumlah', 15, 2);
-            $table->date('tanggal');
-            $table->string('keterangan')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->string('type')->default('reminder');
+            $table->text('message');
+            $table->boolean('is_read')->default(false);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('simpanans');
+        Schema::dropIfExists('notifications');
     }
 };
