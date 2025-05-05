@@ -38,7 +38,7 @@
                  </div>
              </div>
          </div>
-         <div class="flex-1 px-4 pt-6 space-y-1">
+         <div class="flex-1 px-2 pt-6 space-y-1">
          <a href="{{ route('dashboard') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
          <i class="fa-solid fa-house-chimney"></i> <span class="sidebar-text">Dashboard</span>
          </a>
