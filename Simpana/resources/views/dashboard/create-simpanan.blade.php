@@ -11,21 +11,21 @@
                 </div>
                 <div class="p-5 border-t border-gray-200 space-y-3">
                     <div class="flex items-center text-sm">
-                        <span class="text-gray-500 w-24">Nomor Anggota</span>
-                        <span class="font-medium">AG001024</span>
+                        <span class="text-gray-500 w-24">Nama User</span>
+                        <span class="font-medium">{{ $user->nama }}</span>
                     </div>
                     <div class="flex items-center text-sm">
-                        <span class="text-gray-500 w-24">Nama</span>
-                        <span class="font-medium">John Doe</span>
+                        <span class="text-gray-500 w-24">No.HP</span>
+                        <span class="font-medium">{{ $user->no_telp }}</span>
                     </div>
                     <div class="flex items-center text-sm">
-                        <span class="text-gray-500 w-24">Status</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Aktif</span>
+                        <span class="text-gray-500 w-24">Alamat</span>
+                        <span class="font-medium">{{ $user->alamat }}</span>
                     </div>
                     <div class="mt-4 pt-4 border-t border-gray-100">
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500">Total Simpanan</span>
-                            <span class="font-bold text-primary">Rp4.835.207</span>
+                            <span class="font-bold text-primary">Rp{{ number_format($totalSimpanan, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>
@@ -36,8 +36,9 @@
                 <div class="bg-primary text-white p-5">
                     <!-- Payment Type Tabs -->
                     <div class="flex mb-3 space-x-2">
-                        <a href="#" onclick="switchPaymentType('pokok')" id="tab-pokok" class="px-4 py-1 rounded-full text-sm bg-white text-primary font-medium">Simpanan Pokok</a>
-                        <a href="#" onclick="switchPaymentType('sukarela')" id="tab-sukarela" class="px-4 py-1 rounded-full text-sm bg-opacity-20 bg-white text-white hover:bg-opacity-30 transition">Simpanan Sukarela</a>
+                        <a href="#" onclick="switchPaymentType('pokok')" id="tab-pokok" class="px-4 py-1 rounded-full text-sm {{ $type == 'pokok' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Pokok</a>
+                        <a href="#" onclick="switchPaymentType('wajib')" id="tab-wajib" class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Wajib</a>
+                        <a href="#" onclick="switchPaymentType('sukarela')" id="tab-sukarela" class="px-4 py-1 rounded-full text-sm {{ $type == 'sukarela' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Sukarela</a>
                     </div>
                     
                     <h1 class="text-3xl font-bold" id="payment-title">Simpanan Pokok</h1>
@@ -47,17 +48,17 @@
                 </div>
 
                 <div class="p-6">
-                    <form action="#" method="POST" id="payment-form">
+                    <form action="{{ route('dashboard.simpanan.store') }}" method="POST" id="payment-form">
+                        @csrf
+                        <input type="hidden" name="jenis_simpanan" id="jenis_simpanan" value="pokok">
+                        
                         <!-- Amount Input Section -->
                         <div class="mb-6">
                             <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nominal Simpanan</label>
                             <div class="relative" id="amount-container">
-                                <input type="text" id="amount" name="amount" value="50.000" 
+                                <input type="text" id="amount" name="jumlah" value="50000" 
                                        class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed" 
                                        readonly>
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500">Rp</span>
-                                </div>
                             </div>
                             <p class="text-xs text-gray-500 mt-1" id="amount-description">Simpanan pokok memiliki jumlah tetap sesuai ketentuan.</p>
                         </div>
@@ -91,7 +92,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Summary Section -->
                         <div class="bg-gray-50 p-4 rounded-lg mb-6">
                             <div class="flex items-center justify-between mb-2">
@@ -114,7 +114,8 @@
 
                         <!-- Submit Button -->
                         <div class="flex justify-end">
-                            <button type="button" onclick="showPaymentSuccess()" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition">
+                            <a href="{{ route('dashboard.simpanan') }}" class="px-4 py-2 bg-gray-200 rounded-md mr-2 hover:bg-gray-300">Batal</a>
+                            <button type="submit" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition">
                                 Bayar Sekarang
                             </button>
                         </div>
@@ -154,12 +155,22 @@
         const titleElement = document.getElementById('payment-title');
         const descriptionElement = document.getElementById('payment-description');
         const amountElement = document.getElementById('amount');
-        const amountContainer = document.getElementById('amount-container');
+        const jenisSimpananInput = document.getElementById('jenis_simpanan');
         const amountDescription = document.getElementById('amount-description');
         const summaryAmount = document.getElementById('summary-amount');
         const summaryTotal = document.getElementById('summary-total');
         const tabPokok = document.getElementById('tab-pokok');
+        const tabWajib = document.getElementById('tab-wajib');
         const tabSukarela = document.getElementById('tab-sukarela');
+        
+        // Set the hidden input value
+        jenisSimpananInput.value = type;
+        
+        // Reset all tabs
+        [tabPokok, tabWajib, tabSukarela].forEach(tab => {
+            tab.classList.remove('bg-white', 'text-primary');
+            tab.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+        });
         
         if (type === 'pokok') {
             // Update title and description
@@ -167,7 +178,7 @@
             descriptionElement.textContent = 'Setoran simpanan pokok dengan jumlah tetap.';
             
             // Update amount input
-            amountElement.value = '50.000';
+            amountElement.value = '50000';
             amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
             amountElement.setAttribute('readonly', true);
             amountDescription.textContent = 'Simpanan pokok memiliki jumlah tetap sesuai ketentuan.';
@@ -176,12 +187,28 @@
             summaryAmount.textContent = 'Rp50.000';
             summaryTotal.textContent = 'Rp50.000';
             
-            // Update tabs
+            // Update tab
             tabPokok.classList.add('bg-white', 'text-primary');
             tabPokok.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
-            tabSukarela.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
-            tabSukarela.classList.remove('bg-white', 'text-primary');
-        } else {
+        } else if (type === 'wajib') {
+            // Update title and description
+            titleElement.textContent = 'Simpanan Wajib';
+            descriptionElement.textContent = 'Simpanan wajib bulanan dengan jumlah tetap.';
+            
+            // Update amount input
+            amountElement.value = '50000';
+            amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
+            amountElement.setAttribute('readonly', true);
+            amountDescription.textContent = 'Simpanan wajib sebesar Rp50.000 per bulan.';
+            
+            // Update summary
+            summaryAmount.textContent = 'Rp50.000';
+            summaryTotal.textContent = 'Rp50.000';
+            
+            // Update tab
+            tabWajib.classList.add('bg-white', 'text-primary');
+            tabWajib.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
+        } else { // sukarela
             // Update title and description
             titleElement.textContent = 'Simpanan Sukarela';
             descriptionElement.textContent = 'Pilih jumlah setoran simpanan sukarela sesuai keinginan Anda.';
@@ -196,11 +223,9 @@
             summaryAmount.textContent = 'Rp0';
             summaryTotal.textContent = 'Rp0';
             
-            // Update tabs
+            // Update tab
             tabSukarela.classList.add('bg-white', 'text-primary');
             tabSukarela.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
-            tabPokok.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
-            tabPokok.classList.remove('bg-white', 'text-primary');
         }
     }
     
@@ -264,6 +289,10 @@
         amountInput.addEventListener('input', function() {
             formatCurrency(this);
         });
+
+        // Initialize the current payment type
+        const currentType = '{{ $type }}';
+        switchPaymentType(currentType);
     });
     
     function showPaymentSuccess() {
