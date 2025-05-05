@@ -5,7 +5,7 @@
      <meta charset="UTF-8">
      <title>Simpana Dashboard</title>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
+
      <!-- Tailwind -->
      <script src="https://cdn.tailwindcss.com"></script>
      <script>
@@ -33,12 +33,12 @@
          <div class="p-4 font-bold text-2xl border-b border-white/20">
              <div class="flex items-center justify-start h-20">
                  <div class="flex items-center gap-0">
-                     <img src="{{ asset('images/Simpana white.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3"> 
+                     <img src="{{ asset('images/Simpana white.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">
                      <span class="sidebar-text -ml-1">SIMPANA</span>
                  </div>
              </div>
          </div>
-         <div class="flex-1 px-4 pt-6 space-y-1">
+         <div class="flex-1 px-2 pt-6 space-y-1">
          <a href="{{ route('dashboard') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
          <i class="fa-solid fa-house-chimney"></i> <span class="sidebar-text">Dashboard</span>
          </a>
@@ -48,9 +48,9 @@
          <a href="{{ route('dashboard.simpanan.create') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
          <i class="fa-solid fa-money-bill-transfer"></i> <span class="sidebar-text">Setor Simpanan</span>
          </a>
-         <a href="#" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+         <a href="{{ route('loan.create') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
          <i class="fa-solid fa-file-invoice-dollar"></i> <span class="sidebar-text">Pinjaman</span>
-             </a>
+         </a>
              <!-- Dropdown Discussion & Feedback -->
              <div x-data="{ open: false }">
                  <button @click="open = !open" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition w-full">
@@ -69,7 +69,7 @@
                      </a>
                  </div>
              </div>
- 
+
              <div class="pt-4 pb-2 px-4 text-xs uppercase font-bold text-white/60 sidebar-text">
                  Akun
              </div>
@@ -88,10 +88,10 @@
          </div>
          <div class="p-4 text-xs text-center opacity-70 border-t border-white/10 sidebar-text">© 2025 Simpana</div>
      </aside>
- 
+
      <!-- Main -->
      <div id="main-content" class="flex-1 ml-64 min-h-screen flex flex-col transition-all duration-300 ease-in-out">
- 
+
          <!-- Topbar -->
          <header class="flex items-center justify-between bg-white px-6 py-4 border-b border-gray-200 shadow-sm sticky top-0 z-5">
              <div class="flex items-center gap-2">
@@ -104,10 +104,14 @@
              </div>
              <div class="flex items-center gap-4">
                  <div class="relative">
-                 <button class="text-gray-500 hover:text-primary">
+                 <a href="{{ route('notifications') }}" class="relative text-gray-500 hover:text-primary">
                          <i class="fa-solid fa-bell"></i>
-                     </button>
-                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                     </a>
+                     @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
+                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                             {{ $unreadNotificationCount }}
+                         </span>
+                     @endif
                  </div>
                  <div class="flex items-center gap-2">
                  <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
@@ -130,24 +134,24 @@
              @yield('content')
          </main>
          </div>
- 
+
      <script>
          // toggle sidebar
          document.getElementById('sidebar-toggle').addEventListener('click', function() {
              const sidebar = document.getElementById('sidebar');
              const mainContent = document.getElementById('main-content');
              const sidebarTexts = document.querySelectorAll('.sidebar-text');
- 
+
              // Cek sidebar ketutup
              const isCollapsed = sidebar.classList.contains('w-16');
- 
+
              if (isCollapsed) {
                  // Expand sidebar
                  sidebar.classList.remove('w-16');
                  sidebar.classList.add('w-64');
                  mainContent.classList.remove('ml-16');
                  mainContent.classList.add('ml-64');
- 
+
                  // Show text
                  sidebarTexts.forEach(text => {
                      text.classList.remove('hidden');
@@ -158,14 +162,14 @@
                  sidebar.classList.add('w-16');
                  mainContent.classList.remove('ml-64');
                  mainContent.classList.add('ml-16');
- 
+
                  // Hide text
                  sidebarTexts.forEach(text => {
                      text.classList.add('hidden');
                  });
              }
          });
- 
+
          // tes toggle screen yang beda ukuran
          document.getElementById('menu-toggle')?.addEventListener('click', function() {
              const sidebar = document.querySelector('aside');
