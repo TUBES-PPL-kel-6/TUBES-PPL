@@ -18,16 +18,16 @@ use Illuminate\Support\Facades\View;
 use App\Models\Notification;
 
 
- 
+
  // Public routes
  Route::get('/', function () {
      return view('welcome');
  });
- 
+
  Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
  Route::post('/login', [AuthController::class, 'login']);
  Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
- 
+
  Route::get('/register', [RegistController::class, 'showForm'])->name('register');
  Route::post('/register', [RegistController::class, 'store']);
 
@@ -37,24 +37,24 @@ use App\Models\Notification;
 
  Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
  Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
- 
- 
+
+
  // Home route
  Route::get('/', function () {
      return view('landingPage');
  });
- 
+
  // Login routes
  Route::get('/login', function () {
      return view('login');
  })->name('login');
- 
+
  Route::post('/login', [RegistController::class, 'login'])->name('login.post');
- 
+
  // Payment routes
  Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
  Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
- 
+
  // Dashboard route - this will handle the redirection based on role
  Route::get('/dashboard', function () {
      if (auth()->user() && auth()->user()->role === 'admin') {
@@ -62,13 +62,13 @@ use App\Models\Notification;
      }
      return redirect()->route('user.dashboard');
  })->middleware('auth')->name('dashboard');
- 
+
  // User dashboard - requires authentication
  Route::middleware(['auth'])->group(function () {
      Route::get('/user', function () {
          return view('layouts.dashboard');
      })->name('user.dashboard');
- 
+
      // Loan Application Routes
      Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
      Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
@@ -77,20 +77,20 @@ use App\Models\Notification;
      Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
      Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
  });
- 
+
  // Admin routes - requires admin role
  Route::middleware(['auth', 'admin'])->group(function () {
      Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
- 
+
      // Loan Approval Routes
      Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
      Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
      Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
- 
+
      Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
      Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
  });
- 
+
 
  Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
  Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
