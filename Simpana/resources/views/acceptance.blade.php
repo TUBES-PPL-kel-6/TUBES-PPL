@@ -198,85 +198,56 @@
             }
         }
 
-        /* Updated Notification Styles */
-        .toast-container {
+        /* Simple Notification Styles */
+        .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1060;
-        }
-
-        .toast {
-            min-width: 350px;
-            background: white;
-            border-left: 5px solid;
-            margin-bottom: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .toast.success {
-            border-left-color: #28a745;
-        }
-
-        .toast.error {
-            border-left-color: #dc3545;
-        }
-
-        .toast-header {
-            background: none;
-            border: none;
-            padding: 15px 15px 5px 15px;
-        }
-
-        .toast-body {
-            padding: 5px 15px 15px 15px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
             font-size: 14px;
-            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
 
-        .toast i {
+        .notification.success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .notification.error {
+            background: linear-gradient(45deg, #dc3545, #f86781);
+        }
+
+        .notification i {
             font-size: 20px;
-            margin-right: 8px;
         }
 
-        .toast.success i {
-            color: #28a745;
-        }
-
-        .toast.error i {
-            color: #dc3545;
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
         }
     </style>
 </head>
 <body>
-    <!-- Toast Container -->
-    <div class="toast-container">
-        @if(session('success'))
-            <div class="toast success" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <strong class="me-auto">Sukses</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
+    <!-- Notifications -->
+    @if(session('success'))
+        <div class="notification success" id="notification">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+    @endif
 
-        @if(session('error'))
-            <div class="toast error" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <strong class="me-auto">Peringatan</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ session('error') }}
-                </div>
-            </div>
-        @endif
-    </div>
+    @if(session('error'))
+        <div class="notification error" id="notification">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ session('error') }}
+        </div>
+    @endif
 
     <div class="container-fluid">
         <div class="row">
@@ -455,19 +426,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize all toasts
-        document.addEventListener('DOMContentLoaded', function() {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-            var toastList = toastElList.map(function(toastEl) {
-                return new bootstrap.Toast(toastEl, {
-                    autohide: true,
-                    delay: 5000
-                });
-            });
-            
-            // Show all toasts
-            toastList.forEach(toast => toast.show());
-        });
+        // Simple auto-hide notification
+        setTimeout(function() {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 3000);
 
         function toggleDetails(el) {
             const details = el.nextElementSibling;

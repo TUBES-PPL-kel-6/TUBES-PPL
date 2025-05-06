@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Welcome -->
+<!-- Welcome Section -->
 <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-800">Selamat datang, {{ $user->nama ?? $user->name }}!</h1>
-    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal {{ date('d F Y') }}</p>
+    <h1 class="text-2xl font-bold text-gray-800">Selamat datang</h1>
+    <p class="text-gray-600">Berikut ringkasan keuangan Anda per tanggal</p>
 </div>
 
 <!-- Stats Cards -->
@@ -88,8 +88,9 @@
     </div>
 </div>
 
+<!-- Recent Transactions and Quick Actions -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Recent -->
+    <!-- Recent Transactions -->
     <div class="bg-white p-6 rounded-xl shadow-md col-span-2">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-lg text-gray-800">Transaksi Terbaru</h3>
@@ -175,6 +176,7 @@
         </div>
     </div>
 
+    <!-- Quick Actions and Notifications -->
     <div class="space-y-6">
         <!-- Quick Actions -->
         <div class="bg-white p-6 rounded-xl shadow-md">
@@ -207,7 +209,7 @@
             </div>
         </div>
 
-        <!-- Notif -->
+        <!-- Notifications -->
         <div class="bg-white p-6 rounded-xl shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg text-gray-800">Pemberitahuan</h3>

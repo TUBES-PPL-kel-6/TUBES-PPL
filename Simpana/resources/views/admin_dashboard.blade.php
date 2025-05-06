@@ -91,11 +91,14 @@ use Illuminate\Support\Facades\Auth;
             <a href="#" class="active">Dashboard</a>
             <a href="#">Riwayat Simpanan</a>
             <a href="#">Setor Simpanan</a>
-            <a href="#">Pinjaman</a>
+            <a href="{{ route('loanApproval') }}">Pinjaman</a>
             <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
             <a href="#">Profil</a>
             <a href="#">Pengaturan</a>
-            <a href="#">Keluar</a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
 
         <div class="main-content">

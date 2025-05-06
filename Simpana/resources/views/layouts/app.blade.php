@@ -1,33 +1,33 @@
 {{-- DASHBOARD --}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Simpana Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8C1414',
-                        secondary: '#641010',
-                        gold: '#FFD500',
-                        greenish: '#87CE45',
-                        white: '#FFFFFF'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Font  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-</head>
-<body class="flex bg-gray-50 text-gray-800 font-sans">
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <title>Simpana Dashboard</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+     <!-- Tailwind -->
+     <script src="https://cdn.tailwindcss.com"></script>
+     <script>
+         tailwind.config = {
+             theme: {
+                 extend: {
+                     colors: {
+                         primary: '#8C1414',
+                         secondary: '#641010',
+                         gold: '#FFD500',
+                         greenish: '#87CE45',
+                         white: '#FFFFFF'
+                     }
+                 }
+             }
+         }
+     </script>
+     <!-- Font  -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+ </head>
+ <body class="flex bg-gray-50 text-gray-800 font-sans">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-primary text-white min-h-screen flex flex-col fixed shadow-lg z-10 transition-all duration-300 ease-in-out">
         <div class="p-4 font-bold text-2xl border-b border-white/20">
@@ -37,6 +37,13 @@
                     <span class="sidebar-text -ml-1">SIMPANA</span>
                 </div>
             </div>
+=========
+    <aside class="w-64 bg-primary text-white h-screen fixed left-0 top-0 flex flex-col">
+        <div class="p-4">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-landmark"></i> SIMPANA
+            </h1>
+>>>>>>>>> Temporary merge branch 2
         </div>
         <div class="flex-1 px-4 pt-6 space-y-1">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg bg-white text-primary font-medium transition">
@@ -133,6 +140,7 @@
     </div>
 
     <script>
+<<<<<<<<< Temporary merge branch 1
         // toggle sidebar
         document.getElementById('sidebar-toggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
@@ -171,7 +179,12 @@
         document.getElementById('menu-toggle')?.addEventListener('click', function() {
             const sidebar = document.querySelector('aside');
             sidebar.classList.toggle('-translate-x-full');
-
+=========
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            document.querySelector('aside').classList.toggle('-translate-x-full');
+            document.getElementById('main-content').classList.toggle('ml-0');
+>>>>>>>>> Temporary merge branch 2
         });
     </script>
 </body>
