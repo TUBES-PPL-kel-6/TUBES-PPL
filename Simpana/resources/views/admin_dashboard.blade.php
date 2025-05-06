@@ -90,7 +90,7 @@ use Illuminate\Support\Facades\Auth;
             <h4>SIMPANA</h4>
             <a href="#" class="active">Dashboard</a>
             <a href="#">Riwayat Simpanan</a>
-            <a href="#">Setor Simpanan</a>
+            <a href="{{ route('admin.setoran.index') }}">Setor Simpanan</a>
             <a href="#">Pinjaman</a>
             <a href="{{ route('admin.users') }}">List User</a>
             <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>

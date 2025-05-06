@@ -17,6 +17,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Models\Notification;
+use App\Http\Controllers\SetoranController;
 
  // Public routes
  Route::get('/', function () {
@@ -88,6 +89,18 @@ use App\Models\Notification;
 
      Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
      Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
+     
+     Route::resource('setoran', \App\Http\Controllers\Admin\SetoranController::class, [
+         'names' => [
+             'index' => 'admin.setoran.index',
+             'create' => 'admin.setoran.create',
+             'store' => 'admin.setoran.store',
+             'show' => 'admin.setoran.show',
+             'edit' => 'admin.setoran.edit',
+             'update' => 'admin.setoran.update',
+             'destroy' => 'admin.setoran.destroy',
+         ]
+     ]);
  });
 
 
