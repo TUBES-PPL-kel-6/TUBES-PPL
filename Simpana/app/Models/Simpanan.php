@@ -14,7 +14,6 @@ class Simpanan extends Model
         'jenis_simpanan', // pokok, wajib, sukarela
         'jumlah',
         'tanggal',
-        'status', // pending, approved, rejected
         'keterangan'
     ];
 
@@ -27,9 +26,4 @@ class Simpanan extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    public function transaksi()
-    {
-        return $this->hasOne(Transaksi::class);
-    }
-} 
+}
