@@ -106,6 +106,7 @@ use App\Models\Notification;
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
+ 
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
 });
@@ -130,6 +131,7 @@ Route::get('/notifications/general', [UserController::class, 'showGeneralNotific
 Route::get('/notifications/pinjaman', function () {
     return view('notifications', ['type' => 'pinjaman']);
 })->name('notifications.pinjaman');
+
 
 route::get ('/general', function () {
     return view('payment-form');
