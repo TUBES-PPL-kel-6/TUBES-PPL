@@ -72,6 +72,7 @@
      Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
      Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
      Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+     Route::get('/loan/{loanApplication}/download-approval-letter', [LoanApplicationController::class, 'downloadApprovalLetter'])->name('loan.downloadApprovalLetter');
  });
  
  // Admin routes - requires admin role
@@ -100,7 +101,6 @@
  Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
  Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
- 
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
 });
@@ -113,7 +113,6 @@ Route::get('/notifications/simpanan', function () {
 Route::get('/notifications/pinjaman', function () {
     return view('notifications', ['type' => 'pinjaman']);
 })->name('notifications.pinjaman');
-
 
 route::get ('/general', function () {
     return view('payment-form');
