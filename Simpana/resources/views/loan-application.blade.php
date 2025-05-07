@@ -146,54 +146,6 @@
              </div>
          </form>
      </div>
- 
-     <!-- Surat Persetujuan Pinjaman Section -->
-     @if(isset($latestLoan) && in_array($latestLoan->status, ['approved', 'rejected']))
-     <div class="bg-white rounded-xl shadow-lg p-6 mt-8 border border-gray-200">
-         <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center gap-2">
-             <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4 -4" /></svg>
-             Surat Persetujuan Pinjaman
-         </h2>
-         <div class="flex flex-wrap items-center gap-6 divide-x divide-gray-200">
-             <div class="pr-6 flex items-center gap-2">
-                 <span class="font-semibold text-gray-700">Status:</span>
-                 @if($latestLoan->status == 'approved')
-                     <span class="flex items-center gap-1 px-2 py-1 rounded bg-green-100 text-green-700 font-semibold">
-                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                         Disetujui
-                     </span>
-                 @else
-                     <span class="flex items-center gap-1 px-2 py-1 rounded bg-red-100 text-red-700 font-semibold">
-                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                         Ditolak
-                     </span>
-                 @endif
-             </div>
-             <div class="pl-6 pr-6 min-w-[170px]">
-                 <span class="block text-gray-500 text-xs font-medium">Total Pinjaman</span>
-                 <span class="font-bold text-gray-800">Rp {{ number_format($latestLoan->loan_amount, 0, ',', '.') }}</span>
-             </div>
-             <div class="pl-6 pr-6 min-w-[140px]">
-                 <span class="block text-gray-500 text-xs font-medium">Durasi</span>
-                 <span class="font-bold text-gray-800">{{ $latestLoan->tenor }} Bulan</span>
-             </div>
-             <div class="pl-6 pr-6 min-w-[170px]">
-                 <span class="block text-gray-500 text-xs font-medium">Setoran/Bulan</span>
-                 <span class="font-bold text-gray-800">Rp {{ number_format($latestLoan->loan_amount / max($latestLoan->tenor,1), 0, ',', '.') }}</span>
-             </div>
-             <div class="pl-6 pr-6 min-w-[180px]">
-                 <span class="block text-gray-500 text-xs font-medium">Catatan Admin</span>
-                 <span class="text-gray-700">{{ $latestLoan->application_note ?? '-' }}</span>
-             </div>
-             <div class="pl-6 flex items-center">
-                 <a href="{{ route('loan.downloadApprovalLetter', $latestLoan->id) }}" class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition font-semibold">
-                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                     Download Surat
-                 </a>
-             </div>
-         </div>
-     </div>
-     @endif
  </div>
  
  @push('scripts')
