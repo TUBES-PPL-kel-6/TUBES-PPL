@@ -13,6 +13,7 @@ class SetoranController extends Controller
         return view('setoran.index', compact('setorans'));
     }
 
+
     public function create()
     {
         return view('setoran.create');
