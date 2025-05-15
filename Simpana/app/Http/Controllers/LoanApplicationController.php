@@ -3,9 +3,12 @@
  namespace App\Http\Controllers;
  
  use App\Models\LoanApplication;
+ use App\Models\LoanPayment;
+ use App\Models\Notification;
  use Illuminate\Http\Request;
  use Illuminate\Support\Facades\Auth;
  use Illuminate\Support\Facades\Log;
+ use Carbon\Carbon;
  
  class LoanApplicationController extends Controller
  {
@@ -144,15 +147,54 @@
     
         public function approve(LoanApplication $loanApplication)
         {
+            // Update loan status
             $loanApplication->update(['status' => 'approved']);
+            
+            // Create payment schedule
+            $this->createPaymentSchedule($loanApplication);
+            
+            // Notify user
+            Notification::create([
+                'user_id' => $loanApplication->user_id,
+                'title' => 'Pinjaman Disetujui',
+                'message' => 'Pengajuan pinjaman Anda telah disetujui.',
+                'type' => 'pinjaman',
+                'is_read' => false
+            ]);
+            
             return redirect()->route('loanApproval')
-            ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
-    }
+                ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
+        }
 
-    public function reject(LoanApplication $loanApplication)
-    {
-        $loanApplication->update(['status' => 'rejected']);
-        return redirect()->route('loanApproval')
-            ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
-    }
+        private function createPaymentSchedule(LoanApplication $loan)
+        {
+            // Calculate monthly installment amount
+            $monthlyAmount = $loan->loan_amount / $loan->tenor;
+            
+            // Get first payment date
+            $dueDate = Carbon::parse($loan->first_payment_date);
+            
+            // Create payments for each month of the tenor
+            for ($i = 1; $i <= $loan->tenor; $i++) {
+                LoanPayment::create([
+                    'loan_application_id' => $loan->id,
+                    'amount' => $monthlyAmount,
+                    'installment_number' => $i,
+                    'payment_date' => null, // This is causing the error
+                    'due_date' => $dueDate->copy(),
+                    'payment_method' => null, // This might be causing another error
+                    'status' => 'pending'
+                ]);
+                
+                // Move due date to next month
+                $dueDate->addMonth();
+            }
+        }
+
+        public function reject(LoanApplication $loanApplication)
+        {
+            $loanApplication->update(['status' => 'rejected']);
+            return redirect()->route('loanApproval')
+                ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
+        }
 }
