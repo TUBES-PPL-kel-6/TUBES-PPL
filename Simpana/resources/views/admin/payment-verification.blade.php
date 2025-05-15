@@ -11,9 +11,15 @@
     @endif
 
     <div class="bg-white rounded-lg shadow p-6">
-        @if ($pendingPayments->isEmpty())
-        <div class="text-center py-6">
-            <p class="text-gray-600">Tidak ada pembayaran yang perlu diverifikasi.</p>
+        @if (!isset($pendingPayments) || $pendingPayments->isEmpty())
+        <div class="text-center py-12">
+            <div class="text-gray-400 mb-4">
+                <svg class="mx-auto h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <p class="text-gray-600 text-lg">Tidak ada pembayaran yang perlu diverifikasi.</p>
+            <p class="text-gray-500 mt-2">Pembayaran akan muncul di sini ketika anggota melakukan pembayaran via transfer.</p>
         </div>
         @else
         <div class="overflow-x-auto">
@@ -27,6 +33,7 @@
                         <th class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
                         <th class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Tgl Bayar</th>
                         <th class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Metode</th>
+                        <th class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
@@ -38,22 +45,35 @@
                         <td class="px-4 py-3">{{ $payment->loan_application_id }}</td>
                         <td class="px-4 py-3">{{ $payment->installment_number }}</td>
                         <td class="px-4 py-3">Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3">{{ $payment->payment_date->format('d/m/Y') }}</td>
-                        <td class="px-4 py-3">{{ ucfirst($payment->payment_method) }}</td>
+                        <td class="px-4 py-3">{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y') : '-' }}</td>
+                        <td class="px-4 py-3">{{ $payment->payment_method ? ucfirst($payment->payment_method) : '-' }}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium
+                                @if ($payment->status == 'paid' || $payment->status == 'verified') bg-green-100 text-green-800
+                                @elseif ($payment->status == 'pending') bg-yellow-100 text-yellow-800
+                                @else bg-red-100 text-red-800 @endif">
+                                {{ ucfirst($payment->status) }}
+                            </span>
+                        </td>
                         <td class="px-4 py-3">
                             <div class="flex space-x-2">
-                                <button class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
-                                    onclick="viewPaymentDetail({{ $payment->id }})">
-                                    Detail
-                                </button>
+                                @if ($payment->payment_method == 'transfer' && $payment->payment_proof)
+                                <a href="{{ Storage::url($payment->payment_proof) }}" 
+                                   target="_blank" 
+                                   class="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                                    Lihat Bukti
+                                </a>
+                                @endif
+                                
                                 <form action="{{ route('admin.payment.verify', $payment->id) }}" method="POST" class="inline">
                                     @csrf
-                                    <button type="submit" class="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600">
+                                    <button type="submit" class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
                                         Verifikasi
                                     </button>
                                 </form>
-                                <button class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
-                                    onclick="rejectPayment({{ $payment->id }})">
+                                
+                                <button onclick="showRejectForm({{ $payment->id }})" 
+                                        class="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
                                     Tolak
                                 </button>
                             </div>
@@ -64,46 +84,35 @@
             </table>
         </div>
 
+        @if($pendingPayments->hasPages())
         <div class="mt-6">
             {{ $pendingPayments->links() }}
         </div>
         @endif
+        @endif
     </div>
 </div>
 
-<!-- Modal Detail Pembayaran -->
-<div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">Detail Pembayaran</h3>
-            <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
-        </div>
-        <div id="paymentDetails" class="mb-6">
-            <!-- Payment details will be inserted here -->
-        </div>
-        <div class="mt-6 flex justify-end">
-            <button onclick="closeDetailModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded mr-2">Tutup</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Reject Payment -->
-<div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">Tolak Pembayaran</h3>
-            <button onclick="closeRejectModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
-        </div>
+<!-- Modal for Rejection Reason -->
+<div id="rejectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h3 class="text-lg font-bold mb-4">Alasan Penolakan</h3>
         <form id="rejectForm" method="POST" action="">
             @csrf
             <div class="mb-4">
                 <label for="rejection_reason" class="block text-sm font-medium text-gray-700 mb-1">Alasan Penolakan</label>
-                <textarea id="rejection_reason" name="rejection_reason" rows="3" class="w-full p-2 border rounded"
-                    required></textarea>
+                <textarea id="rejection_reason" name="rejection_reason" rows="3" 
+                          class="w-full p-2 border border-gray-300 rounded-md" required></textarea>
             </div>
-            <div class="flex justify-end">
-                <button type="button" onclick="closeRejectModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded mr-2">Batal</button>
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Konfirmasi Tolak</button>
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="hideRejectForm()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                    Batal
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Tolak Pembayaran
+                </button>
             </div>
         </form>
     </div>
@@ -111,88 +120,19 @@
 
 @push('scripts')
 <script>
-    function viewPaymentDetail(paymentId) {
-        // In a real app, you would fetch details via AJAX
-        fetch(`/admin/payments/${paymentId}`)
-            .then(response => response.json())
-            .then(data => {
-                const details = document.getElementById('paymentDetails');
-                let paymentProofHtml = '';
-                
-                if (data.payment_proof) {
-                    paymentProofHtml = `
-                        <div class="mb-4">
-                            <p class="text-sm text-gray-600 mb-1">Bukti Pembayaran</p>
-                            <a href="${data.payment_proof}" target="_blank" class="text-blue-600 hover:underline">Lihat Bukti</a>
-                        </div>
-                    `;
-                }
-                
-                details.innerHTML = `
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">ID Pembayaran</p>
-                            <p class="font-medium">${data.id}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Anggota</p>
-                            <p class="font-medium">${data.user_name}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">ID Pinjaman</p>
-                            <p class="font-medium">${data.loan_application_id}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Angsuran Ke</p>
-                            <p class="font-medium">${data.installment_number}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Jumlah</p>
-                            <p class="font-medium">Rp ${Number(data.amount).toLocaleString('id-ID')}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Tanggal Bayar</p>
-                            <p class="font-medium">${data.payment_date}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Jatuh Tempo</p>
-                            <p class="font-medium">${data.due_date}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Metode</p>
-                            <p class="font-medium">${data.payment_method}</p>
-                        </div>
-                    </div>
-                    ${paymentProofHtml}
-                    <div>
-                        <p class="text-sm text-gray-600 mb-1">Catatan</p>
-                        <p class="font-medium">${data.notes || '-'}</p>
-                    </div>
-                `;
-                
-                document.getElementById('detailModal').classList.remove('hidden');
-                document.getElementById('detailModal').classList.add('flex');
-            })
-            .catch(error => {
-                console.error('Error fetching payment details:', error);
-                alert('Gagal mengambil detail pembayaran.');
-            });
+    function showRejectForm(paymentId) {
+        const modal = document.getElementById('rejectModal');
+        const form = document.getElementById('rejectForm');
+        
+        form.action = `/admin/payments/${paymentId}/reject`;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
-
-    function closeDetailModal() {
-        document.getElementById('detailModal').classList.add('hidden');
-        document.getElementById('detailModal').classList.remove('flex');
-    }
-
-    function rejectPayment(paymentId) {
-        document.getElementById('rejectForm').action = `/admin/payments/${paymentId}/reject`;
-        document.getElementById('rejectModal').classList.remove('hidden');
-        document.getElementById('rejectModal').classList.add('flex');
-    }
-
-    function closeRejectModal() {
-        document.getElementById('rejectModal').classList.add('hidden');
-        document.getElementById('rejectModal').classList.remove('flex');
+    
+    function hideRejectForm() {
+        const modal = document.getElementById('rejectModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 </script>
 @endpush
