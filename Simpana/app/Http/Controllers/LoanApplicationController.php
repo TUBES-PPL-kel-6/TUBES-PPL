@@ -6,7 +6,6 @@
  use Illuminate\Http\Request;
  use Illuminate\Support\Facades\Auth;
  use Illuminate\Support\Facades\Log;
- use Barryvdh\DomPDF\Facade\Pdf;
  
  class LoanApplicationController extends Controller
  {
@@ -39,9 +38,7 @@
          */
         public function create()
         {
-            $user = Auth::user();
-            $latestLoan = LoanApplication::where('user_id', $user->id)->latest()->first();
-            return view('loan-application', compact('latestLoan'));
+            return view('loan-application');
         }
     
         /**
@@ -56,7 +53,7 @@
                 'application_date' => 'required|date',
                 'first_payment_date' => 'required|date|after_or_equal:application_date',
                 'payment_method' => 'required',
-                'supporting_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
+                'supporting_documents.*' => 'nullable|file|mimes:pdf|max:2048'
             ]);
     
             // Handle file uploads
@@ -157,15 +154,5 @@
         $loanApplication->update(['status' => 'rejected']);
         return redirect()->route('loanApproval')
             ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
-    }
-
-    public function downloadApprovalLetter(LoanApplication $loanApplication)
-    {
-        // Only allow the user who owns the loan to download
-        if (Auth::id() !== $loanApplication->user_id) {
-            abort(403);
-        }
-        $pdf = Pdf::loadView('pdf.loan-approval-letter', ['loan' => $loanApplication]);
-        return $pdf->download('Surat_Persetujuan_Pinjaman_'.$loanApplication->id.'.pdf');
     }
 }
