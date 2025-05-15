@@ -4,7 +4,6 @@ use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
 use App\Http\Controllers\AcceptanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -15,8 +14,10 @@ use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SimpananController;
+use Illuminate\Support\Facades\View;
 use App\Models\Notification;
+
+
 
  // Public routes
  Route::get('/', function () {
@@ -75,6 +76,7 @@ use App\Models\Notification;
      Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
      Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
      Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+     Route::get('/loan/{loanApplication}/download-approval-letter', [LoanApplicationController::class, 'downloadApprovalLetter'])->name('loan.downloadApprovalLetter');
  });
 
  // Admin routes - requires admin role
@@ -134,10 +136,3 @@ Route::get('/notifications/pinjaman', function () {
 route::get ('/general', function () {
     return view('payment-form');
 })->name('payment-form');
-
-// Add these routes for the simpanan functionality
-Route::prefix('dashboard')->name('dashboard.')->middleware(['auth'])->group(function() {
-    Route::get('/simpanan', [SimpananController::class, 'index'])->name('simpanan');
-    Route::get('/simpanan/create', [SimpananController::class, 'create'])->name('simpanan.create');
-    Route::post('/simpanan', [SimpananController::class, 'store'])->name('simpanan.store');
-});

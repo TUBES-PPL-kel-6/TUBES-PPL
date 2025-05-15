@@ -69,7 +69,7 @@
                      </a>
                  </div>
              </div>
-
+             
              <div class="pt-4 pb-2 px-4 text-xs uppercase font-bold text-white/60 sidebar-text">
                  Akun
              </div>
@@ -88,10 +88,8 @@
          </div>
          <div class="p-4 text-xs text-center opacity-70 border-t border-white/10 sidebar-text">© 2025 Simpana</div>
      </aside>
-
      <!-- Main -->
      <div id="main-content" class="flex-1 ml-64 min-h-screen flex flex-col transition-all duration-300 ease-in-out">
-
          <!-- Topbar -->
          <header class="flex items-center justify-between bg-white px-6 py-4 border-b border-gray-200 shadow-sm sticky top-0 z-5">
              <div class="flex items-center gap-2">
@@ -134,16 +132,18 @@
              @yield('content')
          </main>
          </div>
-
+         
+         
+         
      <script>
          // toggle sidebar
          document.getElementById('sidebar-toggle').addEventListener('click', function() {
              const sidebar = document.getElementById('sidebar');
              const mainContent = document.getElementById('main-content');
              const sidebarTexts = document.querySelectorAll('.sidebar-text');
-
              // Cek sidebar ketutup
              const isCollapsed = sidebar.classList.contains('w-16');
+
 
              if (isCollapsed) {
                  // Expand sidebar
@@ -151,7 +151,8 @@
                  sidebar.classList.add('w-64');
                  mainContent.classList.remove('ml-16');
                  mainContent.classList.add('ml-64');
-
+                 
+                 
                  // Show text
                  sidebarTexts.forEach(text => {
                      text.classList.remove('hidden');
@@ -163,13 +164,16 @@
                  mainContent.classList.remove('ml-64');
                  mainContent.classList.add('ml-16');
 
+
+
                  // Hide text
                  sidebarTexts.forEach(text => {
                      text.classList.add('hidden');
                  });
              }
          });
-
+         
+         
          // tes toggle screen yang beda ukuran
          document.getElementById('menu-toggle')?.addEventListener('click', function() {
              const sidebar = document.querySelector('aside');
