@@ -212,7 +212,7 @@
     .alert {
         border-radius: 6px;
         background: var(--yellow-green);
-        color: var(--ou-crimson);
+        color: white;
         border: none;
         font-weight: 500;
         font-size: 0.9rem;
