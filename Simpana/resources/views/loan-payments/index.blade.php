@@ -86,6 +86,13 @@
                                         @else bg-red-100 text-red-800 @endif">
                                         {{ ucfirst($payment->status) }}
                                     </span>
+                                    
+                                    @if ($payment->status == 'pending' && $payment->payment_date === null)
+                                        <a href="{{ route('loan-payments.create', $loan->id) }}" 
+                                           class="ml-2 px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600">
+                                            Bayar
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -94,15 +101,21 @@
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    @if ($loan->payments->count() < $loan->tenor)
-                        @php
-                            $nextPayment = $loan->payments->where('status', 'pending')->first();
-                        @endphp
-                        @if ($nextPayment)
-                            <a href="{{ route('loan-payments.create', $loan->id) }}" class="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700">
-                                Bayar Angsuran #{{ $nextPayment->installment_number }}
-                            </a>
-                        @endif
+                    @php
+                        // Find the next payment that needs to be paid
+                        $nextPayment = null;
+                        foreach ($loan->payments as $payment) {
+                            if ($payment->status === 'pending' && $payment->payment_date === null) {
+                                $nextPayment = $payment;
+                                break;
+                            }
+                        }
+                    @endphp
+
+                    @if ($nextPayment)
+                        <a href="{{ route('loan-payments.create', $loan->id) }}" class="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700">
+                            Bayar Angsuran #{{ $nextPayment->installment_number }}
+                        </a>
                     @endif
                 </div>
             </div>
