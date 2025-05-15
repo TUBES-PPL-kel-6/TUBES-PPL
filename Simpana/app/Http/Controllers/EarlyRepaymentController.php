@@ -88,4 +88,4 @@ class EarlyRepaymentController extends Controller
         // Calculate remaining amount (assuming no payments made yet)
         return $totalWithInterest;
     }
-} 
+}

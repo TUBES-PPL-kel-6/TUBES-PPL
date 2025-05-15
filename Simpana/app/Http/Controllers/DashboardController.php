@@ -152,4 +152,4 @@ class DashboardController extends Controller
 
         return redirect()->back()->with('success', 'Status simpanan berhasil diperbarui');
     }
-} 
+}
