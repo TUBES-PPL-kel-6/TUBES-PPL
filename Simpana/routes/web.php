@@ -14,6 +14,7 @@ use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
+use App\Http\Controllers\LoanPaymentController;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -75,6 +76,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
     Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
     Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+
+    // Loan Payment Routes - User side
+    Route::get('/loan-payments', [LoanPaymentController::class, 'index'])->name('loan-payments.index');
+    Route::get('/loan-payments/create/{loan}', [LoanPaymentController::class, 'create'])->name('loan-payments.create');
+    Route::post('/loan-payments/{loan}', [LoanPaymentController::class, 'store'])->name('loan-payments.store');
 });
 
 // Admin routes - requires admin role
@@ -88,6 +94,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
     Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
+
+    // Loan Payment Routes - Admin side
+    Route::get('/admin/payments', [LoanPaymentController::class, 'adminVerification'])->name('admin.payment-verification');
+    Route::get('/admin/payments/{payment}', [LoanPaymentController::class, 'getPaymentDetails']);
+    Route::post('/admin/payments/{payment}/verify', [LoanPaymentController::class, 'verify'])->name('admin.payment.verify');
+    Route::post('/admin/payments/{payment}/reject', [LoanPaymentController::class, 'reject'])->name('admin.payment.reject');
+
+    // Profit Report Routes - Update these routes
+    Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
+    Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
 });
 
 // Dashboard routes
