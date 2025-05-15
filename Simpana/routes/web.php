@@ -11,10 +11,12 @@ use App\Http\Controllers\LoanApplicationController;
 use App\Http\Controllers\DiscussionCommentController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\ShuController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\LoanPaymentController;
+use App\Http\Controllers\ProfitReportController;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -84,8 +86,12 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin routes - requires admin role
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+
+    // Profit Report Routes - Update these routes
+    Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
+    Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
 
     // Loan Approval Routes
     Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
@@ -104,6 +110,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Profit Report Routes - Update these routes
     Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
     Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
+    // Other admin routes...
 });
 
 // Dashboard routes
