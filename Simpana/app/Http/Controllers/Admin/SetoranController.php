@@ -97,3 +97,8 @@ class SetoranController extends Controller
             ->with('success', 'Setoran berhasil dihapus');
     }
 } 
+
+
+
+    $simpanan = \App\Models\Simpanan::findOrFail($id);
+    return view('admin.setoran.edit', compact('simpanan'));

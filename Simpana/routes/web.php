@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
@@ -18,106 +19,98 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Models\Notification;
 use App\Http\Controllers\SetoranController;
+use App\Http\Controllers\AdminSetoranController;
 
- // Public routes
- Route::get('/', function () {
-     return view('welcome');
- });
+// Public routes
+Route::get('/', function () {
+    return view('welcome');
+});
 
- Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
- Route::post('/login', [AuthController::class, 'login']);
- Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
- Route::get('/register', [RegistController::class, 'showForm'])->name('register');
- Route::post('/register', [RegistController::class, 'store']);
+Route::get('/register', [RegistController::class, 'showForm'])->name('register');
+Route::post('/register', [RegistController::class, 'store']);
 
- Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
- Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
- Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
+Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
+Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
+Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 
- Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
- Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
-
-
- // Home route
- Route::get('/', function () {
-     return view('landingPage');
- });
-
- // Login routes
- Route::get('/login', function () {
-     return view('login');
- })->name('login');
-
- Route::post('/login', [RegistController::class, 'login'])->name('login.post');
-
- // Payment routes
- Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
- Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
-
- // Dashboard route - this will handle the redirection based on role
- Route::get('/dashboard', function () {
-     if (auth()->user() && auth()->user()->role === 'admin') {
-         return redirect()->route('admin.index');
-     }
-     return redirect()->route('user.dashboard');
- })->middleware('auth')->name('dashboard');
-
- // User dashboard - requires authentication
- Route::middleware(['auth'])->group(function () {
-     Route::get('/user', function () {
-         return view('layouts.dashboard');
-     })->name('user.dashboard');
-
-     // Loan Application Routes
-     Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
-     Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
-     Route::get('/loan/{loanApplication}', [LoanApplicationController::class, 'show'])->name('loan.show');
-     Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
-     Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
-     Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
- });
-
- // Admin routes - requires admin role
- Route::middleware(['auth', 'admin'])->group(function () {
-     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-
-     // Loan Approval Routes
-     Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
-     Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
-     Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
-
-     Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
-     Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
-     
-     Route::resource('setoran', \App\Http\Controllers\Admin\SetoranController::class, [
-         'names' => [
-             'index' => 'admin.setoran.index',
-             'create' => 'admin.setoran.create',
-             'store' => 'admin.setoran.store',
-             'show' => 'admin.setoran.show',
-             'edit' => 'admin.setoran.edit',
-             'update' => 'admin.setoran.update',
-             'destroy' => 'admin.setoran.destroy',
-         ]
-     ]);
- });
+Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
+Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 
- Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
- Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
- Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
- Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
- Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
- Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
- Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])->name('dashboard.transactions');
+// Home route
+Route::get('/', function () {
+    return view('landingPage');
+});
 
- Route::get('/discussion', [DiscussionController::class, 'index'])->name('discussion.index');
- Route::post('/discussion', [DiscussionController::class, 'store'])->name('discussion.store');
- Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
- Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
- Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
- Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
+// Login routes
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
+Route::post('/login', [RegistController::class, 'login'])->name('login.post');
+
+// Payment routes
+Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
+Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
+
+// Dashboard route - this will handle the redirection based on role
+Route::get('/dashboard', function () {
+    if (auth()->user() && auth()->user()->role === 'admin') {
+        return redirect()->route('admin.index');
+    }
+    return redirect()->route('user.dashboard');
+})->middleware('auth')->name('dashboard');
+
+// User dashboard - requires authentication
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user', function () {
+        return view('layouts.dashboard');
+    })->name('user.dashboard');
+
+    // Loan Application Routes
+    Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
+    Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
+    Route::get('/loan/{loanApplication}', [LoanApplicationController::class, 'show'])->name('loan.show');
+    Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
+    Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
+    Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+});
+
+// Admin routes - requires admin role
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+
+    // Loan Approval Routes
+    Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
+    Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
+    Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
+
+    Route::get('/users', [UserController::class, 'listUsers'])->name('users');
+    Route::post('/users/{id}/remind', [UserController::class, 'remindUser'])->name('users.remind');
+    
+    // Routes untuk setoran
+    Route::resource('setoran', AdminSetoranController::class);
+});
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
+Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
+Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
+Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
+Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])->name('dashboard.transactions');
+
+Route::get('/discussion', [DiscussionController::class, 'index'])->name('discussion.index');
+Route::post('/discussion', [DiscussionController::class, 'store'])->name('discussion.store');
+Route::get('/discussion/{discussion}/edit', [DiscussionController::class, 'edit'])->name('discussion.edit');
+Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])->name('discussion.update');
+Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
+Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');

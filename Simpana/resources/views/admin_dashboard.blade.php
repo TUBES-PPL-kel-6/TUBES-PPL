@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashbord Pengurus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <style>
         body {
             background-color: #F4F6FA;
@@ -88,15 +90,18 @@ use Illuminate\Support\Facades\Auth;
     @if(Auth::check() && Auth::user()->role === 'admin')
         <div class="sidebar">
             <h4>SIMPANA</h4>
-            <a href="#" class="active">Dashboard</a>
+            <a href="{{ route('admin.index') }}" class="{{ request()->routeIs('admin.index') ? 'active' : '' }}">Dashboard</a>
             <a href="#">Riwayat Simpanan</a>
-            <a href="{{ route('admin.setoran.index') }}">Setor Simpanan</a>
+            <a href="{{ route('admin.setoran.index') }}" class="{{ request()->routeIs('admin.setoran.*') ? 'active' : '' }}">Setor Simpanan</a>
             <a href="#">Pinjaman</a>
-            <a href="{{ route('admin.users') }}">List User</a>
+            <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">List User</a>
             <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
             <a href="#">Profil</a>
             <a href="#">Pengaturan</a>
-            <a href="#">Keluar</a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
             <a href="{{ route('notifications.general') }}" 
                class="block py-2 px-4 rounded-lg {{ request()->routeIs('notifications.general') ? 'text-[#8C1414] font-semibold bg-gray-100' : 'text-gray-700 hover:bg-gray-100' }}">
                 General
@@ -109,54 +114,55 @@ use Illuminate\Support\Facades\Auth;
                 <div class="d-flex align-items-center">
                     <input type="text" class="form-control me-3" placeholder="Search...">
                     <span class="me-3">🔔</span>
-                    <span>John Doe ▼</span>
+                    <span>{{ Auth::user()->name }} ▼</span>
                 </div>
             </div>
 
-            <h5 class="mb-3">Transaksi Terbaru</h5>
-            <div class="card p-3">
-                <div class="list-group">
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Bayar Angsuran <small class="text-muted">Auto Debit</small></div>
-                        <div>- Rp 850.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Ambil Pinjaman <small class="text-muted">Pinjaman Baru</small></div>
-                        <div>+ Rp 15.000.000 <span class="badge bg-success">Selesai</span></div>
+            @if(request()->routeIs('admin.index'))
+                <h5 class="mb-3">Transaksi Terbaru</h5>
+                <div class="card p-3">
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between">
+                            <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
+                            <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <div>Bayar Angsuran <small class="text-muted">Auto Debit</small></div>
+                            <div>- Rp 850.000 <span class="badge bg-success">Selesai</span></div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
+                            <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                            <div>Ambil Pinjaman <small class="text-muted">Pinjaman Baru</small></div>
+                            <div>+ Rp 15.000.000 <span class="badge bg-success">Selesai</span></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <h5 class="mb-3">Pemberitahuan</h5>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-danger">Pembayaran Angsuran Jatuh Tempo</span>
-                    <span class="badge bg-danger">3 Hari Lagi</span>
+                <h5 class="mb-3">Pemberitahuan</h5>
+                <div class="p-4 bg-white rounded shadow-sm mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-danger">Pembayaran Angsuran Jatuh Tempo</span>
+                        <span class="badge bg-danger">3 Hari Lagi</span>
+                    </div>
                 </div>
-            </div>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-success">Setoran Bulanan Berhasil</span>
-                    <span class="badge bg-success">12 Apr 2025</span>
+                <div class="p-4 bg-white rounded shadow-sm mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-success">Setoran Bulanan Berhasil</span>
+                        <span class="badge bg-success">12 Apr 2025</span>
+                    </div>
                 </div>
-            </div>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-warning">Program Simpanan Baru</span>
-                    <span class="badge bg-warning">Lihat detail</span>
+                <div class="p-4 bg-white rounded shadow-sm mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-warning">Program Simpanan Baru</span>
+                        <span class="badge bg-warning">Lihat detail</span>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Add a button to route to /user -->
-            <a href="{{ url('/user') }}" class="btn btn-primary">Go to User Dashboard</a>
+            @else
+                @yield('content')
+            @endif
 
             @if(isset($notifications))
                 @foreach($notifications as $notif)
@@ -170,5 +176,34 @@ use Illuminate\Support\Facades\Auth;
     @else
         <!-- Redirect or show user content -->
     @endif
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ session('error') }}'
+        });
+    </script>
+    @endif
+
+    @stack('scripts')
 </body>
 </html>
