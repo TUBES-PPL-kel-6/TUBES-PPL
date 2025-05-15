@@ -62,10 +62,11 @@
                 <tbody class="divide-y divide-gray-200">
                     @forelse($transactions ?? [] as $transaction)
                         <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4">{{ $transaction->date }}</td>
-                            <td class="py-3 px-4">{{ $transaction->description }}</td>
-                            <td class="py-3 px-4 {{ $transaction->type === 'credit' ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $transaction->type === 'credit' ? '+' : '-' }}Rp{{ number_format($transaction->amount, 0, ',', '.') }}
+                            <td class="py-3 px-4">{{ $simpanan->tanggal->format('d/m/Y') }}</td>
+                            <td class="py-3 px-4">{{ ucfirst($simpanan->jenis_simpanan) }}</td>
+                            <td class="py-3 px-4">{{ $simpanan->keterangan ?: 'Setoran Simpanan' }}</td>
+                            <td class="py-3 px-4 text-black-600">
+                                Rp{{ number_format($simpanan->jumlah, 0, ',', '.') }}
                             </td>
                             <td class="py-3 px-4">Rp{{ number_format($transaction->balance, 0, ',', '.') }}</td>
                         </tr>
