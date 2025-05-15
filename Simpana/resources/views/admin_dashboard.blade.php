@@ -92,12 +92,12 @@ use Illuminate\Support\Facades\Auth;
             <a href="#">Riwayat Simpanan</a>
             <a href="#">Setor Simpanan</a>
             <a href="#">Pinjaman</a>
-            <a href="{{ route('admin.users') }}">List User</a>
+            <a href="#">List User</a>
             <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
             <a href="#">Profil</a>
             <a href="#">Pengaturan</a>
             <a href="#">Keluar</a>
-            <a href="{{ route('notifications.general') }}" 
+            <a href="{{ route('notifications.general') }}"
                class="block py-2 px-4 rounded-lg {{ request()->routeIs('notifications.general') ? 'text-[#8C1414] font-semibold bg-gray-100' : 'text-gray-700 hover:bg-gray-100' }}">
                 General
             </a>

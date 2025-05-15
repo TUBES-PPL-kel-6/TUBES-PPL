@@ -2,35 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Simpanan;
-use App\Models\LoanApplication;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ProfitReportController extends Controller
 {
-    protected function getMonthlyProfits()
-    {
-        return Transaksi::selectRaw('
-            MONTH(created_at) as bulan,
-            YEAR(created_at) as tahun,
-            SUM(CASE WHEN jenis_transaksi = "simpanan" THEN jumlah * 0.005 ELSE 0 END) as laba_simpanan,
-            SUM(CASE WHEN jenis_transaksi = "pinjaman" THEN jumlah * 0.01 ELSE 0 END) as laba_pinjaman,
-            SUM(CASE
-                WHEN jenis_transaksi = "simpanan" THEN jumlah * 0.005
-                WHEN jenis_transaksi = "pinjaman" THEN jumlah * 0.01
-                ELSE 0
-            END) as total_laba'
-        )
-        ->where('status', 'completed')
-        ->groupBy('tahun', 'bulan')
-        ->orderBy('tahun', 'desc')
-        ->orderBy('bulan', 'desc')
-        ->get();
-    }
-
     public function index()
     {
         if (Auth::user()->role !== 'admin') {
@@ -41,24 +20,21 @@ class ProfitReportController extends Controller
 
         // Calculate total profit this year
         $totalLabaTahunIni = $monthlyProfits
-            ->where('tahun', date('Y'))
+            ->where('tahun', Carbon::now()->year)
             ->sum('total_laba');
 
         // Calculate growth from last month
         $bulanIni = $monthlyProfits
-            ->where('tahun', date('Y'))
-            ->where('bulan', date('m'))
+            ->where('tahun', Carbon::now()->year)
+            ->where('bulan', Carbon::now()->month)
             ->first();
 
         $bulanLalu = $monthlyProfits
-            ->where('tahun', date('Y'))
-            ->where('bulan', date('m')-1)
+            ->where('tahun', Carbon::now()->year)
+            ->where('bulan', Carbon::now()->month - 1)
             ->first();
 
-        $pertumbuhanBulanan = 0;
-        if($bulanLalu && $bulanIni && $bulanLalu->total_laba > 0) {
-            $pertumbuhanBulanan = (($bulanIni->total_laba - $bulanLalu->total_laba) / $bulanLalu->total_laba) * 100;
-        }
+        $pertumbuhanBulanan = $this->hitungPertumbuhan($bulanIni, $bulanLalu);
 
         return view('admin.profit-report', compact(
             'monthlyProfits',
@@ -67,29 +43,82 @@ class ProfitReportController extends Controller
         ));
     }
 
+    private function hitungPertumbuhan($bulanIni, $bulanLalu)
+    {
+        if (!$bulanIni || !$bulanLalu || $bulanLalu->total_laba <= 0) {
+            return 0;
+        }
+
+        return (($bulanIni->total_laba - $bulanLalu->total_laba) / $bulanLalu->total_laba) * 100;
+    }
+
+    private function getMonthlyProfits()
+    {
+        return DB::table('transaksis AS t')
+            ->leftJoin('simpanans AS s', 't.simpanan_id', '=', 's.id')
+            ->select(
+                DB::raw('MONTH(t.created_at) as bulan'),
+                DB::raw('YEAR(t.created_at) as tahun'),
+                // Profit from sukarela savings (0.5%)
+                DB::raw('SUM(CASE
+                    WHEN t.jenis_transaksi = "setor"
+                    AND s.jenis_simpanan = "sukarela"
+                    AND t.status = "approved"
+                    THEN t.jumlah * 0.005
+                    ELSE 0
+                END) as laba_simpanan'),
+                // Profit from loan payments (1%)
+                DB::raw('SUM(CASE
+                    WHEN t.jenis_transaksi = "angsuran"
+                    AND t.status = "approved"
+                    THEN t.jumlah * 0.01
+                    ELSE 0
+                END) as laba_pinjaman'),
+                // Total profit
+                DB::raw('SUM(CASE
+                    WHEN t.jenis_transaksi = "setor"
+                    AND s.jenis_simpanan = "sukarela"
+                    AND t.status = "approved"
+                    THEN t.jumlah * 0.005
+                    WHEN t.jenis_transaksi = "angsuran"
+                    AND t.status = "approved"
+                    THEN t.jumlah * 0.01
+                    ELSE 0
+                END) as total_laba')
+            )
+            ->where('t.status', 'approved')
+            ->groupBy('tahun', 'bulan')
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
+    }
+
     public function getChartData()
     {
-        $monthlyProfits = $this->getMonthlyProfits();
-        $yearlyData = $monthlyProfits
-            ->where('tahun', date('Y'))
+        $yearlyData = $this->getMonthlyProfits()
+            ->where('tahun', Carbon::now()->year)
             ->values();
 
+        $months = $yearlyData->pluck('bulan')->map(function($month) {
+            return Carbon::create(null, $month)->format('F');
+        });
+
         return response()->json([
-            'labels' => $yearlyData->pluck('bulan')->map(function($month) {
-                return date('F', mktime(0, 0, 0, $month, 1));
-            }),
+            'labels' => $months,
             'datasets' => [
                 [
                     'label' => 'Laba Simpanan',
                     'data' => $yearlyData->pluck('laba_simpanan'),
                     'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
                     'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'borderWidth' => 1
                 ],
                 [
                     'label' => 'Laba Pinjaman',
                     'data' => $yearlyData->pluck('laba_pinjaman'),
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'borderWidth' => 1
                 ]
             ]
         ]);

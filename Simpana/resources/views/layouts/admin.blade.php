@@ -104,7 +104,8 @@
         <a href="/admin/savings">Simpanan</a>
         <a href="/admin/loans">Pinjaman</a>
         <a href="/admin/users">Anggota</a>
-        <a href="/profit-report">Laporan Laba</a>
+        <a href="#">Laporan Laba</a>
+        <a href="/admin/shu">Generate shu</a>
 
         <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
         <a href="/admin/profile">Profil</a>
