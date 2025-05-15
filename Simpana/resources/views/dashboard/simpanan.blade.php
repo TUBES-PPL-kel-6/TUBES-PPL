@@ -90,7 +90,7 @@
                             <td class="py-3 px-4">{{ $simpanan->tanggal->format('d/m/Y') }}</td>
                             <td class="py-3 px-4">{{ ucfirst($simpanan->jenis_simpanan) }}</td>
                             <td class="py-3 px-4">{{ $simpanan->keterangan ?: 'Setoran Simpanan' }}</td>
-                            <td class="py-3 px-4 text-green-600">
+                            <td class="py-3 px-4 text-black-600">
                                 Rp{{ number_format($simpanan->jumlah, 0, ',', '.') }}
                             </td>
                         </tr>
