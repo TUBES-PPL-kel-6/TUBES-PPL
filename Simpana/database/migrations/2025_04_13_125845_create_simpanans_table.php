@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('jenis_simpanan', ['pokok', 'wajib', 'sukarela']);
             $table->decimal('jumlah', 15, 2);
             $table->date('tanggal');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });
