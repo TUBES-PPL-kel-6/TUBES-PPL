@@ -50,6 +50,7 @@ class ComplaintController extends Controller
 
         // Redirect back to the form with a success message
         return redirect()->route('complaint.create')
-            ->with('success', 'Keluhan Anda telah berhasil dikirim.');
+        ->with('success', 'Keluhan Anda telah berhasil dikirim.');
     }
-}
+}   
+    
