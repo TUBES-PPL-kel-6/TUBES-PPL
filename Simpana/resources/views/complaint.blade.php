@@ -4,6 +4,38 @@
 <div class="container-fluid px-3">
     <div class="row justify-content-center">
         <div class="col-12">
+            <div class="card complaint-card mb-4">
+                <div class="card-header py-3 px-4">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Informasi Korupsi dan Solusi
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-danger mb-3">Penyebab Korupsi:</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-times-circle text-danger me-2"></i>Penegakan hukum yang lemah dan tidak konsisten</li>
+                                <li class="mb-2"><i class="fas fa-times-circle text-danger me-2"></i>Budaya permisif terhadap korupsi</li>
+                                <li class="mb-2"><i class="fas fa-times-circle text-danger me-2"></i>Kurangnya integritas pejabat publik</li>
+                                <li class="mb-2"><i class="fas fa-times-circle text-danger me-2"></i>Rendahnya transparansi dan akuntabilitas</li>
+                                <li class="mb-2"><i class="fas fa-times-circle text-danger me-2"></i>Pengawasan internal dan eksternal yang tidak efektif</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success mb-3">Solusi Penanganan:</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Peningkatan pendidikan karakter dan antikorupsi</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Reformasi birokrasi dan digitalisasi layanan</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Penguatan lembaga penegak hukum</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Penerapan hukuman yang tegas dan konsisten</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Transparansi pengelolaan keuangan negara</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card complaint-card">
                 <div class="card-header py-3 px-4">
                     <h4 class="mb-0">

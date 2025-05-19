@@ -13,11 +13,7 @@ class AdminSetoranController extends Controller
         $simpanans = Simpanan::with(['user' => function($query) {
             $query->select('id', 'nama');
         }])->orderBy('tanggal', 'desc')->get();
-        
-        $users = \App\Models\User::where('role', 'member')
-            ->select('id', 'nama')
-            ->get();
-            
+        $users = \App\Models\User::where('role', 'member')->select('id', 'nama')->get();
         return view('admin.setoran.index', compact('simpanans', 'users'));
     }
 
@@ -82,7 +78,7 @@ class AdminSetoranController extends Controller
 
     public function create()
     {
-        $users = \App\Models\User::where('role', 'member')->get();
+        $users = \App\Models\User::where('role', 'member')->select('id', 'nama')->get();
         return view('admin.setoran.create', compact('users'));
     }
 

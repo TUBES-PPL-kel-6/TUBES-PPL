@@ -94,7 +94,7 @@
     <div class="bg-white p-6 rounded-xl shadow-md col-span-2">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-lg text-gray-800">Transaksi Terbaru</h3>
-            <button class="text-primary text-sm font-medium hover:underline">Lihat Semua</button>
+            <a href="/dashboard/simpanan" class="text-primary text-sm font-medium hover:underline">Lihat Semua</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
@@ -182,12 +182,12 @@
         <div class="bg-white p-6 rounded-xl shadow-md">
             <h3 class="font-bold text-lg text-gray-800 mb-4">Aksi Cepat</h3>
             <div class="grid grid-cols-2 gap-4">
-                <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <a href="/dashboard/simpanan" class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
                         <i class="fa-solid fa-money-bill-transfer text-primary"></i>
                     </div>
                     <span class="text-sm font-medium">Setor Simpanan</span>
-                </button>
+                </a>
                 <button class="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
                     <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
                         <i class="fa-solid fa-hand-holding-dollar text-blue-600"></i>
