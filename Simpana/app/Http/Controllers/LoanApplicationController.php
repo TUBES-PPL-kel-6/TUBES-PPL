@@ -1,12 +1,15 @@
 <?php
- 
+
  namespace App\Http\Controllers;
- 
+
  use App\Models\LoanApplication;
+ use App\Models\LoanPayment;
+ use App\Models\Notification;
  use Illuminate\Http\Request;
  use Illuminate\Support\Facades\Auth;
  use Illuminate\Support\Facades\Log;
- 
+ use Carbon\Carbon;
+
  class LoanApplicationController extends Controller
  {
      /**
@@ -18,7 +21,7 @@
              'user_id' => Auth::id(),
              'role' => Auth::user() ? Auth::user()->role : 'not logged in'
          ]);
- 
+
          try {
              $loans = LoanApplication::with('user')->latest()->paginate(10);
              Log::info('LoanApplicationController@index: Successfully retrieved loans', [
@@ -32,7 +35,7 @@
                 return back()->with('error', 'Error loading loan applications');
             }
         }
-    
+
         /**
          * Show the form for creating a new resource.
          */
@@ -40,7 +43,7 @@
         {
             return view('loan-application');
         }
-    
+
         /**
          * Store a newly created resource in storage.
          */
@@ -55,14 +58,14 @@
                 'payment_method' => 'required',
                 'supporting_documents.*' => 'nullable|file|mimes:pdf|max:2048'
             ]);
-    
+
             // Handle file uploads
             $documents = [];
             if ($request->hasFile('supporting_documents')) {
                 foreach ($request->file('supporting_documents') as $file) {
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $file->storeAs('public/documents', $fileName);
-    
+
                     $documents[] = [
                         'file_name' => $fileName,
                         'original_name' => $file->getClientOriginalName(),
@@ -70,11 +73,11 @@
                     ];
                 }
             }
-    
+
             // Format loan amount - remove dots and convert to integer
             $loanAmount = str_replace('.', '', $request->loan_amount);
             $loanAmount = (int) $loanAmount;
-    
+
             // Create loan application
             $loanApplication = LoanApplication::create([
                 'user_id' => Auth::id(),
@@ -89,11 +92,11 @@
                 'documents' => $documents,
                 'status' => 'pending'
             ]);
-    
+
             return redirect()->route('user.dashboard')
                 ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
         }
-    
+
         /**
          * Display the specified resource.
          */
@@ -102,7 +105,7 @@
             // Tampilkan detail pinjaman untuk halaman detail
          return view('loan-detail', compact('loanApplication'));
         }
-    
+
         /**
          * Show the form for editing the specified resource.
          */
@@ -110,7 +113,7 @@
         {
             return view('loan-application', compact('loanApplication'));
         }
-    
+
         /**
          * Update the specified resource in storage.
          */
@@ -124,35 +127,74 @@
                 'first_payment_date' => 'required|date',
                 'payment_method' => 'required'
             ]);
-    
+
             $loanApplication->update($request->all());
-    
+
             return redirect()->route('loan.create')
                 ->with('success', 'Pengajuan pinjaman berhasil diperbarui.');
         }
-    
+
         /**
          * Remove the specified resource from storage.
          */
         public function destroy(LoanApplication $loanApplication)
         {
             $loanApplication->delete();
-    
+
             return redirect()->route('loan.create')
                 ->with('success', 'Pengajuan pinjaman berhasil dihapus.');
         }
-    
+
         public function approve(LoanApplication $loanApplication)
         {
+            // Update loan status
             $loanApplication->update(['status' => 'approved']);
-            return redirect()->route('loanApproval')
-            ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
-    }
 
-    public function reject(LoanApplication $loanApplication)
-    {
-        $loanApplication->update(['status' => 'rejected']);
-        return redirect()->route('loanApproval')
-            ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
-    }
+            // Create payment schedule
+            $this->createPaymentSchedule($loanApplication);
+
+            // Notify user
+            Notification::create([
+                'user_id' => $loanApplication->user_id,
+                'title' => 'Pinjaman Disetujui',
+                'message' => 'Pengajuan pinjaman Anda telah disetujui.',
+                'type' => 'pinjaman',
+                'is_read' => false
+            ]);
+
+            return redirect()->route('loanApproval')
+                ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
+        }
+
+        private function createPaymentSchedule(LoanApplication $loan)
+        {
+            // Calculate monthly installment amount
+            $monthlyAmount = $loan->loan_amount / $loan->tenor;
+
+            // Get first payment date
+            $dueDate = Carbon::parse($loan->first_payment_date);
+
+            // Create payments for each month of the tenor
+            for ($i = 1; $i <= $loan->tenor; $i++) {
+                LoanPayment::create([
+                    'loan_application_id' => $loan->id,
+                    'amount' => $monthlyAmount,
+                    'installment_number' => $i,
+                    'payment_date' => null, // This is causing the error
+                    'due_date' => $dueDate->copy(),
+                    'payment_method' => null, // This might be causing another error
+                    'status' => 'pending'
+                ]);
+
+                // Move due date to next month
+                $dueDate->addMonth();
+            }
+        }
+
+        public function reject(LoanApplication $loanApplication)
+        {
+            $loanApplication->update(['status' => 'rejected']);
+            return redirect()->route('loanApproval')
+                ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
+        }
 }

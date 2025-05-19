@@ -30,4 +30,22 @@ class LoanApplication extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function payments()
+    {
+        return $this->hasMany(LoanPayment::class);
+    }
+
+    public function getMonthlyInstallmentAmount()
+    {
+        // Simple calculation (loan amount / tenor)
+        // In a real application, you would include interest calculation
+        return $this->loan_amount / $this->tenor;
+    }
+
+    public function getRemainingBalance()
+    {
+        $paidAmount = $this->payments()->where('status', 'paid')->sum('amount');
+        return $this->loan_amount - $paidAmount;
+    }
 }
