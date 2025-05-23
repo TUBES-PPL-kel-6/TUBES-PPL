@@ -111,6 +111,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
     Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
     // Other admin routes...
+    Route::get('/generate-shu', [ShuController::class, 'index'])->name('admin.shu.index');
+    Route::get('/generate-shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
+
 });
 
 // Dashboard routes
