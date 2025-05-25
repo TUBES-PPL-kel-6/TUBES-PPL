@@ -122,15 +122,8 @@ Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])-
 Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-// Notification routes
+// Notification route (hanya satu)
 Route::get('/notifications', [UserController::class, 'showNotifications'])->name('notifications');
-Route::get('/notifications/general', [UserController::class, 'showGeneralNotifications'])->name('notifications.general');
-Route::get('/notifications/simpanan', function () {
-    return view('notifications', ['type' => 'simpanan']);
-})->name('notifications.simpanan');
-Route::get('/notifications/pinjaman', function () {
-    return view('notifications', ['type' => 'pinjaman']);
-})->name('notifications.pinjaman');
 
 // General payment form (jika masih dipakai)
 Route::get('/general', function () {
