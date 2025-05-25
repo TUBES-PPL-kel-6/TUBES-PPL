@@ -39,6 +39,16 @@
          <!-- Loan Application Form Section -->
          <div class="bg-white rounded-lg shadow-lg p-8">
              <h2 class="text-2xl font-semibold text-gray-800 mb-6">Form Pengajuan Pinjaman</h2>
+             <!-- Tambahkan di atas form -->
+                @if ($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
              <form method="POST" action="{{ route('loan.store') }}" enctype="multipart/form-data">
                  @csrf
                  <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
@@ -84,7 +94,7 @@
                      <div>
                          <label for="tenor" class="block text-sm font-medium text-gray-700 mb-1">Tenor</label>
                          <div class="relative">
-                             <input type="text" name="tenor" id="tenor" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1 - 100">
+                             <input type="number" name="tenor" id="tenor" min="1" max="100" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1 - 100">
                              <span class="absolute right-3 top-3 text-gray-500">Bulan</span>
                          </div>
                      </div>

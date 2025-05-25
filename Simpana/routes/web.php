@@ -12,21 +12,12 @@ use App\Http\Controllers\DiscussionCommentController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\ShuController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\LoanPaymentController;
 use App\Http\Controllers\ProfitReportController;
-use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
 
-// Public routes
-Route::get('/', function () {
-    return view('welcome');
-});
-
+// Landing page
 Route::get('/', function () {
     return view('landingPage');
 });
@@ -35,10 +26,6 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
-Route::post('/login', [RegistController::class, 'login'])->name('login.post');
 
 // Registration routes
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
@@ -67,6 +54,7 @@ Route::get('/dashboard', function () {
 
 // User routes - requires authentication
 Route::middleware(['auth'])->group(function () {
+    // Dashboard utama user (pakai closure, bukan controller)
     Route::get('/user', function () {
         return view('layouts.dashboard');
     })->name('user.dashboard');
@@ -89,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
-    // Profit Report Routes - Update these routes
+    // Profit Report Routes
     Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
     Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
 
@@ -98,29 +86,32 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
     Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 
-    Route::get('/admin/users', [UserController::class, 'listUsers'])->name('admin.users');
-    Route::post('/admin/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
+    // User management
+    Route::get('/users', [UserController::class, 'listUsers'])->name('admin.users');
+    Route::post('/users/{id}/remind', [UserController::class, 'remindUser'])->name('admin.users.remind');
 
     // Loan Payment Routes - Admin side
-    Route::get('/admin/payments', [LoanPaymentController::class, 'adminVerification'])->name('admin.payment-verification');
-    Route::get('/admin/payments/{payment}', [LoanPaymentController::class, 'getPaymentDetails']);
-    Route::post('/admin/payments/{payment}/verify', [LoanPaymentController::class, 'verify'])->name('admin.payment.verify');
-    Route::post('/admin/payments/{payment}/reject', [LoanPaymentController::class, 'reject'])->name('admin.payment.reject');
+    Route::get('/payments', [LoanPaymentController::class, 'adminVerification'])->name('admin.payment-verification');
+    Route::get('/payments/{payment}', [LoanPaymentController::class, 'getPaymentDetails']);
+    Route::post('/payments/{payment}/verify', [\App\Http\Controllers\LoanPaymentController::class, 'verify'])
+        ->name('admin.payment.verify');
+    Route::post('/payments/{payment}/reject', [\App\Http\Controllers\LoanPaymentController::class, 'reject'])
+        ->name('admin.payment.reject');
 
-    // Profit Report Routes - Update these routes
-    Route::get('/profit-report', [ProfitReportController::class, 'index'])->name('profit-report.index');
-    Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
-    // Other admin routes...
+    // SHU
+    Route::get('/shu', [ShuController::class, 'index'])->name('admin.shu.index');
+    Route::post('/shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
 });
 
-// Dashboard routes
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
-Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
-Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
-Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
-Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
-Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])->name('dashboard.transactions');
+// Dashboard routes (khusus fitur simpanan, transaksi, dsb)
+Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(function() {
+    Route::get('/profile', [DashboardController::class, 'profile'])->name('profile');
+    Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/simpanan', [DashboardController::class, 'simpanan'])->name('simpanan');
+    Route::get('/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('simpanan.create');
+    Route::post('/simpanan', [DashboardController::class, 'storeSimpanan'])->name('simpanan.store');
+    Route::get('/transactions', [DashboardController::class, 'transactions'])->name('transactions');
+});
 
 // Discussion routes
 Route::get('/discussion', [DiscussionController::class, 'index'])->name('discussion.index');
@@ -130,33 +121,22 @@ Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])-
 Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-Route::get('/admin-loan-applications', function () {
-    return view('admin-loan-application');
-});
-
 // Notification routes
-Route::get('/notifications/simpanan', function () {
-    return view('notifications', ['type' => 'simpanan']);
-})->name('notifications.simpanan');
 Route::get('/notifications', [UserController::class, 'showNotifications'])->name('notifications');
+Route::get('/notifications/general', [UserController::class, 'showGeneralNotifications'])->name('notifications.general');
 Route::get('/notifications/simpanan', function () {
     return view('notifications', ['type' => 'simpanan']);
 })->name('notifications.simpanan');
-Route::get('/notifications/pinjaman', function () {
-    return view('notifications', ['type' => 'pinjaman']);
-})->name('notifications.pinjaman');
-Route::get('/notifications/general', [UserController::class, 'showGeneralNotifications'])->name('notifications.general');
 Route::get('/notifications/pinjaman', function () {
     return view('notifications', ['type' => 'pinjaman']);
 })->name('notifications.pinjaman');
 
+// General payment form (jika masih dipakai)
 Route::get('/general', function () {
     return view('payment-form');
 })->name('payment-form');
 
-// Simpanan functionality routes
-Route::prefix('dashboard')->name('dashboard.')->middleware(['auth'])->group(function() {
-    Route::get('/simpanan', [SimpananController::class, 'index'])->name('simpanan');
-    Route::get('/simpanan/create', [SimpananController::class, 'create'])->name('simpanan.create');
-    Route::post('/simpanan', [SimpananController::class, 'store'])->name('simpanan.store');
+// Admin loan application view (jika masih dipakai)
+Route::get('/admin-loan-applications', function () {
+    return view('admin-loan-application');
 });

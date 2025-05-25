@@ -150,8 +150,10 @@
             // Update loan status
             $loanApplication->update(['status' => 'approved']);
 
-            // Create payment schedule
-            $this->createPaymentSchedule($loanApplication);
+            // Create payment schedule ONLY if it doesn't exist yet
+            if ($loanApplication->payments()->count() == 0) {
+                $this->createPaymentSchedule($loanApplication);
+            }
 
             // Notify user
             Notification::create([
@@ -168,6 +170,11 @@
 
         private function createPaymentSchedule(LoanApplication $loan)
         {
+            // Double check - prevent duplicate schedules
+            if ($loan->payments()->count() > 0) {
+                return; // Schedule already exists
+            }
+
             // Calculate monthly installment amount
             $monthlyAmount = $loan->loan_amount / $loan->tenor;
 
@@ -180,9 +187,9 @@
                     'loan_application_id' => $loan->id,
                     'amount' => $monthlyAmount,
                     'installment_number' => $i,
-                    'payment_date' => null, // This is causing the error
+                    'payment_date' => null,
                     'due_date' => $dueDate->copy(),
-                    'payment_method' => null, // This might be causing another error
+                    'payment_method' => null,
                     'status' => 'pending'
                 ]);
 
@@ -196,5 +203,34 @@
             $loanApplication->update(['status' => 'rejected']);
             return redirect()->route('loanApproval')
                 ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
+        }
+
+        /**
+         * Clean up duplicate payments - EMERGENCY FIX
+         */
+        public function cleanupDuplicatePayments(LoanApplication $loan)
+        {
+            // Get all payments grouped by installment number
+            $payments = $loan->payments()->orderBy('installment_number')->orderBy('created_at')->get();
+
+            $seenInstallments = [];
+            $toDelete = [];
+
+            foreach ($payments as $payment) {
+                if (in_array($payment->installment_number, $seenInstallments)) {
+                    // This is a duplicate, mark for deletion
+                    $toDelete[] = $payment->id;
+                } else {
+                    // First occurrence, keep it
+                    $seenInstallments[] = $payment->installment_number;
+                }
+            }
+
+            // Delete duplicates
+            if (!empty($toDelete)) {
+                LoanPayment::whereIn('id', $toDelete)->delete();
+            }
+
+            return redirect()->back()->with('success', 'Duplicate payments cleaned up successfully.');
         }
 }

@@ -26,6 +26,7 @@
      <!-- Font  -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
      <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  </head>
  <body class="flex bg-gray-50 text-gray-800 font-sans">
     <!-- Sidebar -->
@@ -50,6 +51,9 @@
          </a>
          <a href="{{ route('loan.create') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
          <i class="fa-solid fa-file-invoice-dollar"></i> <span class="sidebar-text">Pinjaman</span>
+         </a>
+         <a href="{{ route('loan-payments.index') }}" class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition">
+         <i class="fa-solid fa-money-check-dollar"></i> <span class="sidebar-text">Pembayaran Pinjaman</span>
          </a>
              <!-- Dropdown Discussion & Feedback -->
              <div x-data="{ open: false }">
