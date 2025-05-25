@@ -63,7 +63,10 @@ class UserController extends Controller
 
     public function showNotifications()
     {
-        $notifications = \App\Models\Notification::where('user_id', auth()->id())->latest()->get();
+        $notifications = \App\Models\Notification::where('user_id', auth()->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('notifications', compact('notifications'));
     }
 
