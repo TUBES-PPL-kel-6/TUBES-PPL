@@ -175,7 +175,7 @@
                                 @foreach($loans as $loan)
                                 <tr>
                                     <td>{{ $loan->id }}</td>
-                                    <td>{{ $loan->user->name }}</td>
+                                    <td>{{ $loan->user->nama ?? $loan->user->name }}</td>
                                     <td>{{ $loan->loan_product }}</td>
                                     <td>Rp {{ number_format($loan->loan_amount, 0, ',', '.') }}</td>
                                     <td>{{ $loan->tenor }} Bulan</td>

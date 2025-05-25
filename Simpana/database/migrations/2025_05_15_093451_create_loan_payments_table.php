@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('due_date');
             $table->string('payment_method')->nullable(); // Make this nullable
             $table->string('payment_proof')->nullable();
-            $table->enum('status', ['pending', 'paid', 'overdue', 'verified'])->default('pending');
+            $table->enum('status', ['pending', 'paid', 'overdue', 'verified', 'rejected'])->default('pending');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

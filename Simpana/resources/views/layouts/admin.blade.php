@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard') - SIMPANA</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary: #8C1414;
@@ -123,19 +124,16 @@
             <div class="title">@yield('header', 'Dashboard')</div>
             <div class="d-flex align-items-center">
                 <div class="dropdown">
-                    <button class="btn btn-link text-dark dropdown-toggle text-decoration-none" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-link text-dark dropdown-toggle text-decoration-none" type="button" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ Auth::user()->nama }}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
                         <a class="dropdown-item" href="/admin/profile">Profil</a>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item" href="#"
-                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                Keluar
-                            </a>
-                        </li>
-                    </ul>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Keluar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,7 +147,12 @@
         <p class="mb-0">&copy; {{ date('Y') }} SIMPANA. All rights reserved.</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap 4 JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     @stack('scripts')
 </body>
 </html>
