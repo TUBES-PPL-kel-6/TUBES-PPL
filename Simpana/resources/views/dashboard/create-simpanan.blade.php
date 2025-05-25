@@ -40,7 +40,7 @@
                         <a href="#" onclick="switchPaymentType('wajib')" id="tab-wajib" class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Wajib</a>
                         <a href="#" onclick="switchPaymentType('sukarela')" id="tab-sukarela" class="px-4 py-1 rounded-full text-sm {{ $type == 'sukarela' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Sukarela</a>
                     </div>
-                    
+
                     <h1 class="text-3xl font-bold" id="payment-title">Simpanan Pokok</h1>
                     <p class="text-sm mt-1 opacity-90" id="payment-description">
                         Setoran simpanan pokok dengan jumlah tetap.
@@ -51,13 +51,13 @@
                     <form action="{{ route('dashboard.simpanan.store') }}" method="POST" id="payment-form">
                         @csrf
                         <input type="hidden" name="jenis_simpanan" id="jenis_simpanan" value="pokok">
-                        
+
                         <!-- Amount Input Section -->
                         <div class="mb-6">
                             <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nominal Simpanan</label>
                             <div class="relative" id="amount-container">
-                                <input type="text" id="amount" name="jumlah" value="50000" 
-                                       class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed" 
+                                <input type="text" id="amount" name="jumlah" value="50000"
+                                       class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                                        readonly>
                             </div>
                             <p class="text-xs text-gray-500 mt-1" id="amount-description">Simpanan pokok memiliki jumlah tetap sesuai ketentuan.</p>
@@ -74,7 +74,7 @@
                                     </div>
                                     <div class="text-xs text-gray-500">Transfer dari rekening bank</div>
                                 </div>
-                                
+
                                 <div class="payment-option border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition">
                                     <div class="flex items-center mb-2">
                                         <input type="radio" name="payment_method" value="ewallet" class="mr-2">
@@ -82,7 +82,7 @@
                                     </div>
                                     <div class="text-xs text-gray-500">DANA, GoPay, OVO, dll</div>
                                 </div>
-                                
+
                                 <div class="payment-option border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition">
                                     <div class="flex items-center mb-2">
                                         <input type="radio" name="payment_method" value="cash" class="mr-2">
@@ -124,7 +124,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Success Modal (hidden by default) -->
     <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg p-8 max-w-md w-full">
@@ -162,31 +162,31 @@
         const tabPokok = document.getElementById('tab-pokok');
         const tabWajib = document.getElementById('tab-wajib');
         const tabSukarela = document.getElementById('tab-sukarela');
-        
+
         // Set the hidden input value
         jenisSimpananInput.value = type;
-        
+
         // Reset all tabs
         [tabPokok, tabWajib, tabSukarela].forEach(tab => {
             tab.classList.remove('bg-white', 'text-primary');
             tab.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
         });
-        
+
         if (type === 'pokok') {
             // Update title and description
             titleElement.textContent = 'Simpanan Pokok';
             descriptionElement.textContent = 'Setoran simpanan pokok dengan jumlah tetap.';
-            
+
             // Update amount input
             amountElement.value = '50000';
             amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
             amountElement.setAttribute('readonly', true);
             amountDescription.textContent = 'Simpanan pokok memiliki jumlah tetap sesuai ketentuan.';
-            
+
             // Update summary
             summaryAmount.textContent = 'Rp50.000';
             summaryTotal.textContent = 'Rp50.000';
-            
+
             // Update tab
             tabPokok.classList.add('bg-white', 'text-primary');
             tabPokok.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
@@ -194,17 +194,17 @@
             // Update title and description
             titleElement.textContent = 'Simpanan Wajib';
             descriptionElement.textContent = 'Simpanan wajib bulanan dengan jumlah tetap.';
-            
+
             // Update amount input
             amountElement.value = '50000';
             amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
             amountElement.setAttribute('readonly', true);
             amountDescription.textContent = 'Simpanan wajib sebesar Rp50.000 per bulan.';
-            
+
             // Update summary
             summaryAmount.textContent = 'Rp50.000';
             summaryTotal.textContent = 'Rp50.000';
-            
+
             // Update tab
             tabWajib.classList.add('bg-white', 'text-primary');
             tabWajib.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
@@ -212,78 +212,78 @@
             // Update title and description
             titleElement.textContent = 'Simpanan Sukarela';
             descriptionElement.textContent = 'Pilih jumlah setoran simpanan sukarela sesuai keinginan Anda.';
-            
+
             // Update amount input
             amountElement.value = '';
             amountElement.classList.remove('bg-gray-100', 'cursor-not-allowed');
             amountElement.removeAttribute('readonly');
             amountDescription.textContent = 'Minimal simpanan sukarela Rp10.000';
-            
+
             // Update summary
             summaryAmount.textContent = 'Rp0';
             summaryTotal.textContent = 'Rp0';
-            
+
             // Update tab
             tabSukarela.classList.add('bg-white', 'text-primary');
             tabSukarela.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
         }
     }
-    
+
     // Format currency input
     function formatCurrency(input) {
         // Remove non-digit characters
         let value = input.value.replace(/\D/g, '');
-        
+
         // Format with thousand separators
         if (value !== '') {
             value = parseInt(value).toLocaleString('id-ID');
         }
-        
+
         input.value = value;
-        
+
         // Update summary
         updateSummary();
     }
-    
+
     function updateSummary() {
         const amountInput = document.getElementById('amount');
         const summaryAmount = document.getElementById('summary-amount');
         const summaryTotal = document.getElementById('summary-total');
-        
+
         // Get input value and remove non-digits
         let value = amountInput.value.replace(/\D/g, '');
-        
+
         if (value === '') {
             value = '0';
         }
-        
+
         // Format for display
         const formattedValue = parseInt(value).toLocaleString('id-ID');
-        
+
         summaryAmount.textContent = `Rp${formattedValue}`;
         summaryTotal.textContent = `Rp${formattedValue}`;
     }
-    
+
     // Initialize payment method selection
     document.addEventListener('DOMContentLoaded', function() {
         const paymentOptions = document.querySelectorAll('.payment-option');
-        
+
         paymentOptions.forEach(option => {
             const radio = option.querySelector('input[type="radio"]');
-            
+
             option.addEventListener('click', function() {
                 radio.checked = true;
-                
+
                 // Remove selected styling from all options
                 paymentOptions.forEach(opt => {
                     opt.classList.remove('border-primary', 'bg-blue-50');
                 });
-                
+
                 // Add selected styling
                 option.classList.add('border-primary', 'bg-blue-50');
             });
         });
-        
+
         // Add input event listener
         const amountInput = document.getElementById('amount');
         amountInput.addEventListener('input', function() {
@@ -294,11 +294,11 @@
         const currentType = '{{ $type }}';
         switchPaymentType(currentType);
     });
-    
+
     function showPaymentSuccess() {
         document.getElementById('success-modal').classList.remove('hidden');
     }
-    
+
     function closeModal() {
         document.getElementById('success-modal').classList.add('hidden');
     }
