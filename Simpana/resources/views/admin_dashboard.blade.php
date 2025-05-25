@@ -2,173 +2,167 @@
 use Illuminate\Support\Facades\Auth;
 @endphp
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashbord Pengurus</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #F4F6FA;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .sidebar {
-            background-color: #8C1414;
-            min-height: 100vh;
-            position: fixed;
-            width: 220px;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-            color: #fff;
-        }
-        .sidebar h4 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 20px;
-            display: block;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-        .sidebar a:hover, .sidebar a.active {
-            background-color: #A22D2D;
-        }
-        .main-content {
-            margin-left: 240px;
-            padding: 20px;
-        }
-        .navbar {
-            background-color: #fff;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .navbar .title {
-            font-weight: bold;
-            font-size: 20px;
-            color: #8C1414;
-        }
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-        .footer {
-            text-align: center;
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            background-color: #87CE45;
-            margin-top: 30px;
-        }
-        .list-group-item {
-            border: none;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            background: #ffffff;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        }
-    </style>
-</head>
-<body>
-    @if(Auth::check() && Auth::user()->role === 'admin')
-        <div class="sidebar">
-            <h4>SIMPANA</h4>
-            <a href="#" class="active">Dashboard</a>
-            <a href="#">Riwayat Simpanan</a>
-            <a href="#">Setor Simpanan</a>
-            <a href="#">Pinjaman</a>
-            <a href="#">List User</a>
-            <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
-            <a href="#">Profil</a>
-            <a href="#">Pengaturan</a>
-            <a href="#">Keluar</a>
-            <a href="{{ route('notifications.general') }}"
-               class="block py-2 px-4 rounded-lg {{ request()->routeIs('notifications.general') ? 'text-[#8C1414] font-semibold bg-gray-100' : 'text-gray-700 hover:bg-gray-100' }}">
-                General
+@extends('layouts.admin')
+
+@section('title', 'Dashboard Pengurus')
+@section('header', 'Dashboard Pengurus')
+
+@section('content')
+    <div class="row mb-4">
+        <!-- Stats Cards -->
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-users fa-2x text-primary"></i>
+                    </div>
+                    <h6 class="text-muted">Anggota Aktif</h6>
+                    <h3 class="font-weight-bold mb-0">{{ number_format($totalAnggota ?? 0) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-wallet fa-2x text-success"></i>
+                    </div>
+                    <h6 class="text-muted">Total Simpanan</h6>
+                    <h3 class="font-weight-bold mb-0">Rp {{ number_format($totalSimpanan ?? 0, 0, ',', '.') }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-hand-holding-usd fa-2x text-warning"></i>
+                    </div>
+                    <h6 class="text-muted">Pinjaman Aktif</h6>
+                    <h3 class="font-weight-bold mb-0">{{ number_format($totalPinjamanAktif ?? 0) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <i class="fas fa-money-bill-wave fa-2x text-danger"></i>
+                    </div>
+                    <h6 class="text-muted">Total Pinjaman</h6>
+                    <h3 class="font-weight-bold mb-0">Rp {{ number_format($totalNominalPinjaman ?? 0, 0, ',', '.') }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaksi Terbaru -->
+    <h5 class="mb-3">Transaksi Terbaru</h5>
+    <div class="card p-3 mb-4">
+        <div class="list-group">
+            @forelse($transaksiTerbaru as $trx)
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ $trx->jenis_transaksi ?? '-' }}</strong>
+                        <small class="text-muted">
+                            {{ $trx->user->nama ?? '-' }} &middot; {{ \Carbon\Carbon::parse($trx->created_at)->format('d M Y H:i') }}
+                        </small>
+                        @if($trx->keterangan)
+                            <div class="text-muted small">{{ $trx->keterangan }}</div>
+                        @endif
+                    </div>
+                    <div>
+                        <span class="mr-2 {{ $trx->jumlah > 0 ? 'text-success' : 'text-danger' }}">
+                            {{ $trx->jumlah > 0 ? '+' : '-' }} Rp {{ number_format(abs($trx->jumlah), 0, ',', '.') }}
+                        </span>
+                        <span class="badge {{ $trx->status == 'approved' ? 'bg-success' : 'bg-warning text-dark' }}">
+                            {{ ucfirst($trx->status) }}
+                        </span>
+                    </div>
+                </div>
+            @empty
+                <div class="list-group-item text-center text-muted">
+                    Tidak ada transaksi terbaru.
+                </div>
+            @endforelse
+        </div>
+        <div class="mt-3 text-end">
+            <!-- Lihat Semua Transaksi -->
+            <a href="{{ route('dashboard.transactions') }}" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-list"></i> Lihat Semua Transaksi
             </a>
         </div>
+    </div>
 
-        <div class="main-content">
-            <div class="navbar">
-                <div class="title">Dashbord Pengurus</div>
-                <div class="d-flex align-items-center">
-                    <input type="text" class="form-control me-3" placeholder="Search...">
-                    <span class="me-3">🔔</span>
-                    <span>John Doe ▼</span>
-                </div>
-            </div>
-
-            <h5 class="mb-3">Transaksi Terbaru</h5>
-            <div class="card p-3">
-                <div class="list-group">
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Bayar Angsuran <small class="text-muted">Auto Debit</small></div>
-                        <div>- Rp 850.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Setor Simpanan <small class="text-muted">Transfer Bank</small></div>
-                        <div>+ Rp 1.500.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                    <div class="list-group-item d-flex justify-content-between">
-                        <div>Ambil Pinjaman <small class="text-muted">Pinjaman Baru</small></div>
-                        <div>+ Rp 15.000.000 <span class="badge bg-success">Selesai</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <h5 class="mb-3">Pemberitahuan</h5>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-danger">Pembayaran Angsuran Jatuh Tempo</span>
-                    <span class="badge bg-danger">3 Hari Lagi</span>
-                </div>
-            </div>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-success">Setoran Bulanan Berhasil</span>
-                    <span class="badge bg-success">12 Apr 2025</span>
-                </div>
-            </div>
-            <div class="p-4 bg-white rounded shadow-sm mb-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-warning">Program Simpanan Baru</span>
-                    <span class="badge bg-warning">Lihat detail</span>
-                </div>
-            </div>
-
-            <!-- Add a button to route to /user -->
-            <a href="{{ url('/user') }}" class="btn btn-primary">Go to User Dashboard</a>
-
-            @if(isset($notifications))
-                @foreach($notifications as $notif)
-                    <div class="alert alert-info">
-                        {{ $notif->message }}
-                        <span class="text-muted float-end">{{ $notif->created_at->format('d-m-Y H:i') }}</span>
-                    </div>
-                @endforeach
-            @endif
+    <!-- Top Penabung Bulan Ini -->
+    <h5 class="mb-3">Top Penabung Bulan Ini</h5>
+    <div class="p-4 bg-white rounded shadow-sm mb-4">
+        <ol class="list-group list-group-numbered">
+            @forelse($topPenabung as $user)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="fas fa-crown text-warning mr-2"></i>
+                        {{ $user->nama }}
+                    </span>
+                    <span class="badge bg-primary">
+                        Rp {{ number_format($user->simpanans_sum_jumlah ?? 0, 0, ',', '.') }}
+                    </span>
+                </li>
+            @empty
+                <li class="list-group-item text-muted">Belum ada data penabung bulan ini.</li>
+            @endforelse
+        </ol>
+        <div class="mt-3 text-end">
+            <!-- Lihat Semua Anggota -->
+            <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-users"></i> Lihat Semua Anggota
+            </a>
         </div>
-    @else
-        <!-- Redirect or show user content -->
-    @endif
-</body>
-</html>
+    </div>
+
+    <!-- Quick Actions (Aksi Cepat) -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('admin.payment-verification') }}" class="btn btn-lg btn-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-clipboard-check"></i> Verifikasi Pembayaran
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('loanApproval') }}" class="btn btn-lg btn-success w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-file-signature"></i> Verifikasi Pinjaman
+            </a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <a href="{{ route('complaint.create') }}" class="btn btn-lg btn-warning w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="fa-solid fa-comment-dots"></i> Kelola Feedback
+            </a>
+        </div>
+    </div>
+
+    <!-- Ringkasan Laporan Laba (SHU) -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="mb-1 text-muted">Laporan Laba (SHU) Terakhir</h6>
+                <div class="fw-bold">
+                    @if(isset($lastShu) && $lastShu)
+                        Tahun {{ $lastShu->tahun }} &middot; Rp {{ number_format($lastShu->total_shu, 0, ',', '.') }}
+                    @else
+                        Belum ada data SHU.
+                    @endif
+                </div>
+            </div>
+            <!-- SHU -->
+            <a href="{{ route('admin.shu.index') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-calculator"></i> Generate SHU
+            </a>
+        </div>
+    </div>
+
+    <!-- Go to User Dashboard -->
+    <a href="{{ route('user.dashboard') }}" class="btn btn-primary mb-3">Go to User Dashboard</a>
+@endsection
+
+@push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@endpush
