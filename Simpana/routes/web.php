@@ -16,6 +16,7 @@ use App\Http\Controllers\ShuController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\LoanPaymentController;
 use App\Http\Controllers\ProfitReportController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Landing page
@@ -56,9 +57,7 @@ Route::get('/dashboard', function () {
 // User routes - requires authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard utama user (pakai closure, bukan controller)
-    Route::get('/user', function () {
-        return view('layouts.dashboard');
-    })->name('user.dashboard');
+    Route::get('/user', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
     // Loan Application Routes
     Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
@@ -122,15 +121,8 @@ Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])-
 Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-// Notification routes
+// Notification route (hanya satu)
 Route::get('/notifications', [UserController::class, 'showNotifications'])->name('notifications');
-Route::get('/notifications/general', [UserController::class, 'showGeneralNotifications'])->name('notifications.general');
-Route::get('/notifications/simpanan', function () {
-    return view('notifications', ['type' => 'simpanan']);
-})->name('notifications.simpanan');
-Route::get('/notifications/pinjaman', function () {
-    return view('notifications', ['type' => 'pinjaman']);
-})->name('notifications.pinjaman');
 
 // General payment form (jika masih dipakai)
 Route::get('/general', function () {

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('jumlah', 15, 2);
             $table->date('tanggal');
             $table->string('keterangan')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending'); // <-- Tambahkan baris ini
             $table->timestamps();
         });
     }
