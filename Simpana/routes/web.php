@@ -16,6 +16,7 @@ use App\Http\Controllers\ShuController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\LoanPaymentController;
 use App\Http\Controllers\ProfitReportController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Landing page
@@ -56,9 +57,7 @@ Route::get('/dashboard', function () {
 // User routes - requires authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard utama user (pakai closure, bukan controller)
-    Route::get('/user', function () {
-        return view('layouts.dashboard');
-    })->name('user.dashboard');
+    Route::get('/user', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
     // Loan Application Routes
     Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');

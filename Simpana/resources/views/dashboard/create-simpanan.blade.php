@@ -36,9 +36,14 @@
                 <div class="bg-primary text-white p-5">
                     <!-- Payment Type Tabs -->
                     <div class="flex mb-3 space-x-2">
-                        <a href="#" onclick="switchPaymentType('pokok')" id="tab-pokok" class="px-4 py-1 rounded-full text-sm {{ $type == 'pokok' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Pokok</a>
-                        <a href="#" onclick="switchPaymentType('wajib')" id="tab-wajib" class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Wajib</a>
-                        <a href="#" onclick="switchPaymentType('sukarela')" id="tab-sukarela" class="px-4 py-1 rounded-full text-sm {{ $type == 'sukarela' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">Simpanan Sukarela</a>
+                        <a href="{{ route('dashboard.simpanan.create', ['type' => 'wajib']) }}" id="tab-wajib"
+                           class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">
+                            Simpanan Wajib
+                        </a>
+                        <a href="{{ route('dashboard.simpanan.create', ['type' => 'sukarela']) }}" id="tab-sukarela"
+                           class="px-4 py-1 rounded-full text-sm {{ $type == 'sukarela' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">
+                            Simpanan Sukarela
+                        </a>
                     </div>
 
                     <h1 class="text-3xl font-bold" id="payment-title">Simpanan Pokok</h1>
@@ -50,7 +55,7 @@
                 <div class="p-6">
                     <form action="{{ route('dashboard.simpanan.store') }}" method="POST" id="payment-form">
                         @csrf
-                        <input type="hidden" name="jenis_simpanan" id="jenis_simpanan" value="pokok">
+                        <input type="hidden" name="jenis_simpanan" id="jenis_simpanan" value="{{ $type }}">
 
                         <!-- Amount Input Section -->
                         <div class="mb-6">
