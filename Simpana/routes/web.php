@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
@@ -140,3 +141,6 @@ Route::get('/general', function () {
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
 });
+
+
+
