@@ -33,11 +33,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
 
-// Acceptance routes
-Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
-Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
-Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
-
 // Complaint routes
 Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
 Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
@@ -104,6 +99,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/shu/generate', [ShuController::class, 'showGenerateForm'])->name('admin.shu.form');
     Route::post('/shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
     Route::post('/shu/generate-pdf', [ShuController::class, 'generatePDF'])->name('admin.shu.generatePDF');
+
+    // Acceptance routes
+    Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
+    Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
+    Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 });
 
 // Dashboard routes (khusus fitur simpanan, transaksi, dsb)

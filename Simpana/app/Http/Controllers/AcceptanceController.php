@@ -56,10 +56,22 @@ class AcceptanceController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if ($user && $user->status === 'rejected') {
-            return back()->withErrors([
-                'email' => 'User rejected',
-            ])->withInput($request->only('email'));
+        if ($user) {
+            // For regular users, check status
+            if ($user->role !== 'admin') {
+                if ($user->status === 'rejected') {
+                    return back()->withErrors([
+                        'email' => 'Akun Anda telah ditolak.'
+                    ])->withInput($request->only('email'));
+                }
+                
+                if ($user->status === 'pending') {
+                    return back()->withErrors([
+                        'email' => 'Akun Anda masih dalam proses persetujuan. Silakan tunggu hingga akun disetujui.'
+                    ])->withInput($request->only('email'));
+                }
+            }
+            // Admin bypasses status check
         }
 
         if (Auth::attempt($request->only('email', 'password'))) {
