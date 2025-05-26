@@ -111,6 +111,8 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
     Route::get('/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('simpanan.create');
     Route::post('/simpanan', [DashboardController::class, 'storeSimpanan'])->name('simpanan.store');
     Route::get('/transactions', [DashboardController::class, 'transactions'])->name('transactions');
+    Route::get('/shu', [DashboardController::class, 'shu'])->name('shu');
+    Route::get('/shu/download-pdf/{tahun}', [DashboardController::class, 'downloadShuPdf'])->name('shu.download_pdf');
 });
 
 // Discussion routes
