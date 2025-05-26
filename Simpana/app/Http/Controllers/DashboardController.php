@@ -144,6 +144,8 @@ class DashboardController extends Controller
             'jumlah' => $jumlah,
             'tanggal' => now(),
             'keterangan' => $request->keterangan,
+
+            'status' => 'approved', // <-- langsung approved
         ]);
 
         // Buat notifikasi ke user
@@ -155,7 +157,7 @@ class DashboardController extends Controller
         ]);
 
         return redirect()->route('dashboard.simpanan')
-            ->with('success', 'Setoran simpanan berhasil diajukan');
+            ->with('success', 'Setoran simpanan berhasil ditambahkan');
     }
 
     // Method untuk Teller
