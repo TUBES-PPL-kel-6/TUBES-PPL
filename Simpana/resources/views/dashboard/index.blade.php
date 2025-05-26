@@ -48,7 +48,7 @@
         <div class="w-full md:w-3/4">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h1 class="text-2xl font-bold mb-6">Dashboard Anggota</h1>
-                
+
                 <!-- Total Simpanan -->
                 <div class="mb-8">
                     <h2 class="text-lg font-semibold mb-4">Total Simpanan</h2>
@@ -97,14 +97,53 @@
                                         Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $transaksi->status === 'approved' ? 'bg-green-100 text-green-800' : 
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $transaksi->status === 'approved' ? 'bg-green-100 text-green-800' :
                                                ($transaksi->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
                                             {{ ucfirst($transaksi->status) }}
                                         </span>
                                     </td>
                                 </tr>
                                 @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Riwayat Simpanan Pokok -->
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold mb-4">Riwayat Simpanan Pokok</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($riwayatPokok as $pokok)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ \Carbon\Carbon::parse($pokok->tanggal)->format('d M Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        Rp {{ number_format($pokok->jumlah, 0, ',', '.') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $pokok->status === 'approved' ? 'bg-green-100 text-green-800' :
+                                               ($pokok->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                            {{ ucfirst($pokok->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-center text-gray-500">Belum ada riwayat simpanan pokok.</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -126,4 +165,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

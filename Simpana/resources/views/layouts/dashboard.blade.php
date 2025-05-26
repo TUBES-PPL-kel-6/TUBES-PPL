@@ -75,8 +75,12 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full {{ $trx->type == 'debit' ? 'bg-red-100' : 'bg-green-100' }} flex items-center justify-center">
-                                    <i class="fa-solid {{ $trx->type == 'debit' ? 'fa-arrow-up text-red-600' : 'fa-arrow-down text-green-600' }}"></i>
+                                <div class="w-10 h-10 rounded-full
+                                    @if($trx->type == 'simpanan') bg-blue-100
+                                    @else bg-green-100 @endif flex items-center justify-center">
+                                    <i class="fa-solid
+                                        @if($trx->type == 'simpanan') fa-piggy-bank text-blue-600
+                                        @else fa-money-check-dollar text-green-600 @endif"></i>
                                 </div>
                                 <div>
                                     <p class="font-medium">{{ $trx->description }}</p>
@@ -84,12 +88,16 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="py-4">{{ \Carbon\Carbon::parse($trx->tanggal)->format('d M Y') }}</td>
+                        <td class="py-4">
+                            {{ $trx->tanggal ? \Carbon\Carbon::parse($trx->tanggal)->format('d M Y') : '-' }}
+                        </td>
                         <td class="py-4 font-medium">
-                            {{ $trx->type == 'debit' ? '-' : '+' }} Rp {{ number_format($trx->jumlah, 0, ',', '.') }}
+                            Rp {{ number_format($trx->jumlah, 0, ',', '.') }}
                         </td>
                         <td class="py-4">
-                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">{{ ucfirst($trx->status) }}</span>
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+                                {{ ucfirst($trx->status) }}
+                            </span>
                         </td>
                     </tr>
                     @empty

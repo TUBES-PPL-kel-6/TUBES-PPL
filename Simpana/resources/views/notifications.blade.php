@@ -7,7 +7,6 @@
             <h2 class="text-2xl font-bold text-[#8C1414]">
                 Notifikasi
             </h2>
-            <button class="px-4 py-2 bg-[#8C1414] text-white rounded hover:bg-[#641010]">Tandai semua telah dibaca</button>
         </div>
         <div class="bg-white rounded-lg shadow divide-y">
             @if(isset($notifications) && count($notifications))

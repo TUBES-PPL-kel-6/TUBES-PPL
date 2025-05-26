@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Simpanan; // Tambahkan di atas
 
 class simpPokokController extends Controller
 {
@@ -17,10 +18,18 @@ class simpPokokController extends Controller
 
     public function process(Request $request)
     {
-        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Update the user's payment status
+        // Simpan ke tabel Simpanan
+        Simpanan::create([
+            'user_id'        => $user->id,
+            'jenis_simpanan' => 'pokok', // atau sesuai kebutuhan
+            'jumlah'         => 50000,   // nominal pembayaran, bisa dari request jika dinamis
+            'tanggal'        => now(),
+            'status'         => 'approved', // agar langsung masuk laporan
+        ]);
+
+        // Update status user
         $user->update([
             'has_paid' => true,
         ]);

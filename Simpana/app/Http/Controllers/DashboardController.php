@@ -13,11 +13,19 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        // Ensure $user is an instance of the Eloquent User model
-        if (!($user instanceof \App\Models\User)) {
-            $user = \App\Models\User::find($user->id);
-        }
+        $user = auth()->user();
+
+        // Total Simpanan Pokok
+        $totalSimpananPokok = Simpanan::where('user_id', $user->id)
+            ->where('jenis_simpanan', 'pokok')
+            ->where('status', 'approved')
+            ->sum('jumlah');
+
+        // Riwayat Simpanan Pokok
+        $riwayatPokok = Simpanan::where('user_id', $user->id)
+            ->where('jenis_simpanan', 'pokok')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         // Hitung total simpanan
         $totalSimpananPokok = Simpanan::where('user_id', $user->id)
