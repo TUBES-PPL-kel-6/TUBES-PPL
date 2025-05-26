@@ -94,17 +94,19 @@ class SimpananController extends Controller
         // Validate request first
         $request->validate([
             'jenis_simpanan' => 'required|in:pokok,wajib,sukarela',
-            'jumlah' => 'required|numeric|min:0',
+            'jumlah' => 'required', // Changed from numeric to handle formatted input
             'keterangan' => 'nullable|string|max:255',
-            'payment_method' => 'required|in:transfer,cash'
+            'payment_method' => 'required|in:transfer,cash,ewallet'
         ]);
 
-        // Format jumlah from string to number if needed
+        // Format jumlah from string to number
         $jumlah = $request->jumlah;
         if (is_string($jumlah)) {
-            $jumlah = str_replace('.', '', $jumlah); // Remove thousand separators
-            $jumlah = str_replace(',', '.', $jumlah); // Replace comma with dot for decimal
+            $jumlah = str_replace('.', '', $jumlah); // Remove thousand separators (dots)
         }
+
+        // Now convert to numeric for comparison and storage
+        $jumlah = (float) $jumlah;
 
         // Additional validation for minimum amounts
         $minAmount = [
@@ -120,7 +122,7 @@ class SimpananController extends Controller
                     number_format($minAmount[$request->jenis_simpanan], 0, ',', '.'));
         }
 
-        // Check wajib payment for current month
+        // Check wajib payment for current month - additional verification
         if ($request->jenis_simpanan === 'wajib') {
             if ($this->checkCurrentMonthWajib($user->id)) {
                 return redirect()->route('dashboard.simpanan')

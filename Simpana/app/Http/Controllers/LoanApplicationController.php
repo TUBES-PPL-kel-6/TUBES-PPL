@@ -49,16 +49,25 @@
          */
         public function store(Request $request)
         {
+            // Validate the form data
             $request->validate([
-                'loan_product' => 'required',
-                'loan_amount' => 'required',
+                'user_id' => 'required|exists:users,id',
+                'loan_product' => 'required|string',
+                'application_note' => 'nullable|string',
+                'loan_amount' => 'required|string',  // Using string to handle formatted input
                 'tenor' => 'required|integer|min:1|max:100',
                 'application_date' => 'required|date',
-                'first_payment_date' => 'required|date|after_or_equal:application_date',
-                'payment_method' => 'required',
-                'supporting_documents.*' => 'nullable|file|mimes:pdf|max:11000'
+                'first_payment_date' => 'required|date',
+                'collateral' => 'nullable|string',
+                'supporting_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',  // 10MB limit (10240 KB)
+            ], [
+                'supporting_documents.*.max' => 'Ukuran file maksimal adalah 10MB per file.',
+                'supporting_documents.*.mimes' => 'Format file harus berupa PDF, JPG, JPEG, atau PNG.'
             ]);
-
+            
+            // Process loan amount (remove thousand separators)
+            $loanAmount = str_replace('.', '', $request->loan_amount);
+            
             // Handle file uploads
             $documents = [];
             if ($request->hasFile('supporting_documents')) {
@@ -74,10 +83,6 @@
                 }
             }
 
-            // Format loan amount - remove dots and convert to integer
-            $loanAmount = str_replace('.', '', $request->loan_amount);
-            $loanAmount = (int) $loanAmount;
-
             // Create loan application
             $loanApplication = LoanApplication::create([
                 'user_id' => Auth::id(),
@@ -87,7 +92,7 @@
                 'tenor' => (int) $request->tenor,
                 'application_date' => $request->application_date,
                 'first_payment_date' => $request->first_payment_date,
-                'payment_method' => $request->payment_method,
+                'payment_method' => 'transfer', // Set a default value or null
                 'collateral' => $request->collateral,
                 'documents' => $documents,
                 'status' => 'pending'
@@ -124,7 +129,7 @@
                 'tenor' => 'required|integer',
                 'application_date' => 'required|date',
                 'first_payment_date' => 'required|date',
-                'payment_method' => 'required'
+                // 'payment_method' => 'required'
             ]);
 
             $loanApplication->update($request->all());

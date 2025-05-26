@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan-payments', [LoanPaymentController::class, 'index'])->name('loan-payments.index');
     Route::get('/loan-payments/create/{loan}', [LoanPaymentController::class, 'create'])->name('loan-payments.create');
     Route::post('/loan-payments/{loan}', [LoanPaymentController::class, 'store'])->name('loan-payments.store');
+    Route::get('/loan-payments/resubmit/{payment}', [LoanPaymentController::class, 'resubmit'])->name('loan-payments.resubmit');
 });
 
 // Admin routes - requires admin role

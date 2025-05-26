@@ -184,7 +184,19 @@
                                 </div>
                                 @endif
                             </div>
-                            @if ($payment->status === 'pending' && !$payment->payment_date)
+
+                            <!-- Add this for status display -->
+                            @if($payment->status === 'rejected')
+                                <div class="mt-3 pt-3 border-t border-gray-200">
+                                    <div class="text-sm text-red-600 mb-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>Ditolak: {{ $payment->notes }}
+                                    </div>
+                                    <a href="{{ route('loan-payments.resubmit', $payment->id) }}"
+                                       class="block w-full text-center px-3 py-2 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition duration-200">
+                                        Ajukan Ulang
+                                    </a>
+                                </div>
+                            @elseif($payment->status === 'pending' && !$payment->payment_date)
                                 <div class="mt-3 pt-3 border-t border-gray-200">
                                     <a href="{{ route('loan-payments.create', $loan->id) }}"
                                        class="block w-full text-center px-3 py-2 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600 transition duration-200">
