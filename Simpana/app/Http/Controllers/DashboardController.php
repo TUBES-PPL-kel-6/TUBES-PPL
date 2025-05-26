@@ -6,6 +6,7 @@ use App\Models\Simpanan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -190,5 +191,29 @@ class DashboardController extends Controller
         }
 
         return redirect()->back()->with('success', 'Status simpanan berhasil diperbarui');
+    }
+
+    // Halaman Unduh SHU
+    public function shu()
+    {
+        return view('dashboard.shu');
+    }
+
+    // Download SHU as PDF for a specific year
+    public function downloadShuPdf($tahun)
+    {
+        $user = Auth::user();
+        $transaksi = \App\Models\Transaksi::where('user_id', $user->id)
+            ->whereYear('tanggal', $tahun)
+            ->get();
+        $shus = \App\Models\Shu::where('user_id', $user->id)
+            ->where('tahun', $tahun)
+            ->get();
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView('dashboard.shu_pdf', [
+            'user' => $user,
+            'tahun' => $tahun,
+            'transaksi' => $transaksi,
+            'shus' => $shus,
+        ])->download('SHU_' . $user->nama . '_' . $tahun . '.pdf');
     }
 }
