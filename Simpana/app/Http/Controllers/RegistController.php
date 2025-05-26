@@ -56,12 +56,12 @@ class RegistController extends Controller
         // Coba autentikasi user
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             // Check user role and redirect accordingly
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.index');
             }
-            
+
             // Default redirect for regular users
             return redirect()->route('user.dashboard')
                 ->with('success', 'Login berhasil!');
@@ -78,7 +78,7 @@ class RegistController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/')->with('success', 'Anda telah berhasil logout.');
     }
 

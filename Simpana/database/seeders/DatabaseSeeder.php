@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         // Call the AdminUserSeeder
         $this->call(AdminSeeder::class);
-        
+
         // Create a test user with the correct field names
         User::create([
             'email' => 'test@example.com',
