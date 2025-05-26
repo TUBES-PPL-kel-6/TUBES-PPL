@@ -93,8 +93,7 @@
                 'status' => 'pending'
             ]);
 
-            return redirect()->route('user.dashboard')
-                ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
+            return redirect()->route('user.dashboard')->with('success', 'Pengajuan pinjaman berhasil disimpan.');
         }
 
         /**
