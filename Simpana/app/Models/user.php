@@ -42,4 +42,8 @@ class User extends Authenticatable
     {
         return $this->role === 'member';
     }
+    public function simpanans()
+    {
+        return $this->hasMany(\App\Models\Simpanan::class, 'user_id');
+    }
 }
