@@ -283,6 +283,17 @@
              return `Rp${parseInt(value, 10).toLocaleString('id-ID')}`;
          }
      });
+
+     @if(session('success'))
+   <script>
+     Swal.fire({
+       icon: 'success',
+       title: 'Berhasil',
+       text: '{{ session('success') }}',
+       confirmButtonColor: '#8C1414'
+     });
+   </script>
+   @endif
  </script>
 @endpush
 @endsection

@@ -14,7 +14,8 @@ class Simpanan extends Model
         'jenis_simpanan', // pokok, wajib, sukarela
         'jumlah',
         'tanggal',
-        'keterangan'
+        'keterangan',
+        'status', // <-- pastikan ada!
     ];
 
     protected $casts = [
