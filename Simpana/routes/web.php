@@ -93,9 +93,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [AdminController::class, 'index'])->name('index');
 
     // Loan Approval Routes
-    Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
-    Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
-    Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
+    Route::get('/loan-approval', [LoanApplicationController::class, 'index'])->name('loanApproval');
+    Route::post('/loan-approval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
+    Route::post('/loan-approval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 
     Route::get('/users', [UserController::class, 'listUsers'])->name('users');
     Route::post('/users/{id}/remind', [UserController::class, 'remindUser'])->name('users.remind');

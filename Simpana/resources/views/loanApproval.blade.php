@@ -105,7 +105,7 @@
             <a href="#">Dashboard</a>
             <a href="#">Riwayat Simpanan</a>
             <a href="#">Setor Simpanan</a>
-            <a href="{{ route('loanApproval') }}" class="active">Persetujuan Pinjaman</a>
+            <a href="{{ route('admin.loanApproval') }}" class="active">Persetujuan Pinjaman</a>
             <div class="mt-4 px-3 text-uppercase" style="font-size: 12px;">Akun</div>
             <a href="#">Profil</a>
             <a href="#">Pengaturan</a>
@@ -193,11 +193,11 @@
                                                 Detail
                                             </button>
                                             @if($loan->status == 'pending')
-                                            <form action="{{ route('loanApproval.approve', $loan->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.loanApproval.approve', $loan->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-success">Setujui</button>
                                             </form>
-                                            <form action="{{ route('loanApproval.reject', $loan->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('admin.loanApproval.reject', $loan->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">Tolak</button>
                                             </form>
@@ -293,11 +293,11 @@
                                             </div>
                                             <div class="modal-footer">
                                                 @if($loan->status == 'pending')
-                                                <form action="{{ route('loanApproval.approve', $loan->id) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('admin.loanApproval.approve', $loan->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="btn btn-success">Setujui Pinjaman</button>
                                                 </form>
-                                                <form action="{{ route('loanApproval.reject', $loan->id) }}" method="POST" class="d-inline">
+                                                <form action="{{ route('admin.loanApproval.reject', $loan->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     <button type="submit" class="btn btn-danger">Tolak Pinjaman</button>
                                                 </form>

@@ -24,7 +24,7 @@ class LoanApplicationController extends Controller
             Log::info('LoanApplicationController@index: Successfully retrieved loans', [
                 'count' => $loans->count()
             ]);
-            return view('loanApproval', compact('loans'));
+            return view('admin.loan-approval', compact('loans'));
         } catch (\Exception $e) {
             Log::error('LoanApplicationController@index: Error retrieving loans', [
                 'error' => $e->getMessage()
@@ -48,13 +48,13 @@ class LoanApplicationController extends Controller
     {
         try {
             $request->validate([
-                'loan_product' => 'required',
-                'loan_amount' => 'required',
+                'loan_product' => 'required|in:pendidikan,usaha,konsumtif',
+                'loan_amount' => 'required|numeric|min:100000|max:100000000',
                 'tenor' => 'required|integer|min:1|max:100',
                 'application_date' => 'required|date',
                 'first_payment_date' => 'required|date|after_or_equal:application_date',
-                'payment_method' => 'required',
-                'supporting_documents.*' => 'nullable|file|mimes:pdf|max:2048'
+                'payment_method' => 'required|in:cash,transfer,debit',
+                'supporting_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
             ]);
     
             // Handle file uploads
@@ -72,16 +72,12 @@ class LoanApplicationController extends Controller
                 }
             }
     
-            // Format loan amount - remove dots and convert to integer
-            $loanAmount = str_replace('.', '', $request->loan_amount);
-            $loanAmount = (int) $loanAmount;
-    
             // Create loan application
             $loanApplication = LoanApplication::create([
                 'user_id' => Auth::id(),
                 'loan_product' => $request->loan_product,
                 'application_note' => $request->application_note,
-                'loan_amount' => $loanAmount,
+                'loan_amount' => $request->loan_amount,
                 'tenor' => (int) $request->tenor,
                 'application_date' => $request->application_date,
                 'first_payment_date' => $request->first_payment_date,
@@ -98,13 +94,20 @@ class LoanApplicationController extends Controller
     
             return redirect()->route('user.riwayat-pinjaman.index')
                 ->with('success', 'Pengajuan pinjaman berhasil disimpan.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error in loan application', [
+                'errors' => $e->errors(),
+                'user_id' => Auth::id()
+            ]);
+            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             Log::error('Error creating loan application', [
                 'error' => $e->getMessage(),
                 'user_id' => Auth::id()
             ]);
             
-            return back()->with('error', 'Terjadi kesalahan saat menyimpan pengajuan pinjaman. Silakan coba lagi.');
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan pengajuan pinjaman. Silakan coba lagi.')
+                ->withInput();
         }
     }
 
@@ -159,14 +162,14 @@ class LoanApplicationController extends Controller
     public function approve(LoanApplication $loanApplication)
     {
         $loanApplication->update(['status' => 'approved']);
-        return redirect()->route('loanApproval')
+        return redirect()->route('admin.loanApproval')
             ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
     }
 
     public function reject(LoanApplication $loanApplication)
     {
         $loanApplication->update(['status' => 'rejected']);
-        return redirect()->route('loanApproval')
+        return redirect()->route('admin.loanApproval')
             ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
     }
 }
