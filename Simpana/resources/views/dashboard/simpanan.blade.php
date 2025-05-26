@@ -20,8 +20,11 @@
             <h1 class="text-2xl font-bold text-gray-800">Riwayat Simpanan</h1>
             <div class="flex space-x-2">
                 <a href="{{ route('dashboard.simpanan.create', ['type' => 'wajib']) }}"
-                   class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 {{ isset($currentMonthWajib) ? 'opacity-50 cursor-not-allowed' : '' }}">
+                   class="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 {{ $currentMonthWajib ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}">
                     Simpanan Wajib
+                    @if($currentMonthWajib)
+                        <span class="text-xs ml-1 text-green-600">(Sudah dibayar)</span>
+                    @endif
                 </a>
                 <a href="{{ route('dashboard.simpanan.create', ['type' => 'sukarela']) }}"
                    class="px-4 py-2 rounded-md bg-red-700 text-white hover:bg-red-800 transition">

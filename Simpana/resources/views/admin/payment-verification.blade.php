@@ -58,7 +58,6 @@
                                 <td>{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                                             <span class="text-white">{{ substr($payment->loanApplication->user->nama ?? $payment->loanApplication->user->name, 0, 1) }}</span>
                                         </div>
                                         <div>
@@ -199,7 +198,7 @@
                             </table>
                             <h6><i class="bi bi-calendar3 me-2 text-primary"></i>Informasi Pembayaran</h6>
                             <table class="table table-sm">
-                                <tr><td><strong>Angsuran Ke-:</strong></td><td><span class="badge bg-info text-dark">{{ $payment->installment_number }}</span></td></tr>
+                                <tr><td><strong>Angsuran:</strong></td><td><span class="badge bg-info text-dark">{{ $payment->installment_number }}</span></td></tr>
                                 <tr><td><strong>Jumlah:</strong></td><td><span class="text-success fw-bold">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span></td></tr>
                                 <tr><td><strong>Tanggal Bayar:</strong></td><td>{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y') : '-' }}</td></tr>
                                 <tr><td><strong>Jatuh Tempo:</strong></td><td>{{ $payment->due_date ? $payment->due_date->format('d/m/Y') : '-' }}</td></tr>
