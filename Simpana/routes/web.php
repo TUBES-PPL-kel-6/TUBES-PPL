@@ -1,12 +1,8 @@
 <?php
 
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\View;
 use App\Http\Controllers\AcceptanceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
