@@ -56,7 +56,7 @@
                 'application_date' => 'required|date',
                 'first_payment_date' => 'required|date|after_or_equal:application_date',
                 'payment_method' => 'required',
-                'supporting_documents.*' => 'nullable|file|mimes:pdf|max:2048'
+                'supporting_documents.*' => 'nullable|file|mimes:pdf|max:11000'
             ]);
 
             // Handle file uploads
