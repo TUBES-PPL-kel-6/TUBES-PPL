@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AcceptanceController extends Controller
 {
@@ -44,5 +45,30 @@ class AcceptanceController extends Controller
             return redirect()->route('acceptance.index')
                 ->with('error', 'Gagal mengubah status anggota. Silakan coba lagi.');
         }
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && $user->status === 'rejected') {
+            return back()->withErrors([
+                'email' => 'User rejected',
+            ])->withInput($request->only('email'));
+        }
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ])->withInput($request->only('email'));
     }
 }

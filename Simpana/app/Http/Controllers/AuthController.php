@@ -16,25 +16,26 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $user = \App\Models\User::where('email', $request->email)->first();
+        if ($user && $user->status === 'rejected') {
+            return back()->withErrors([
+                'email' => 'Akun Anda telah ditolak.'
+            ])->withInput($request->only('email'));
+        }
+
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-
-            // Redirect based on user role
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin');
-            }
-
-            return redirect()->intended('/user');
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'email' => 'Email atau password salah.'
+        ])->withInput($request->only('email'));
     }
 
     public function logout(Request $request)
