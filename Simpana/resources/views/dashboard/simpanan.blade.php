@@ -47,7 +47,7 @@
                         <p class="font-medium">{{ $tanggalBuka ? $tanggalBuka->format('d M Y') : 'Belum ada' }}</p>
                     </div>
                     <div class="mt-2 text-sm">
-                    
+
                 </div>
                 </div>
             </div>

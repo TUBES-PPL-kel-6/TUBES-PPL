@@ -63,7 +63,7 @@ class LoanPaymentController extends Controller
         // Validate request
         $request->validate([
             'payment_method' => 'required|in:transfer,cash,debit',
-            'payment_proof' => 'required_if:payment_method,transfer|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'payment_proof' => 'required_if:payment_method,transfer|file|mimes:jpeg,png,jpg|max:11000',
             'payment_date' => 'required|date',
             'amount' => 'required|numeric|min:1'
         ]);

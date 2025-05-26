@@ -135,12 +135,17 @@ class DashboardController extends Controller
             'keterangan' => 'nullable|string|max:255',
         ]);
 
+        $jumlah = str_replace('.', '', $request->jumlah);
+        $jumlah = str_replace(',', '.', $jumlah);
+
         $simpanan = Simpanan::create([
             'user_id' => Auth::id(),
             'jenis_simpanan' => $request->jenis_simpanan,
-            'jumlah' => $request->jumlah,
+            'jumlah' => $jumlah,
             'tanggal' => now(),
             'keterangan' => $request->keterangan,
+
+            'status' => 'approved', // <-- langsung approved
         ]);
 
         // Buat notifikasi ke user
@@ -152,7 +157,7 @@ class DashboardController extends Controller
         ]);
 
         return redirect()->route('dashboard.simpanan')
-            ->with('success', 'Setoran simpanan berhasil diajukan');
+            ->with('success', 'Setoran simpanan berhasil ditambahkan');
     }
 
     // Method untuk Teller

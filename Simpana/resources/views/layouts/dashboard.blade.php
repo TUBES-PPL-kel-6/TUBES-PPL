@@ -160,4 +160,15 @@
         </div>
     </div>
 </div>
+
+@if(session('success'))
+<script>
+  Swal.fire({
+    icon: 'success',
+    title: 'Berhasil',
+    text: '{{ session('success') }}',
+    confirmButtonColor: '#8C1414'
+  });
+</script>
+@endif
 @endsection
