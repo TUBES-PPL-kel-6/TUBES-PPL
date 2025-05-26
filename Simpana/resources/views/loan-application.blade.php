@@ -87,10 +87,7 @@
                      <!-- Nominal Pinjaman -->
                      <div>
                          <label for="loan_amount" class="block text-sm font-medium text-gray-700 mb-1">Masukkan Nominal Pinjaman</label>
-                         <input type="number" name="loan_amount" id="loan_amount" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1000000" value="{{ old('loan_amount', '') }}" min="0" step="1000" required>
-                         @error('loan_amount')
-                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                         @enderror
+                         <input type="text" name="loan_amount" id="loan_amount" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Rp10.000" value="{{ old('loan_amount', '') }}">
                      </div>
 
                      <!-- Tenor -->
