@@ -39,6 +39,16 @@
          <!-- Loan Application Form Section -->
          <div class="bg-white rounded-lg shadow-lg p-8">
              <h2 class="text-2xl font-semibold text-gray-800 mb-6">Form Pengajuan Pinjaman</h2>
+             <!-- Tambahkan di atas form -->
+                @if ($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
              <form method="POST" action="{{ route('loan.store') }}" enctype="multipart/form-data">
                  @csrf
                  <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
@@ -77,17 +87,14 @@
                      <!-- Nominal Pinjaman -->
                      <div>
                          <label for="loan_amount" class="block text-sm font-medium text-gray-700 mb-1">Masukkan Nominal Pinjaman</label>
-                         <input type="number" name="loan_amount" id="loan_amount" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1000000" value="{{ old('loan_amount', '') }}" min="0" step="1000" required>
-                         @error('loan_amount')
-                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                         @enderror
+                         <input type="text" name="loan_amount" id="loan_amount" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Rp10.000" value="{{ old('loan_amount', '') }}">
                      </div>
 
                      <!-- Tenor -->
                      <div>
                          <label for="tenor" class="block text-sm font-medium text-gray-700 mb-1">Tenor</label>
                          <div class="relative">
-                             <input type="text" name="tenor" id="tenor" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1 - 100">
+                             <input type="number" name="tenor" id="tenor" min="1" max="100" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1 - 100">
                              <span class="absolute right-3 top-3 text-gray-500">Bulan</span>
                          </div>
                      </div>

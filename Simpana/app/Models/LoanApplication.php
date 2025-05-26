@@ -45,7 +45,10 @@ class LoanApplication extends Model
 
     public function getRemainingBalance()
     {
-        $paidAmount = $this->payments()->where('status', 'paid')->sum('amount');
-        return $this->loan_amount - $paidAmount;
+        // Hanya hitung pembayaran yang sudah diverifikasi/lunas
+        $paid = $this->payments()
+            ->whereIn('status', ['verified', 'paid'])
+            ->sum('amount');
+        return max($this->loan_amount - $paid, 0);
     }
 }
