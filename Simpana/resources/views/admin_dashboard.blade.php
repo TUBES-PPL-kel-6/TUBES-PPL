@@ -56,41 +56,35 @@ use Illuminate\Support\Facades\Auth;
         </div>
     </div>
 
-    <!-- Transaksi Terbaru -->
-    <h5 class="mb-3">Transaksi Terbaru</h5>
-    <div class="card p-3 mb-4">
-        <div class="list-group">
-            @forelse($transaksiTerbaru as $trx)
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>{{ $trx->jenis_transaksi ?? '-' }}</strong>
-                        <small class="text-muted">
-                            {{ $trx->user->nama ?? '-' }} &middot; {{ \Carbon\Carbon::parse($trx->created_at)->format('d M Y H:i') }}
-                        </small>
-                        @if($trx->keterangan)
-                            <div class="text-muted small">{{ $trx->keterangan }}</div>
+    <div class="row mb-4">
+        <!-- Grafik Laba Bulanan -->
+        <div class="col-md-7 mb-3">
+            <div class="card p-3 h-100">
+                <h5 class="mb-3">Grafik Laba Bulanan Tahun {{ $year }}</h5>
+                <div>
+                    <canvas id="dashboardProfitChart" style="max-height:300px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Ringkasan Laporan Laba (SHU) -->
+        <div class="col-md-5 mb-3">
+            <div class="card p-4 h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <h6 class="mb-1 text-muted">Laporan Laba (SHU) Terakhir</h6>
+                    <div class="fw-bold">
+                        @if(isset($lastShu) && $lastShu)
+                            Tahun {{ $lastShu->tahun }} &middot; Rp {{ number_format($lastShu->total_shu, 0, ',', '.') }}
+                        @else
+                            Belum ada data SHU.
                         @endif
                     </div>
-                    <div>
-                        <span class="mr-2 {{ $trx->jumlah > 0 ? 'text-success' : 'text-danger' }}">
-                            {{ $trx->jumlah > 0 ? '+' : '-' }} Rp {{ number_format(abs($trx->jumlah), 0, ',', '.') }}
-                        </span>
-                        <span class="badge {{ $trx->status == 'approved' ? 'bg-success' : 'bg-warning text-dark' }}">
-                            {{ ucfirst($trx->status) }}
-                        </span>
-                    </div>
                 </div>
-            @empty
-                <div class="list-group-item text-center text-muted">
-                    Tidak ada transaksi terbaru.
+                <div class="mt-3">
+                    <a href="{{ route('admin.shu.index') }}" class="btn btn-outline-secondary btn-sm w-100">
+                        <i class="fa-solid fa-calculator"></i> Generate SHU
+                    </a>
                 </div>
-            @endforelse
-        </div>
-        <div class="mt-3 text-end">
-            <!-- Lihat Semua Transaksi -->
-            <a href="{{ route('dashboard.transactions') }}" class="btn btn-sm btn-outline-primary">
-                <i class="fa fa-list"></i> Lihat Semua Transaksi
-            </a>
+            </div>
         </div>
     </div>
 
@@ -139,30 +133,57 @@ use Illuminate\Support\Facades\Auth;
         </div>
     </div>
 
-    <!-- Ringkasan Laporan Laba (SHU) -->
-    <div class="card p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h6 class="mb-1 text-muted">Laporan Laba (SHU) Terakhir</h6>
-                <div class="fw-bold">
-                    @if(isset($lastShu) && $lastShu)
-                        Tahun {{ $lastShu->tahun }} &middot; Rp {{ number_format($lastShu->total_shu, 0, ',', '.') }}
-                    @else
-                        Belum ada data SHU.
-                    @endif
-                </div>
-            </div>
-            <!-- SHU -->
-            <a href="{{ route('admin.shu.index') }}" class="btn btn-outline-secondary btn-sm">
-                <i class="fa-solid fa-calculator"></i> Generate SHU
-            </a>
-        </div>
-    </div>
 
-    <!-- Go to User Dashboard -->
-    <a href="{{ route('user.dashboard') }}" class="btn btn-primary mb-3">Go to User Dashboard</a>
 @endsection
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartData = {
+        labels: {!! json_encode(array_map(fn($r) => DateTime::createFromFormat('!m', $r['bulan'])->format('F'), $monthly)) !!},
+        datasets: [
+            {
+                label: 'Laba Simpanan',
+                data: {!! json_encode(array_column($monthly, 'laba_simpanan')) !!},
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 2
+            },
+            {
+                label: 'Laba Pinjaman',
+                data: {!! json_encode(array_column($monthly, 'laba_pinjaman')) !!},
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderWidth: 2
+            }
+        ]
+    };
+    new Chart(document.getElementById('dashboardProfitChart').getContext('2d'), {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Grafik Laba Tahun {{ $year }}' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
 @endpush

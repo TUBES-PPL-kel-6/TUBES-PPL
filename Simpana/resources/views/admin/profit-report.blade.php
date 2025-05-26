@@ -9,11 +9,12 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Laba Tahun {{ $year }}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Total Laba Bersih Tahun {{ $year }}</h6>
                     <h2 class="card-title mb-0 text-success">Rp {{ number_format($totalLaba, 0, ',', '.') }}</h2>
                     <div class="mt-2">
                         <div>Laba Simpanan: <b>Rp {{ number_format($labaSimpanan, 0, ',', '.') }}</b></div>
                         <div>Laba Pinjaman: <b>Rp {{ number_format($labaPinjaman, 0, ',', '.') }}</b></div>
+                        <div class="text-danger">Pengeluaran Pinjaman: <b>Rp {{ number_format($pengeluaranPinjaman, 0, ',', '.') }}</b></div>
                     </div>
                 </div>
             </div>
@@ -48,7 +49,8 @@
                             <th>Bulan</th>
                             <th>Laba Simpanan</th>
                             <th>Laba Pinjaman</th>
-                            <th>Total Laba</th>
+                            <th class="text-danger">Pengeluaran</th>
+                            <th>Total Laba Bersih</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,6 +59,7 @@
                             <td>{{ DateTime::createFromFormat('!m', $row['bulan'])->format('F') }}</td>
                             <td>Rp {{ number_format($row['laba_simpanan'], 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($row['laba_pinjaman'], 0, ',', '.') }}</td>
+                            <td class="text-danger">Rp {{ number_format($row['pengeluaran'], 0, ',', '.') }}</td>
                             <td><b>Rp {{ number_format($row['total_laba'], 0, ',', '.') }}</b></td>
                         </tr>
                         @endforeach
