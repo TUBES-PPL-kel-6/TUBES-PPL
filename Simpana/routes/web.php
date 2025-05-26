@@ -98,9 +98,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/payments/{payment}/reject', [\App\Http\Controllers\LoanPaymentController::class, 'reject'])
         ->name('admin.payment.reject');
 
-    // SHU
+    // SHU Routes - Admin only
     Route::get('/shu', [ShuController::class, 'index'])->name('admin.shu.index');
+    Route::get('/shu/generate', [ShuController::class, 'showGenerateForm'])->name('admin.shu.form');
     Route::post('/shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
+    Route::post('/shu/generate-pdf', [ShuController::class, 'generatePDF'])->name('admin.shu.generatePDF');
 });
 
 // Dashboard routes (khusus fitur simpanan, transaksi, dsb)
