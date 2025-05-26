@@ -43,12 +43,12 @@
     <div class="w-full max-w-md flex-grow flex flex-col justify-center">
         <div class="text-center mb-5">
             <div class="flex justify-center items-center gap-0 mb-1">
-                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">  
+                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">
                 <span class="text-4xl font-bold text-primary -ml-1">SIMPANA</span>
             </div>
             <p class="text-gray-600 text-base">Please sign in to your account</p>
         </div>
-        
+
 
         <form action="/login" method="POST" class="bg-white shadow-xl rounded-2xl px-8 pt-8 pb-6 border border-gray-200">
             @if ($errors->any())
@@ -87,27 +87,17 @@
                 </label>
                 <div class="relative">
                     <input
-                        class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                        class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pr-12"
                         id="password"
                         name="password"
                         type="password"
                         placeholder="Enter your password"
                         required
                     >
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <i class="fa-solid fa-lock text-gray-400"></i>
-                    </div>
+                    <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none" tabindex="-1">
+                        <i class="fa-solid fa-eye text-gray-400"></i>
+                    </button>
                 </div>
-            </div>
-
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center">
-                    <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
-                    <label class="ml-2 block text-sm text-gray-600">Remember me</label>
-                </div>
-                <a class="text-sm font-semibold text-primary hover:text-secondary transition-colors duration-200" href="#">
-                    Forgot Password?
-                </a>
             </div>
 
             <button
@@ -135,5 +125,21 @@
             <a href="#" class="hover:text-primary">Kebijakan Privasi</a>
         </div>
     </footer>
+
+    <script>
+        function togglePassword(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 </html>

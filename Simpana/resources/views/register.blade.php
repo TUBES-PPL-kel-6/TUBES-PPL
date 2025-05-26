@@ -61,13 +61,27 @@
             document.getElementById("emailForm").style.display = "none";
             document.getElementById("dataDiriForm").style.display = "block";
         }
+
+        function togglePassword(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 bg-gray-50">
     <div class="w-full max-w-md flex-grow flex flex-col justify-center">
         <div class="text-center mb-5">
             <div class="flex justify-center items-center gap-0 mb-1">
-                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">  
+                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">
                 <span class="text-4xl font-bold text-primary -ml-1">SIMPANA</span>
             </div>
             <p class="text-gray-600 text-base">Please sign in to your account</p>
@@ -111,20 +125,21 @@
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Password:</label>
                 <div class="relative">
-                    <input type="password" id="password" name="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <i class="fa-solid fa-lock text-gray-400"></i>
-                    </div>
+                    <input type="password" id="password" name="password" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pr-12" required minlength="6">
+                    <button type="button" onclick="togglePassword('password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none" tabindex="-1">
+                        <i class="fa-solid fa-eye text-gray-400"></i>
+                    </button>
                 </div>
+                <span class="text-xs text-gray-500 mt-1 block">Password minimal 6 karakter</span>
             </div>
 
             <div class="mb-6">
                 <label class="block text-primary text-sm font-semibold mb-2">Konfirmasi Password:</label>
                 <div class="relative">
-                    <input type="password" id="password_confirmation" name="password_confirmation" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <i class="fa-solid fa-lock-open text-gray-400"></i>
-                    </div>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="input-focus shadow appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary pr-12" required minlength="6">
+                    <button type="button" onclick="togglePassword('password_confirmation', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none" tabindex="-1">
+                        <i class="fa-solid fa-eye text-gray-400"></i>
+                    </button>
                 </div>
             </div>
 
