@@ -8,6 +8,7 @@ use App\Models\Simpanan;
 use App\Models\LoanApplication;
 use App\Models\Notification;
 use App\Models\Transaksi;
+use App\Models\LoanPayment;
 
 class UserDashboardController extends Controller
 {
@@ -32,11 +33,43 @@ class UserDashboardController extends Controller
             })
             ->count();
 
-        // Transaksi terbaru (ambil 5 terakhir)
-        $recentTransactions = \App\Models\Transaksi::where('user_id', $userId)
-            ->orderBy('tanggal', 'desc')
+        // Ambil riwayat simpanan
+        $simpanan = \App\Models\Simpanan::where('user_id', $userId)
+            ->orderByDesc('tanggal')
+            ->get()
+            ->map(function($item) {
+                return (object)[
+                    'type' => 'simpanan',
+                    'description' => 'Simpanan ' . ucfirst($item->jenis_simpanan),
+                    'method' => '-',
+                    'tanggal' => $item->tanggal,
+                    'jumlah' => $item->jumlah,
+                    'status' => $item->status,
+                ];
+            });
+
+        // Ambil riwayat pembayaran pinjaman (angsuran)
+        $loanPayments = LoanPayment::whereHas('loanApplication', function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->orderByDesc('payment_date')
+            ->get()
+            ->map(function($item) {
+                return (object)[
+                    'type' => 'angsuran',
+                    'description' => 'Pembayaran Angsuran ke-' . $item->installment_number,
+                    'method' => ucfirst($item->payment_method ?? '-'),
+                    'tanggal' => $item->payment_date,
+                    'jumlah' => $item->amount,
+                    'status' => $item->status,
+                ];
+            });
+
+        // Gabungkan dan urutkan berdasarkan tanggal, ambil 5 terbaru
+        $recentTransactions = $simpanan->concat($loanPayments)
+            ->sortByDesc('tanggal')
             ->take(5)
-            ->get();
+            ->values();
 
         // Notifikasi terbaru (ambil 3 terakhir)
         $recentNotifications = \App\Models\Notification::where('user_id', $userId)
