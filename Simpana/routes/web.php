@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
@@ -17,8 +16,10 @@ use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\LoanPaymentController;
 use App\Http\Controllers\ProfitReportController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\AdminSetoranController;
+use App\Http\Controllers\RiwayatPinjamanController;
+use App\Http\Controllers\RiwayatSimpananController;
 use Illuminate\Support\Facades\Route;
-
 // Landing page
 Route::get('/', function () {
     return view('landingPage');
@@ -29,7 +30,6 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Registration routes
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
 
@@ -37,11 +37,24 @@ Route::post('/register', [RegistController::class, 'store']);
 Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
 Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
+
+// Home route
+Route::get('/', function () {
+    return view('landingPage');
+});
+
+// Login routes
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+
+Route::post('/login', [RegistController::class, 'login'])->name('login.post');
+
 // Payment routes
 Route::get('/payment', [simpPokokController::class, 'show'])->name('payment.show');
 Route::post('/payment/process', [simpPokokController::class, 'process'])->name('payment.process');
 
-// Dashboard redirect route
+// Dashboard route - this will handle the redirection based on role
 Route::get('/dashboard', function () {
     if (auth()->user() && auth()->user()->role === 'admin') {
         return redirect()->route('admin.index');
@@ -49,7 +62,7 @@ Route::get('/dashboard', function () {
     return redirect()->route('user.dashboard');
 })->middleware('auth')->name('dashboard');
 
-// User routes - requires authentication
+// User dashboard - requires authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard utama user (pakai closure, bukan controller)
     Route::get('/user', [UserDashboardController::class, 'index'])->name('user.dashboard');
@@ -67,7 +80,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan-payments/create/{loan}', [LoanPaymentController::class, 'create'])->name('loan-payments.create');
     Route::post('/loan-payments/{loan}', [LoanPaymentController::class, 'store'])->name('loan-payments.store');
     Route::get('/loan-payments/resubmit/{payment}', [LoanPaymentController::class, 'resubmit'])->name('loan-payments.resubmit');
-});
+
+    // Riwayat Pinjaman & Simpanan Routes
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/riwayat-pinjaman', [RiwayatPinjamanController::class, 'index'])->name('riwayat-pinjaman.index');
+        Route::get('/riwayat-simpanan', [RiwayatSimpananController::class, 'index'])->name('riwayat-simpanan.index');
+    });
 
 // Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -78,9 +96,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/profit-report/chart', [ProfitReportController::class, 'getChartData'])->name('profit-report.chart');
 
     // Loan Approval Routes
-    Route::get('/loanApproval', [LoanApplicationController::class, 'index'])->name('loanApproval');
-    Route::post('/loanApproval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
-    Route::post('/loanApproval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
+    Route::get('/loan-approval', [LoanApplicationController::class, 'index'])->name('loanApproval');
+    Route::post('/loan-approval/{loanApplication}/approve', [LoanApplicationController::class, 'approve'])->name('loanApproval.approve');
+    Route::post('/loan-approval/{loanApplication}/reject', [LoanApplicationController::class, 'reject'])->name('loanApproval.reject');
 
     // User management
     Route::get('/users', [UserController::class, 'listUsers'])->name('admin.users');
@@ -114,9 +132,22 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
     Route::get('/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('simpanan.create');
     Route::post('/simpanan', [DashboardController::class, 'storeSimpanan'])->name('simpanan.store');
     Route::get('/transactions', [DashboardController::class, 'transactions'])->name('transactions');
+
+    // Routes untuk setoran
+    Route::resource('setoran', AdminSetoranController::class);
+  
     Route::get('/shu', [DashboardController::class, 'shu'])->name('shu');
     Route::get('/shu/download-pdf/{tahun}', [DashboardController::class, 'downloadShuPdf'])->name('shu.download_pdf');
 });
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
+Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
+Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
+Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
+Route::get('/dashboard/transactions', [DashboardController::class, 'transactions'])->name('dashboard.transactions');
 
 // Discussion routes
 Route::get('/discussion', [DiscussionController::class, 'index'])->name('discussion.index');
