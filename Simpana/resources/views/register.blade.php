@@ -81,7 +81,7 @@
     <div class="w-full max-w-md flex-grow flex flex-col justify-center">
         <div class="text-center mb-5">
             <div class="flex justify-center items-center gap-0 mb-1">
-                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-3">
+                <img src="{{ asset('images/Simpana red.png') }}" alt="Simpana Logo" class="h-20 w-auto object-contain -ml-2 pt-1">
                 <span class="text-4xl font-bold text-primary -ml-1">SIMPANA</span>
             </div>
             <p class="text-gray-600 text-base">Please sign in to your account</p>
