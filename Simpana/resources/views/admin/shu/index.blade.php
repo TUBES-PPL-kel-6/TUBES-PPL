@@ -19,9 +19,12 @@
                                 @endfor
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">
-                            Generate SHU
-                        </button>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">Generate SHU</button>
+                            <button type="submit" class="btn btn-success" formaction="{{ route('admin.shu.generatePDF') }}">
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

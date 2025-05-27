@@ -57,6 +57,14 @@
             transform: translateY(-3px);
             background: rgba(255, 255, 255, 0.25);
         }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease;
+        }
     </style>
 </head>
 <body class="gradient-background min-h-screen font-['Plus_Jakarta_Sans'] relative">
@@ -65,13 +73,13 @@
     <!-- NAV -->
     <nav class="glass-nav sticky top-0 z-50 py-2 px-6 flex justify-between items-center">
         <img src="{{ asset('images/Simpana white.png') }}" alt="Logo" class="h-20 w-auto transition-transform hover:scale-100">
-        <a href="#" class="bg-white text-[#873434] px-4 py-2 rounded-lg font-semibold hover:bg-[#FFDFA8] transition-all shadow-md hover:shadow-lg flex items-center text-sm">
+        <button id="contactBtn" class="bg-white text-[#873434] px-4 py-2 rounded-lg font-semibold hover:bg-[#FFDFA8] transition-all shadow-md hover:shadow-lg flex items-center text-sm focus:outline-none">
             <i class="fas fa-envelope text-lg mr-2"></i>Hubungi Kami
-        </a>
+        </button>
     </nav>
 
     <!-- Main -->
-    <div class="container mx-auto px-6 relative z-10">
+    <div class="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 relative z-10">
         <div class="flex items-start justify-between py-16">
             <div class="max-w-2xl">
                 <div class="flex items-center mb-6">
@@ -103,5 +111,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Contact Us Modal -->
+    <div id="contactModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative animate-fade-in">
+            <button onclick="closeContactModal()" class="absolute top-3 right-3 text-gray-400 hover:text-[#873434] text-xl focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-[#873434] mb-2">Contact Us</h2>
+            <form class="space-y-4 mt-2">
+                <div>
+                    <label class="block text-[#873434] text-sm font-semibold mb-1">Name</label>
+                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#873434] focus:ring-1 focus:ring-[#873434] transition" placeholder="Name" required>
+                </div>
+                <div>
+                    <label class="block text-[#873434] text-sm font-semibold mb-1">Email</label>
+                    <input type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#873434] focus:ring-1 focus:ring-[#873434] transition" placeholder="Email" required>
+                </div>
+                <div>
+                    <label class="block text-[#873434] text-sm font-semibold mb-1">Phone</label>
+                    <input type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#873434] focus:ring-1 focus:ring-[#873434] transition" placeholder="Phone" required>
+                </div>
+                <div>
+                    <label class="block text-[#873434] text-sm font-semibold mb-1">Message</label>
+                    <textarea class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#873434] focus:ring-1 focus:ring-[#873434] transition resize-none" placeholder="Your message..." rows="3" required></textarea>
+                </div>
+                <button type="submit" class="w-full bg-[#87CE45] hover:bg-[#6fa83a] text-white font-semibold py-2 rounded-lg transition-all">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+
+        contactBtn.addEventListener('click', function() {
+            contactModal.classList.remove('hidden');
+        });
+
+        function closeContactModal() {
+            contactModal.classList.add('hidden');
+        }
+
+        // Optional: close modal when clicking outside the form
+        contactModal?.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+                closeContactModal();
+            }
+        });
+    </script>
 </body>
 </html>

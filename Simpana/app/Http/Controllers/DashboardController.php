@@ -6,16 +6,26 @@ use App\Models\Simpanan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        // Ensure $user is an instance of the Eloquent User model
-        if (!($user instanceof \App\Models\User)) {
-            $user = \App\Models\User::find($user->id);
-        }
+        $user = auth()->user();
+
+        // Total Simpanan Pokok
+        $totalSimpananPokok = Simpanan::where('user_id', $user->id)
+            ->where('jenis_simpanan', 'pokok')
+            ->where('status', 'approved')
+            ->sum('jumlah');
+
+        // Riwayat Simpanan Pokok
+        $riwayatPokok = Simpanan::where('user_id', $user->id)
+            ->where('jenis_simpanan', 'pokok')
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         // Hitung total simpanan
         $totalSimpananPokok = Simpanan::where('user_id', $user->id)
@@ -91,40 +101,74 @@ class DashboardController extends Controller
     public function simpanan()
     {
         $user = Auth::user();
-        $simpanan = Simpanan::where('user_id', $user->id)
-            ->latest()
-            ->paginate(10);
 
-        // Ambil tanggal simpanan pertama user (jika ada)
-        $tanggalBuka = Simpanan::where('user_id', $user->id)
-            ->orderBy('tanggal', 'asc')
-            ->value('tanggal');
+        // Get all simpanan records for this user
+        $simpanans = Simpanan::where('user_id', $user->id)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
 
-        // Hitung total simpanan user (tanpa filter status)
+        // Calculate total simpanan
         $totalSimpanan = Simpanan::where('user_id', $user->id)
-            ->sum('jumlah');
+                        ->sum('jumlah');
 
-        return view('dashboard.simpanan', [
-            'user' => $user,
-            'simpanans' => $simpanan,
-            'tanggalBuka' => $tanggalBuka,
-            'totalSimpanan' => $totalSimpanan,
-        ]);
+        // Get the earliest simpanan date
+        $tanggalBuka = $simpanans->min('tanggal');
+
+        // Check if user has paid this month's wajib
+        $currentMonthWajib = $this->checkCurrentMonthWajib($user->id);
+
+        return view('dashboard.simpanan', compact(
+            'user',
+            'totalSimpanan',
+            'simpanans',
+            'tanggalBuka',
+            'currentMonthWajib'
+        ));
     }
 
     public function createSimpanan(Request $request)
     {
         $user = Auth::user();
-        $type = $request->query('type', 'wajib');
+        $type = $request->get('type', 'pokok');
 
-        if (!in_array($type, ['wajib', 'sukarela'])) {
-            abort(404);
+        // Validate simpanan type
+        if (!in_array($type, ['pokok', 'wajib', 'sukarela'])) {
+            return redirect()->route('dashboard.simpanan')
+                ->with('error', 'Jenis simpanan tidak valid.');
         }
 
-        $totalSimpanan = \App\Models\Simpanan::where('user_id', $user->id)
-            ->sum('jumlah');
+        // Check if user has paid this month's wajib
+        $currentMonthWajib = $this->checkCurrentMonthWajib($user->id);
 
-        return view('dashboard.create-simpanan', compact('user', 'totalSimpanan', 'type'));
+        // If type is wajib, check if payment already made this month
+        if ($type === 'wajib' && $currentMonthWajib) {
+            return redirect()->route('dashboard.simpanan')
+                ->with('info', 'Anda sudah membayar simpanan wajib untuk bulan ini.');
+        }
+
+        // Calculate totals
+        $totalSimpanan = Simpanan::where('user_id', $user->id)->sum('jumlah');
+
+        return view('dashboard.create-simpanan', [
+            'type' => $type,
+            'user' => $user,
+            'totalSimpanan' => $totalSimpanan,
+            'currentMonthWajib' => $currentMonthWajib
+        ]);
+    }
+
+    /**
+     * Check if user has already paid the wajib simpanan for current month
+     */
+    private function checkCurrentMonthWajib($userId)
+    {
+        $now = Carbon::now();
+
+        return Simpanan::where('user_id', $userId)
+                ->where('jenis_simpanan', 'wajib')
+                ->whereYear('tanggal', $now->year)
+                ->whereMonth('tanggal', $now->month)
+                ->first();
     }
 
     public function storeSimpanan(Request $request)
@@ -135,12 +179,17 @@ class DashboardController extends Controller
             'keterangan' => 'nullable|string|max:255',
         ]);
 
+        $jumlah = str_replace('.', '', $request->jumlah);
+        $jumlah = str_replace(',', '.', $jumlah);
+
         $simpanan = Simpanan::create([
             'user_id' => Auth::id(),
             'jenis_simpanan' => $request->jenis_simpanan,
-            'jumlah' => $request->jumlah,
+            'jumlah' => $jumlah,
             'tanggal' => now(),
             'keterangan' => $request->keterangan,
+
+            'status' => 'approved', // <-- langsung approved
         ]);
 
         // Buat notifikasi ke user
@@ -152,7 +201,7 @@ class DashboardController extends Controller
         ]);
 
         return redirect()->route('dashboard.simpanan')
-            ->with('success', 'Setoran simpanan berhasil diajukan');
+            ->with('success', 'Setoran simpanan berhasil ditambahkan');
     }
 
     // Method untuk Teller
@@ -185,5 +234,29 @@ class DashboardController extends Controller
         }
 
         return redirect()->back()->with('success', 'Status simpanan berhasil diperbarui');
+    }
+
+    // Halaman Unduh SHU
+    public function shu()
+    {
+        return view('dashboard.shu');
+    }
+
+    // Download SHU as PDF for a specific year
+    public function downloadShuPdf($tahun)
+    {
+        $user = Auth::user();
+        $transaksi = \App\Models\Transaksi::where('user_id', $user->id)
+            ->whereYear('tanggal', $tahun)
+            ->get();
+        $shus = \App\Models\Shu::where('user_id', $user->id)
+            ->where('tahun', $tahun)
+            ->get();
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView('dashboard.shu_pdf', [
+            'user' => $user,
+            'tahun' => $tahun,
+            'transaksi' => $transaksi,
+            'shus' => $shus,
+        ])->download('SHU_' . $user->nama . '_' . $tahun . '.pdf');
     }
 }

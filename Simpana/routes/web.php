@@ -33,10 +33,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [RegistController::class, 'showForm'])->name('register');
 Route::post('/register', [RegistController::class, 'store']);
 
-Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
-Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
-Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
-
+// Complaint routes
 Route::get('/complaint', [ComplaintController::class, 'showForm'])->name('complaint.create');
 Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
@@ -82,14 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan-payments', [LoanPaymentController::class, 'index'])->name('loan-payments.index');
     Route::get('/loan-payments/create/{loan}', [LoanPaymentController::class, 'create'])->name('loan-payments.create');
     Route::post('/loan-payments/{loan}', [LoanPaymentController::class, 'store'])->name('loan-payments.store');
-
+    Route::get('/loan-payments/resubmit/{payment}', [LoanPaymentController::class, 'resubmit'])->name('loan-payments.resubmit');
 
     // Riwayat Pinjaman & Simpanan Routes
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/riwayat-pinjaman', [RiwayatPinjamanController::class, 'index'])->name('riwayat-pinjaman.index');
         Route::get('/riwayat-simpanan', [RiwayatSimpananController::class, 'index'])->name('riwayat-simpanan.index');
     });
-});
 
 // Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -116,9 +112,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/payments/{payment}/reject', [\App\Http\Controllers\LoanPaymentController::class, 'reject'])
         ->name('admin.payment.reject');
 
-    // SHU
+    // SHU Routes - Admin only
     Route::get('/shu', [ShuController::class, 'index'])->name('admin.shu.index');
+    Route::get('/shu/generate', [ShuController::class, 'showGenerateForm'])->name('admin.shu.form');
     Route::post('/shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
+    Route::post('/shu/generate-pdf', [ShuController::class, 'generatePDF'])->name('admin.shu.generatePDF');
+
+    // Acceptance routes
+    Route::get('/acceptance', [AcceptanceController::class, 'index'])->name('acceptance.index');
+    Route::get('/acceptance/approve/{id}', [AcceptanceController::class, 'approve'])->name('acceptance.approve');
+    Route::get('/acceptance/reject/{id}', [AcceptanceController::class, 'reject'])->name('acceptance.reject');
 });
 
 // Dashboard routes (khusus fitur simpanan, transaksi, dsb)
@@ -132,6 +135,9 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
 
     // Routes untuk setoran
     Route::resource('setoran', AdminSetoranController::class);
+  
+    Route::get('/shu', [DashboardController::class, 'shu'])->name('shu');
+    Route::get('/shu/download-pdf/{tahun}', [DashboardController::class, 'downloadShuPdf'])->name('shu.download_pdf');
 });
 
 

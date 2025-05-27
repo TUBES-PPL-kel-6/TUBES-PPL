@@ -37,8 +37,12 @@
                     <!-- Payment Type Tabs -->
                     <div class="flex mb-3 space-x-2">
                         <a href="{{ route('dashboard.simpanan.create', ['type' => 'wajib']) }}" id="tab-wajib"
-                           class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">
+                           class="px-4 py-1 rounded-full text-sm {{ $type == 'wajib' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium
+                           {{ isset($currentMonthWajib) && $currentMonthWajib ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}">
                             Simpanan Wajib
+                            @if(isset($currentMonthWajib) && $currentMonthWajib)
+                                <span class="text-xs">(Sudah dibayar)</span>
+                            @endif
                         </a>
                         <a href="{{ route('dashboard.simpanan.create', ['type' => 'sukarela']) }}" id="tab-sukarela"
                            class="px-4 py-1 rounded-full text-sm {{ $type == 'sukarela' ? 'bg-white text-primary' : 'bg-opacity-20 bg-white text-white hover:bg-opacity-30' }} font-medium">
@@ -46,26 +50,55 @@
                         </a>
                     </div>
 
-                    <h1 class="text-3xl font-bold" id="payment-title">Simpanan Pokok</h1>
-                    <p class="text-sm mt-1 opacity-90" id="payment-description">
-                        Setoran simpanan pokok dengan jumlah tetap.
-                    </p>
+                    {{-- Judul dan deskripsi --}}
+                    @if($type === 'wajib')
+                        <h1 class="text-3xl font-bold" id="payment-title">Simpanan Wajib</h1>
+                        <p class="text-sm mt-1 opacity-90" id="payment-description">
+                            Simpanan wajib bulanan dengan jumlah tetap.
+                        </p>
+                    @elseif($type === 'sukarela')
+                        <h1 class="text-3xl font-bold" id="payment-title">Simpanan Sukarela</h1>
+                        <p class="text-sm mt-1 opacity-90" id="payment-description">
+                            Pilih jumlah setoran simpanan sukarela sesuai keinginan Anda.
+                        </p>
+                    @endif
                 </div>
 
                 <div class="p-6">
                     <form action="{{ route('dashboard.simpanan.store') }}" method="POST" id="payment-form">
                         @csrf
                         <input type="hidden" name="jenis_simpanan" id="jenis_simpanan" value="{{ $type }}">
+                        <!-- Add debugging output to see what's happening -->
+                        @if(session('error'))
+                        <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+                            <p>{{ session('error') }}</p>
+                            <p class="text-xs mt-1">Debug: Value submitted was: {{ old('jumlah') }}</p>
+                        </div>
+                        @endif
 
                         <!-- Amount Input Section -->
                         <div class="mb-6">
                             <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Nominal Simpanan</label>
                             <div class="relative" id="amount-container">
-                                <input type="text" id="amount" name="jumlah" value="50000"
+                                {{-- Input amount --}}
+                                @if($type === 'sukarela')
+                                <input type="text" id="amount" name="jumlah"
+                                       class="w-full p-3 border border-gray-300 rounded-lg"
+                                       placeholder="Masukkan nominal simpanan sukarela" autocomplete="off"
+                                       oninput="this.value = this.value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); updateSummary();">
+                                @else
+                                <input type="text" id="amount" name="jumlah" value="50.000"
                                        class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                                        readonly>
+                                @endif
                             </div>
-                            <p class="text-xs text-gray-500 mt-1" id="amount-description">Simpanan pokok memiliki jumlah tetap sesuai ketentuan.</p>
+
+                            {{-- Amount description --}}
+                            @if($type === 'wajib')
+                                <p class="text-xs text-gray-500 mt-1" id="amount-description">Simpanan wajib sebesar Rp50.000 per bulan.</p>
+                            @elseif($type === 'sukarela')
+                                <p class="text-xs text-gray-500 mt-1" id="amount-description">Minimal simpanan sukarela Rp10.000</p>
+                            @endif
                         </div>
 
                         <!-- Payment Method Section -->
@@ -172,30 +205,12 @@
         jenisSimpananInput.value = type;
 
         // Reset all tabs
-        [tabPokok, tabWajib, tabSukarela].forEach(tab => {
+        [tabWajib, tabSukarela].forEach(tab => {
             tab.classList.remove('bg-white', 'text-primary');
             tab.classList.add('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
         });
 
-        if (type === 'pokok') {
-            // Update title and description
-            titleElement.textContent = 'Simpanan Pokok';
-            descriptionElement.textContent = 'Setoran simpanan pokok dengan jumlah tetap.';
-
-            // Update amount input
-            amountElement.value = '50000';
-            amountElement.classList.add('bg-gray-100', 'cursor-not-allowed');
-            amountElement.setAttribute('readonly', true);
-            amountDescription.textContent = 'Simpanan pokok memiliki jumlah tetap sesuai ketentuan.';
-
-            // Update summary
-            summaryAmount.textContent = 'Rp50.000';
-            summaryTotal.textContent = 'Rp50.000';
-
-            // Update tab
-            tabPokok.classList.add('bg-white', 'text-primary');
-            tabPokok.classList.remove('bg-opacity-20', 'text-white', 'hover:bg-opacity-30');
-        } else if (type === 'wajib') {
+        if (type === 'wajib') {
             // Update title and description
             titleElement.textContent = 'Simpanan Wajib';
             descriptionElement.textContent = 'Simpanan wajib bulanan dengan jumlah tetap.';
@@ -221,7 +236,7 @@
             // Update amount input
             amountElement.value = '';
             amountElement.classList.remove('bg-gray-100', 'cursor-not-allowed');
-            amountElement.removeAttribute('readonly');
+            amountElement.removeAttribute('readonly'); // <-- ini yang benar
             amountDescription.textContent = 'Minimal simpanan sukarela Rp10.000';
 
             // Update summary
@@ -234,78 +249,106 @@
         }
     }
 
-    // Format currency input
+    // Replace the existing formatCurrency function with this improved version
     function formatCurrency(input) {
-        // Remove non-digit characters
+        // Remove all non-digit characters (dots, commas, etc.)
         let value = input.value.replace(/\D/g, '');
-
-        // Format with thousand separators
-        if (value !== '') {
-            value = parseInt(value).toLocaleString('id-ID');
+        
+        // If empty, just return empty
+        if (value === '') {
+            input.value = '';
+            updateSummary();
+            return;
         }
-
+        
+        // Format the number with dots as thousand separators
+        // This uses a regex to add dots between every 3 digits
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        
+        // Update the input value
         input.value = value;
-
-        // Update summary
         updateSummary();
     }
 
+    // Replace updateSummary function with this improved version
     function updateSummary() {
         const amountInput = document.getElementById('amount');
         const summaryAmount = document.getElementById('summary-amount');
         const summaryTotal = document.getElementById('summary-total');
-
-        // Get input value and remove non-digits
-        let value = amountInput.value.replace(/\D/g, '');
-
-        if (value === '') {
-            value = '0';
-        }
-
-        // Format for display
-        const formattedValue = parseInt(value).toLocaleString('id-ID');
-
+        
+        // Remove dots to get the actual number
+        const rawValue = amountInput.value.replace(/\./g, '');
+        
+        // Format the number for display
+        const formattedValue = rawValue === '' ? '0' : 
+            parseInt(rawValue).toLocaleString('id-ID').replace(/,/g, '.');
+        
+        // Update summary displays
         summaryAmount.textContent = `Rp${formattedValue}`;
         summaryTotal.textContent = `Rp${formattedValue}`;
     }
-
-    // Initialize payment method selection
+    
     document.addEventListener('DOMContentLoaded', function() {
         const paymentOptions = document.querySelectorAll('.payment-option');
-
         paymentOptions.forEach(option => {
             const radio = option.querySelector('input[type="radio"]');
-
             option.addEventListener('click', function() {
                 radio.checked = true;
-
-                // Remove selected styling from all options
                 paymentOptions.forEach(opt => {
                     opt.classList.remove('border-primary', 'bg-blue-50');
                 });
-
-                // Add selected styling
                 option.classList.add('border-primary', 'bg-blue-50');
             });
         });
 
         // Add input event listener
         const amountInput = document.getElementById('amount');
-        amountInput.addEventListener('input', function() {
-            formatCurrency(this);
-        });
+        if (amountInput) {
+            amountInput.addEventListener('input', function() {
+                formatCurrency(this);
+            });
+        }
 
-        // Initialize the current payment type
-        const currentType = '{{ $type }}';
-        switchPaymentType(currentType);
+        // Initialize formatting for wajib simpanan (50000 -> 50.000)
+        if (amountInput && amountInput.value === '50000') {
+            amountInput.value = '50.000';
+        }
+
+        // Make sure summary is updated on page load
+        updateSummary();
     });
 
     function showPaymentSuccess() {
         document.getElementById('success-modal').classList.remove('hidden');
     }
-
     function closeModal() {
         document.getElementById('success-modal').classList.add('hidden');
     }
+
+    // Add this to your existing JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the form element
+        const form = document.getElementById('payment-form');
+        
+        // Add submit event listener
+        form.addEventListener('submit', function(event) {
+            // Get the amount input
+            const amountInput = document.getElementById('amount');
+            
+            // If it's not the wajib type (which is readonly), format the value properly
+            if (!amountInput.readOnly) {
+                // Store the original value with dots for visual purposes
+                const displayValue = amountInput.value;
+                
+                // Remove dots from the input value before submission
+                amountInput.value = amountInput.value.replace(/\./g, '');
+                
+                // For debugging - you can log what's being submitted
+                console.log('Submitting amount:', amountInput.value);
+            }
+        });
+
+        // Rest of your existing initialization code...
+    });
 </script>
 @endsection

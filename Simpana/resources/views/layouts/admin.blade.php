@@ -564,21 +564,34 @@
         <!-- Top Navigation -->
         <nav class="top-navbar d-flex justify-content-between align-items-center">
             <div class="navbar-brand">@yield('header', 'Dashboard')</div>
-            <div class="user-dropdown">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-2"></i>
-                        {{ Auth::user()->nama ?? 'Admin User' }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/admin/profile">
-                            <i class="fas fa-user me-2"></i>Profil
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt me-2"></i>Keluar
-                        </a></li>
-                    </ul>
+            <div class="d-flex align-items-center">
+                <div class="user-dropdown">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            {{ Auth::user()->nama ?? 'Admin User' }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/admin/profile">
+                                <i class="fas fa-user me-2"></i>Profil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i>Keluar
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Notification Bell -->
+                <div class="ms-3 position-relative">
+                    <a href="{{ route('notifications') }}" class="text-gray-500 hover:text-primary" style="font-size: 1.25rem;">
+                        <i class="fas fa-bell"></i>
+                        @if(isset($unreadNotificationCount) && $unreadNotificationCount > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $unreadNotificationCount }}
+                            </span>
+                        @endif
+                    </a>
                 </div>
             </div>
         </nav>

@@ -36,12 +36,20 @@ class LoanPaymentController extends Controller
                 ->with('error', 'Anda tidak memiliki akses ke pinjaman ini.');
         }
 
-        // Find the next unpaid payment
+        // Find the next unpaid payment (either pending or rejected)
         $nextPayment = $loan->payments()
             ->whereNull('payment_date')
             ->where('status', 'pending')
             ->orderBy('installment_number')
             ->first();
+            
+        if (!$nextPayment) {
+            // If no pending payment, check for rejected payments
+            $nextPayment = $loan->payments()
+                ->where('status', 'rejected')
+                ->orderBy('installment_number')
+                ->first();
+        }
 
         if (!$nextPayment) {
             return redirect()->route('loan-payments.index')
@@ -51,21 +59,24 @@ class LoanPaymentController extends Controller
         $nextPaymentNumber = $nextPayment->installment_number;
         $monthlyPayment = $nextPayment->amount;
         $dueDate = $nextPayment->due_date;
+        $rejectionReason = $nextPayment->status === 'rejected' ? $nextPayment->notes : null;
 
-        return view('loan-payments.create', compact('loan', 'nextPaymentNumber', 'monthlyPayment', 'dueDate'));
+        // This will ensure the form is rendered with the "Bayar Angsuran" style but can include rejection info
+        return view('loan-payments.create', compact('loan', 'nextPaymentNumber', 'monthlyPayment', 'dueDate', 'rejectionReason'));
     }
 
     /**
-     * Store a new loan payment
+     * Store a new loan payment or update a rejected one
      */
     public function store(Request $request, LoanApplication $loan)
     {
         // Validate request
         $request->validate([
             'payment_method' => 'required|in:transfer,cash,debit',
-            'payment_proof' => 'required_if:payment_method,transfer|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'payment_proof' => 'required_if:payment_method,transfer|file|mimes:jpeg,png,jpg|max:11000',
             'payment_date' => 'required|date',
-            'amount' => 'required|numeric|min:1'
+            'amount' => 'required|numeric|min:1',
+            'payment_id' => 'nullable|exists:loan_payments,id' // Add validation for payment_id
         ]);
 
         // Verify the loan belongs to the user and is approved
@@ -74,12 +85,33 @@ class LoanPaymentController extends Controller
                 ->with('error', 'Anda tidak memiliki akses ke pinjaman ini.');
         }
 
-        // Find the next unpaid payment
-        $nextPayment = $loan->payments()
-            ->whereNull('payment_date')
-            ->where('status', 'pending')
-            ->orderBy('installment_number')
-            ->first();
+        // If payment_id is provided, find that specific payment instead of the first one
+        $nextPayment = null;
+        if ($request->has('payment_id') && $request->payment_id) {
+            $nextPayment = LoanPayment::where('id', $request->payment_id)
+                ->where('loan_application_id', $loan->id)
+                ->first();
+                
+            if (!$nextPayment || $nextPayment->status !== 'rejected') {
+                return redirect()->route('loan-payments.index')
+                    ->with('error', 'Pembayaran yang ingin diajukan ulang tidak valid.');
+            }
+        } else {
+            // Normal flow for regular payments: Find the next unpaid payment
+            $nextPayment = $loan->payments()
+                ->whereNull('payment_date')
+                ->where('status', 'pending')
+                ->orderBy('installment_number')
+                ->first();
+                
+            if (!$nextPayment) {
+                // If no pending payment, check for rejected payments
+                $nextPayment = $loan->payments()
+                    ->where('status', 'rejected')
+                    ->orderBy('installment_number')
+                    ->first();
+            }
+        }
 
         if (!$nextPayment) {
             return redirect()->route('loan-payments.index')
@@ -89,6 +121,11 @@ class LoanPaymentController extends Controller
         // Handle file upload if payment method is transfer
         $paymentProofPath = null;
         if ($request->payment_method === 'transfer' && $request->hasFile('payment_proof')) {
+            // Remove old payment proof if it exists
+            if ($nextPayment->payment_proof) {
+                Storage::delete($nextPayment->payment_proof);
+            }
+            
             $file = $request->file('payment_proof');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $paymentProofPath = $file->storeAs('public/payment_proofs', $fileName);
@@ -107,37 +144,25 @@ class LoanPaymentController extends Controller
         $paymentType = $request->input('payment_type', 'installment');
 
         if ($paymentType === 'full') {
-            // Buat satu pembayaran full
-            $loan->payments()->create([
-                'amount' => $loan->getRemainingBalance(),
-                'installment_number' => 1, // <-- HARUS 1 UNTUK TENOR 1
-                'payment_date' => $request->payment_date,
-                'due_date' => now(),
-                'payment_method' => $request->payment_method,
-                'payment_proof' => $paymentProofPath ?? null,
-                'status' => $paymentStatus,
-                'notes' => $request->notes,
-                'payment_type' => 'full'
-            ]);
+            // Update all pending installments to paid status
+            $loan->payments()
+                ->whereIn('status', ['pending', 'rejected'])
+                ->update([
+                    'payment_date' => $request->payment_date,
+                    'payment_method' => $request->payment_method,
+                    'payment_proof' => $paymentProofPath ?? null,
+                    'status' => $paymentStatus,
+                    'notes' => $request->notes,
+                    'payment_type' => 'full'
+                ]);
         } else {
-            $tenor = $loan->tenor;
-            $installmentNumber = 1; // default untuk tenor 1
-
-            if ($tenor > 1) {
-                // cari angsuran ke berapa yang belum dibayar
-                $installmentNumber = $loan->payments()->whereNull('payment_date')->where('status', 'pending')->orderBy('installment_number')->first()->installment_number ?? 1;
-            }
-
-            $loan->payments()->create([
-                'amount' => $request->amount,
-                'installment_number' => $installmentNumber,
+            // UPDATE THE EXISTING PAYMENT instead of creating a new one
+            $nextPayment->update([
                 'payment_date' => $request->payment_date,
-                'due_date' => now(),
                 'payment_method' => $request->payment_method,
                 'payment_proof' => $paymentProofPath ?? null,
                 'status' => $paymentStatus,
-                'notes' => $request->notes,
-                // tambahkan kolom lain jika ada
+                'notes' => $request->notes
             ]);
         }
 
@@ -146,7 +171,7 @@ class LoanPaymentController extends Controller
             Notification::create([
                 'user_id' => 1, // Admin ID - you might want to make this dynamic
                 'title' => 'Pembayaran Pinjaman Baru',
-                'message' => 'Pembayaran pinjaman baru dari ' . Auth::user()->name . ' perlu verifikasi.',
+                'message' => 'Pembayaran angsuran ke-' . $nextPayment->installment_number . ' perlu verifikasi.',
                 'type' => 'pinjaman',
                 'is_read' => false
             ]);
@@ -256,5 +281,42 @@ class LoanPaymentController extends Controller
             'payment_proof' => $payment->payment_proof ? asset(str_replace('public/', 'storage/', $payment->payment_proof)) : null,
             'notes' => $payment->notes,
         ]);
+    }
+
+    /**
+     * Show form to resubmit a rejected payment
+     */
+    public function resubmit(LoanPayment $payment)
+    {
+        // Verify the payment belongs to the user and is rejected
+        if ($payment->loanApplication->user_id !== Auth::id() || $payment->status !== 'rejected') {
+            return redirect()->route('loan-payments.index')
+                ->with('error', 'Anda tidak memiliki akses ke pembayaran ini atau pembayaran tidak ditolak.');
+        }
+
+        $loan = $payment->loanApplication;
+        $nextPaymentNumber = $payment->installment_number;
+        $monthlyPayment = $payment->amount;
+        $dueDate = $payment->due_date;
+        $rejectionReason = $payment->notes;
+        
+        // Set the page title to match the "Bayar Angsuran" style
+        $pageTitle = "Bayar Angsuran";
+        $isResubmission = true;
+        
+        // Pass the payment ID to the view for the form action
+        $paymentId = $payment->id;
+        
+        return view('loan-payments.create', compact(
+            'loan', 
+            'payment',
+            'paymentId',
+            'nextPaymentNumber', 
+            'monthlyPayment', 
+            'dueDate', 
+            'rejectionReason',
+            'pageTitle',
+            'isResubmission'
+        ));
     }
 }

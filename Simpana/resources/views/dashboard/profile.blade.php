@@ -34,6 +34,12 @@
                         </svg>
                         <span>Transaksi</span>
                     </a>
+                    <a href="{{ route('dashboard.shu') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2z" />
+                        </svg>
+                        <span>View SHU</span>
+                    </a>
                 </nav>
             </div>
         </div>

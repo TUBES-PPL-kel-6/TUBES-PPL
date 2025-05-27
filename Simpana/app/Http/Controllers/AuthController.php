@@ -16,25 +16,40 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            // Redirect based on user role
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin');
+        $user = \App\Models\User::where('email', $request->email)->first();
+        
+        // First check if user exists
+        if ($user) {
+            // For regular users, check status
+            if ($user->role !== 'admin') {
+                if ($user->status === 'rejected') {
+                    return back()->withErrors([
+                        'email' => 'Akun Anda telah ditolak.'
+                    ])->withInput($request->only('email'));
+                }
+                
+                if ($user->status === 'pending') {
+                    return back()->withErrors([
+                        'email' => 'Akun Anda masih dalam proses persetujuan. Silakan tunggu hingga akun disetujui.'
+                    ])->withInput($request->only('email'));
+                }
             }
+            // Admin bypasses status check
+        }
 
-            return redirect()->intended('/user');
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'email' => 'Email atau password salah.'
+        ])->withInput($request->only('email'));
     }
 
     public function logout(Request $request)

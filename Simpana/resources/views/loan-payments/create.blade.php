@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/loan-payments/create.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -6,13 +5,21 @@
     <div class="max-w-2xl mx-auto">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b">
-                <h2 class="text-2xl font-bold text-gray-800">Pembayaran Pinjaman</h2>
+                <h2 class="text-2xl font-bold text-gray-800">{{ $pageTitle ?? 'Pembayaran Pinjaman' }}</h2>
+                @if(isset($rejectionReason) && !empty($rejectionReason))
+                    <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-md">
+                        <p class="text-red-700 text-sm font-medium">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            Ditolak: {{ $rejectionReason }}
+                        </p>
+                    </div>
+                @endif
             </div>
 
             <div class="p-6">
                 @if ($errors->any())
                     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <div class="text-red-800">
+                          <div class="text-red-800">
                             <ul class="list-disc list-inside space-y-1">
                                 @foreach ($errors->all() as $error)
                                     <li class="text-sm">{{ $error }}</li>
@@ -48,6 +55,11 @@
                 <!-- Payment Form -->
                 <form method="POST" action="{{ route('loan-payments.store', $loan->id) }}" enctype="multipart/form-data" id="paymentForm" class="space-y-6">
                     @csrf
+
+                    <!-- Add this hidden input for resubmissions -->
+                    @if(isset($isResubmission) && $isResubmission && isset($paymentId))
+                        <input type="hidden" name="payment_id" value="{{ $paymentId }}">
+                    @endif
 
                     <!-- Payment Type -->
                     <div class="space-y-3">
@@ -116,9 +128,9 @@
                     <div id="proofContainer" class="space-y-2" style="display:none;">
                         <label for="payment_proof" class="block text-sm font-medium text-gray-700">Bukti Transfer</label>
                         <input type="file" id="payment_proof" name="payment_proof"
-                            accept="image/jpeg,image/png,image/jpg,application/pdf"
+                            accept="image/jpeg,image/png,image/jpg,application/"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                        <p class="text-xs text-gray-500">Upload bukti transfer (format: JPG, PNG, PDF, max 2MB)</p>
+                        <p class="text-xs text-gray-500">Upload bukti transfer (format: JPG, PNG, max 10MB)</p>
                         @error('payment_proof')
                             <p class="text-red-500 text-sm">{{ $message }}</p>
                         @enderror
@@ -141,7 +153,7 @@
                         <button type="submit"
                             class="px-6 py-3 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors flex-1 sm:flex-none"
                             onclick="submitForm()">
-                            Bayar Sekarang
+                            {{ isset($isResubmission) && $isResubmission ? 'Ajukan Ulang' : 'Bayar Sekarang' }}
                         </button>
                     </div>
                 </form>
