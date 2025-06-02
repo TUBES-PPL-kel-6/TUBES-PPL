@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/loan/{loanApplication}/edit', [LoanApplicationController::class, 'edit'])->name('loan.edit');
     Route::put('/loan/{loanApplication}', [LoanApplicationController::class, 'update'])->name('loan.update');
     Route::delete('/loan/{loanApplication}', [LoanApplicationController::class, 'destroy'])->name('loan.destroy');
+    Route::get('/loan/{loanApplication}/download-approval-letter', [LoanApplicationController::class, 'downloadApprovalLetter'])->name('loan.downloadApprovalLetter');
 
     // Loan Payment Routes - User side
     Route::get('/loan-payments', [LoanPaymentController::class, 'index'])->name('loan-payments.index');
@@ -85,6 +86,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/riwayat-pinjaman', [RiwayatPinjamanController::class, 'index'])->name('riwayat-pinjaman.index');
         Route::get('/riwayat-simpanan', [RiwayatSimpananController::class, 'index'])->name('riwayat-simpanan.index');
     });
+
+    // Profile routes
+    Route::get('/dashboard/profile', [UserDashboardController::class, 'profile'])->name('dashboard.profile');
+    Route::put('/dashboard/profile', [UserDashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
 });
 
 // Admin routes - requires admin role
@@ -168,8 +173,4 @@ Route::get('/general', function () {
 // Admin loan application view (jika masih dipakai)
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
-});
-
-
-
 });

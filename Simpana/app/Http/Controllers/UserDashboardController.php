@@ -92,4 +92,29 @@ class UserDashboardController extends Controller
             'unreadNotifications'
         ));
     }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'no_telp' => 'nullable|string|max:20',
+            'alamat' => 'nullable|string|max:500'
+        ]);
+
+        try {
+            $user = Auth::user();
+            $user->update([
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'no_telp' => $request->no_telp,
+                'alamat' => $request->alamat
+            ]);
+
+            return redirect()->route('dashboard.profile')->with('success', 'Profil berhasil diperbarui!');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui profil.')->withInput();
+        }
+    }
 }

@@ -7,12 +7,12 @@
         <div class="w-full md:w-1/4">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center space-x-4 mb-6">
-                    <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span class="text-2xl font-bold text-gray-600">{{ substr($user->name, 0, 1) }}</span>
+                    <div class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-2xl">
+                        {{ strtoupper(substr($user->nama, 0, 1)) }}
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold">{{ $user->name }}</h2>
-                        <p class="text-gray-600">Anggota</p>
+                        <h2 class="text-xl font-semibold">{{ $user->nama }}</h2>
+                        <p class="text-gray-600">{{ ucfirst($user->role) }}</p>
                     </div>
                 </div>
                 <nav class="space-y-2">
@@ -27,12 +27,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                         <span>Profil</span>
-                    </a>
-                    <a href="{{ route('dashboard.transactions') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                        <span>Transaksi</span>
                     </a>
                     <a href="{{ route('dashboard.shu') }}" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +49,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                            <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                             <input type="text" name="nama" id="nama" value="{{ $user->nama }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
                         
@@ -85,4 +79,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

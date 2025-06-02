@@ -69,7 +69,7 @@
                 <span x-show="!sidebarCollapsed" x-transition class="sidebar-text">Riwayat Simpanan</span>
             </a>
 
-            <a href="{{ route('dashboard.simpanan.create') }}"
+            <a href="{{ route('dashboard.simpanan.create', ['type' => 'sukarela']) }}"
                class="flex items-center gap-3 py-3 px-4 rounded-lg hover:bg-white/20 transition-all duration-200">
                 <i class="fa-solid fa-money-bill-transfer" :class="sidebarCollapsed ? 'text-center' : ''"></i>
                 <span x-show="!sidebarCollapsed" x-transition class="sidebar-text">Setor Simpanan</span>

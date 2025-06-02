@@ -9,6 +9,9 @@
  use Illuminate\Support\Facades\Auth;
  use Illuminate\Support\Facades\Log;
  use Carbon\Carbon;
+ use Illuminate\Support\Facades\Response;
+ use Barryvdh\DomPDF\Facade\Pdf;
+ use Illuminate\Support\Facades\Storage;
 
  class LoanApplicationController extends Controller
  {
@@ -23,7 +26,8 @@
          ]);
 
          try {
-             $loans = LoanApplication::with('user')->latest()->paginate(10);
+             // Changed from latest() to oldest() to show first loans first
+             $loans = LoanApplication::with('user')->oldest()->paginate(10);
              Log::info('LoanApplicationController@index: Successfully retrieved loans', [
                  'count' => $loans->count()
              ]);
@@ -41,7 +45,18 @@
          */
         public function create()
         {
-            return view('loan-application');
+            // Fetch the latest loan application for the current user
+            $latestLoan = LoanApplication::where('user_id', Auth::id())
+                ->whereIn('status', ['approved', 'rejected'])
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            // Fetch all loans for the current user - oldest first
+            $userLoans = LoanApplication::where('user_id', Auth::id())
+                ->orderBy('created_at', 'asc')  // Changed from 'desc' to 'asc'
+                ->get();
+
+            return view('loan-application', compact('latestLoan', 'userLoans'));
         }
 
         /**
@@ -236,5 +251,76 @@
             }
 
             return redirect()->back()->with('success', 'Duplicate payments cleaned up successfully.');
+        }
+
+        public function downloadApprovalLetter(LoanApplication $loanApplication)
+        {
+            // Check if the loan belongs to the current user (for security)
+            if ($loanApplication->user_id !== Auth::id()) {
+                abort(403, 'Unauthorized access to loan application');
+            }
+
+            // Check if the loan has been approved or rejected
+            if (!in_array($loanApplication->status, ['approved', 'rejected'])) {
+                return redirect()->back()->with('error', 'Surat persetujuan hanya tersedia untuk pinjaman yang telah disetujui atau ditolak.');
+            }
+
+            try {
+                // Generate PDF using the blade template
+                $pdf = Pdf::loadView('pdf.loan-approval-letter', ['loan' => $loanApplication]);
+                
+                // Set paper size and orientation
+                $pdf->setPaper('A4', 'portrait');
+                
+                // Generate filename
+                $filename = 'Surat_Persetujuan_Pinjaman_' . $loanApplication->id . '_' . date('Y-m-d') . '.pdf';
+                
+                // Return the PDF as download
+                return $pdf->download($filename);
+                
+            } catch (\Exception $e) {
+                Log::error('Error generating approval letter PDF', [
+                    'loan_id' => $loanApplication->id,
+                    'error' => $e->getMessage()
+                ]);
+                
+                return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat surat persetujuan.');
+            }
+        }
+
+        public function downloadDocument($filename)
+        {
+            try {
+                // Check if file exists in storage
+                $filePath = 'documents/' . $filename;
+                
+                if (!Storage::disk('public')->exists($filePath)) {
+                    abort(404, 'File not found');
+                }
+
+                // Get the file path
+                $fullPath = Storage::disk('public')->path($filePath);
+                
+                // Check if the current user has access to this document
+                $hasAccess = LoanApplication::where('user_id', Auth::id())
+                    ->whereJsonContains('documents', [['file_name' => $filename]])
+                    ->exists();
+                
+                if (!$hasAccess) {
+                    abort(403, 'Unauthorized access to this document');
+                }
+
+                // Return file download
+                return response()->download($fullPath);
+                
+            } catch (\Exception $e) {
+                Log::error('Error downloading document', [
+                    'filename' => $filename,
+                    'user_id' => Auth::id(),
+                    'error' => $e->getMessage()
+                ]);
+                
+                return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunduh dokumen.');
+            }
         }
 }

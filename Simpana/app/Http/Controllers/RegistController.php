@@ -16,9 +16,9 @@ class RegistController extends Controller
     public function store(Request $request)
     {
         // Validasi
-        $request->validate([
+        $validation = $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',  // This expects password_confirmation field
+            'password' => 'required|min:6|confirmed',
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'no_telp' => 'required|numeric',
@@ -26,6 +26,13 @@ class RegistController extends Controller
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
+
+        // Store password data in session for form persistence
+        session([
+            'temp_email' => $request->email,
+            'temp_password' => $request->password,
+            'temp_password_confirmation' => $request->password_confirmation
+        ]);
 
         $ktpPath = $request->file('ktp')->store('ktp_files', 'public');
 
@@ -40,6 +47,10 @@ class RegistController extends Controller
             'ktp' => $ktpPath,
             'status' => 'pending' // set default status
         ]);
+
+        // Clear temporary session data
+        session()->forget(['temp_email', 'temp_password', 'temp_password_confirmation']);
+
         Auth::login($user);
         return redirect()->route('payment.show')->with('success', 'Registration successful!');
 

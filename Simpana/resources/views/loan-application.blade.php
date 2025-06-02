@@ -21,7 +21,6 @@
                 </div>
             </div>
             <div>
-
                 <div class="mb-4">
                     <label class="block text-sm text-gray-600 mb-1">Alamat</label>
                     <p class="font-medium">{{ Auth::user()->alamat }}</p>
@@ -37,7 +36,7 @@
     <!-- Loan Application Form Section -->
     <div class="container mx-auto p-6">
         <!-- Loan Application Form Section -->
-        <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Form Pengajuan Pinjaman</h2>
             <!-- Tambahkan di atas form -->
                @if ($errors->any())
@@ -78,7 +77,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Upload Dokumen Pendukung</label>
                     <p class="text-xs text-gray-500 mb-3">Format yang diterima: PDF (Maksimal 2MB per file)</p>
                     <div class="flex items-center gap-4">
-                        <input type="file" name="supporting_documents[]" multiple accept=".pdf,.jpg,.jpeg,.png" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        <input type="file" name="supporting_documents[]" multiple accept=".pdf" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none">
                     </div>
                 </div>
 
@@ -120,17 +119,6 @@
 
                 <!-- Row 4 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- Metode Pembayaran -->
-                    <!-- <div>
-                        <label for="payment_method" class="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran</label>
-                        <select id="payment_method" name="payment_method" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none">
-                            <option value="">Pilih metode pembayaran</option> -->
-                            <!-- <option value="cash">Tunai</option>
-                            <option value="transfer">Transfer Bank</option>
-                            <option value="debit">Kartu Debit</option> -->
-                        <!-- </select> -->
-                    <!-- </div> -->
-
                     <!-- Jaminan -->
                     <div>
                         <label for="collateral" class="block text-sm font-medium text-gray-700 mb-1">Jaminan</label>
@@ -145,6 +133,94 @@
                     </button>
                 </div>
             </form>
+        </div>
+
+        <!-- Riwayat Pinjaman Section -->
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Riwayat Pinjaman</h2>
+            
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">No</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Produk Pinjaman</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Nominal</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Tenor</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Tanggal Pengajuan</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-700">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($userLoans as $loan)
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 px-4 py-3 text-sm">{{ $loop->iteration }}</td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">{{ ucfirst($loan->loan_product) }}</td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">Rp {{ number_format($loan->loan_amount, 0, ',', '.') }}</td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">{{ $loan->tenor }} Bulan</td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">
+                                    {{ $loan->application_date ? \Carbon\Carbon::parse($loan->application_date)->format('d M Y') : '-' }}
+                                </td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">
+                                    @if($loan->status == 'pending')
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            Menunggu
+                                        </span>
+                                    @elseif($loan->status == 'approved')
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                            Disetujui
+                                        </span>
+                                    @elseif($loan->status == 'rejected')
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                            Ditolak
+                                        </span>
+                                    @elseif($loan->status == 'paid')
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            Lunas
+                                        </span>
+                                    @else
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                            {{ ucfirst($loan->status) }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="border border-gray-300 px-4 py-3 text-sm">
+                                    @if(in_array($loan->status, ['approved', 'rejected']))
+                                        <a href="{{ route('loan.downloadApprovalLetter', $loan->id) }}" 
+                                           class="inline-flex items-center px-3 py-2 bg-blue-500 text-white text-xs font-medium rounded-md hover:bg-blue-600 transition-colors">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            Download Surat
+                                        </a>
+                                    @else
+                                        <span class="text-gray-400 text-xs">Belum tersedia</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <p class="text-lg font-medium">Belum ada riwayat pinjaman</p>
+                                        <p class="text-sm">Ajukan pinjaman pertama Anda menggunakan form di atas</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
