@@ -87,11 +87,11 @@
                 document.getElementById("email").value = "{{ session('temp_email', old('email')) }}";
                 document.getElementById("password").value = "{{ session('temp_password') }}";
                 document.getElementById("password_confirmation").value = "{{ session('temp_password_confirmation') }}";
-                
+
                 document.getElementById("emailHidden").value = "{{ session('temp_email', old('email')) }}";
                 document.getElementById("passwordHidden").value = "{{ session('temp_password') }}";
                 document.getElementById("passwordConfirmationHidden").value = "{{ session('temp_password_confirmation') }}";
-                
+
                 document.getElementById("emailForm").style.display = "none";
                 document.getElementById("dataDiriForm").style.display = "block";
             @endif
@@ -245,13 +245,6 @@
         </div>
     </div>
 
-    <footer class="w-full fixed bottom-0 text-center py-4 text-gray-500 text-sm bg-white border-t border-gray-200">
-        <p>&copy; 2025 Simpana. All rights reserved.</p>
-        <div class="mt-2 space-x-4">
-            <a href="#" class="hover:text-primary">Bantuan</a>
-            <a href="#" class="hover:text-primary">Syarat & Ketentuan</a>
-            <a href="#" class="hover:text-primary">Kebijakan Privasi</a>
-        </div>
-    </footer>
+
 </body>
 </html>

@@ -18,6 +18,7 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\AdminSetoranController;
 use App\Http\Controllers\RiwayatPinjamanController;
 use App\Http\Controllers\RiwayatSimpananController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 // Landing page
 Route::get('/', function () {
@@ -66,6 +67,11 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard utama user (pakai closure, bukan controller)
     Route::get('/user', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
+    // Notification routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
     // Loan Application Routes
     Route::get('/loan', [LoanApplicationController::class, 'create'])->name('loan.create');
     Route::post('/loan', [LoanApplicationController::class, 'store'])->name('loan.store');
@@ -86,11 +92,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/riwayat-pinjaman', [RiwayatPinjamanController::class, 'index'])->name('riwayat-pinjaman.index');
         Route::get('/riwayat-simpanan', [RiwayatSimpananController::class, 'index'])->name('riwayat-simpanan.index');
     });
-
-    // Profile routes
-    Route::get('/dashboard/profile', [UserDashboardController::class, 'profile'])->name('dashboard.profile');
-    Route::put('/dashboard/profile', [UserDashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
 });
+
 
 // Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -119,7 +122,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // SHU Routes - Admin only
     Route::get('/shu', [ShuController::class, 'index'])->name('admin.shu.index');
-    Route::get('/shu/generate', [ShuController::class, 'showGenerateForm'])->name('admin.shu.form');
     Route::post('/shu/generate', [ShuController::class, 'generate'])->name('admin.shu.generate');
     Route::post('/shu/generate-pdf', [ShuController::class, 'generatePDF'])->name('admin.shu.generatePDF');
 
@@ -140,15 +142,13 @@ Route::middleware(['auth'])->prefix('dashboard')->name('dashboard.')->group(func
 
     // Routes untuk setoran
     Route::resource('setoran', AdminSetoranController::class);
-  
+
     Route::get('/shu', [DashboardController::class, 'shu'])->name('shu');
     Route::get('/shu/download-pdf/{tahun}', [DashboardController::class, 'downloadShuPdf'])->name('shu.download_pdf');
 });
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
-Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
 Route::get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
 Route::get('/dashboard/simpanan/create', [DashboardController::class, 'createSimpanan'])->name('dashboard.simpanan.create');
 Route::post('/dashboard/simpanan', [DashboardController::class, 'storeSimpanan'])->name('dashboard.simpanan.store');
@@ -162,9 +162,6 @@ Route::put('/discussion/{discussion}', [DiscussionController::class, 'update'])-
 Route::delete('/discussion/{discussion}', [DiscussionController::class, 'destroy'])->name('discussion.destroy');
 Route::post('/discussion/{discussion}/comment', [DiscussionCommentController::class, 'store'])->name('discussion.comment.store');
 
-// Notification route (hanya satu)
-Route::get('/notifications', [UserController::class, 'showNotifications'])->name('notifications');
-
 // General payment form (jika masih dipakai)
 Route::get('/general', function () {
     return view('payment-form');
@@ -174,3 +171,8 @@ Route::get('/general', function () {
 Route::get('/admin-loan-applications', function () {
     return view('admin-loan-application');
 });
+
+
+
+
+

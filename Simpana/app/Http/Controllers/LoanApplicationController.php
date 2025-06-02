@@ -75,14 +75,17 @@
                 'first_payment_date' => 'required|date',
                 'collateral' => 'nullable|string',
                 'supporting_documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',  // 10MB limit (10240 KB)
+
+                // HAPUS atau KOMENTARI baris berikut:
+                // 'interest_rate' => 'required|numeric|min:0|max:100',
             ], [
                 'supporting_documents.*.max' => 'Ukuran file maksimal adalah 10MB per file.',
                 'supporting_documents.*.mimes' => 'Format file harus berupa PDF, JPG, JPEG, atau PNG.'
             ]);
-            
+
             // Process loan amount (remove thousand separators)
             $loanAmount = str_replace('.', '', $request->loan_amount);
-            
+
             // Handle file uploads
             $documents = [];
             if ($request->hasFile('supporting_documents')) {
@@ -98,7 +101,9 @@
                 }
             }
 
-            // Create loan application
+            // Set bunga flat tetap 1% per bulan
+            $defaultInterestRate = 1.00;
+
             $loanApplication = LoanApplication::create([
                 'user_id' => Auth::id(),
                 'loan_product' => $request->loan_product,
@@ -110,7 +115,8 @@
                 'payment_method' => 'transfer', // Set a default value or null
                 'collateral' => $request->collateral,
                 'documents' => $documents,
-                'status' => 'pending'
+                'status' => 'pending',
+                'interest_rate' => $defaultInterestRate, // sudah benar, ambil dari sistem
             ]);
 
             return redirect()->route('user.dashboard')->with('success', 'Pengajuan pinjaman berhasil disimpan.');
@@ -180,7 +186,7 @@
                 'title' => 'Pinjaman Disetujui',
                 'message' => 'Pengajuan pinjaman Anda telah disetujui.',
                 'type' => 'pinjaman',
-                'is_read' => false
+                'read_at' => null,
             ]);
 
             return redirect()->route('loanApproval')
@@ -189,18 +195,12 @@
 
         private function createPaymentSchedule(LoanApplication $loan)
         {
-            // Double check - prevent duplicate schedules
             if ($loan->payments()->count() > 0) {
-                return; // Schedule already exists
+                return;
             }
-
-            // Calculate monthly installment amount
-            $monthlyAmount = $loan->loan_amount / $loan->tenor;
-
-            // Get first payment date
+            $monthlyAmount = $loan->getMonthlyInstallmentAmount();
             $dueDate = Carbon::parse($loan->first_payment_date);
 
-            // Create payments for each month of the tenor
             for ($i = 1; $i <= $loan->tenor; $i++) {
                 LoanPayment::create([
                     'loan_application_id' => $loan->id,
@@ -211,8 +211,6 @@
                     'payment_method' => null,
                     'status' => 'pending'
                 ]);
-
-                // Move due date to next month
                 $dueDate->addMonth();
             }
         }
@@ -268,22 +266,22 @@
             try {
                 // Generate PDF using the blade template
                 $pdf = Pdf::loadView('pdf.loan-approval-letter', ['loan' => $loanApplication]);
-                
+
                 // Set paper size and orientation
                 $pdf->setPaper('A4', 'portrait');
-                
+
                 // Generate filename
                 $filename = 'Surat_Persetujuan_Pinjaman_' . $loanApplication->id . '_' . date('Y-m-d') . '.pdf';
-                
+
                 // Return the PDF as download
                 return $pdf->download($filename);
-                
+
             } catch (\Exception $e) {
                 Log::error('Error generating approval letter PDF', [
                     'loan_id' => $loanApplication->id,
                     'error' => $e->getMessage()
                 ]);
-                
+
                 return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat surat persetujuan.');
             }
         }
@@ -293,33 +291,33 @@
             try {
                 // Check if file exists in storage
                 $filePath = 'documents/' . $filename;
-                
+
                 if (!Storage::disk('public')->exists($filePath)) {
                     abort(404, 'File not found');
                 }
 
                 // Get the file path
                 $fullPath = Storage::disk('public')->path($filePath);
-                
+
                 // Check if the current user has access to this document
                 $hasAccess = LoanApplication::where('user_id', Auth::id())
                     ->whereJsonContains('documents', [['file_name' => $filename]])
                     ->exists();
-                
+
                 if (!$hasAccess) {
                     abort(403, 'Unauthorized access to this document');
                 }
 
                 // Return file download
                 return response()->download($fullPath);
-                
+
             } catch (\Exception $e) {
                 Log::error('Error downloading document', [
                     'filename' => $filename,
                     'user_id' => Auth::id(),
                     'error' => $e->getMessage()
                 ]);
-                
+
                 return redirect()->back()->with('error', 'Terjadi kesalahan saat mengunduh dokumen.');
             }
         }

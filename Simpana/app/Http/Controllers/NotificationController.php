@@ -23,9 +23,18 @@ class NotificationController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        $notif->is_read = true;
+        $notif->read_at = now();
         $notif->save();
 
         return redirect()->back();
+    }
+
+    public function markAllAsRead()
+    {
+        Notification::where('user_id', Auth::id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        return redirect()->back()->with('success', 'Semua notifikasi telah ditandai sebagai telah dibaca');
     }
 }

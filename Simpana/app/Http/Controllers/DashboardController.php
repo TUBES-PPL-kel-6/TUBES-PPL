@@ -197,7 +197,7 @@ class DashboardController extends Controller
             'user_id' => Auth::id(),
             'type' => 'simpanan',
             'message' => 'Setoran simpanan ' . ucfirst($request->jenis_simpanan) . ' sebesar Rp' . number_format($request->jumlah, 0, ',', '.') . ' berhasil diajukan.',
-            'is_read' => false,
+            'read_at' => null,
         ]);
 
         return redirect()->route('dashboard.simpanan')

@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Simpanan::class, 'user_id');
     }
+
+    public function loanApplications()
+    {
+        return $this->hasMany(\App\Models\LoanApplication::class, 'user_id');
+    }
 }

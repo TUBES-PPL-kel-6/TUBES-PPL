@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('collateral')->nullable();
             $table->json('documents')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->decimal('interest_rate', 5, 2)->default(0); // bunga flat per bulan, contoh: 1.00 = 1%
             $table->timestamps();
         });
     }

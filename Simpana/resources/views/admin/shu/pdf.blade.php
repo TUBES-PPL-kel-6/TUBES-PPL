@@ -62,7 +62,7 @@
         </tr>
         <tr>
             <td>2</td>
-            <td>Bunga Pinjaman (10%)</td>
+            <td>Total Bunga Pinjaman</td>
             <td class="text-right">{{ number_format($bungaPinjaman, 0, ',', '.') }}</td>
         </tr>
         <tr class="total-row">
@@ -92,6 +92,28 @@
             <td class="text-right">100%</td>
             <td class="text-right">{{ number_format($totalSHU, 0, ',', '.') }}</td>
         </tr>
+    </table>
+
+    <div class="section-header">III. Rincian SHU per Anggota</div>
+    <table>
+        <tr>
+            <th>Nama Anggota</th>
+            <th>Total Simpanan</th>
+            <th>Total Pinjaman</th>
+            <th>Kontribusi Simpanan</th>
+            <th>Kontribusi Pinjaman</th>
+            <th>Jumlah SHU</th>
+        </tr>
+        @foreach($shus as $shu)
+        <tr>
+            <td>{{ $shu->user->nama }}</td>
+            <td class="text-right">{{ number_format($shu->total_simpanan, 0, ',', '.') }}</td>
+            <td class="text-right">{{ number_format($shu->total_pinjaman, 0, ',', '.') }}</td>
+            <td class="text-right">{{ number_format($shu->kontribusi_simpanan, 0, ',', '.') }}</td>
+            <td class="text-right">{{ number_format($shu->kontribusi_pinjaman, 0, ',', '.') }}</td>
+            <td class="text-right">{{ number_format($shu->jumlah_shu, 0, ',', '.') }}</td>
+        </tr>
+        @endforeach
     </table>
 </body>
 </html>
