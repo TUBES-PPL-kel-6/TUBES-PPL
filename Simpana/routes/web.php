@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistController;
 use App\Http\Controllers\simpPokokController;
@@ -86,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/riwayat-pinjaman', [RiwayatPinjamanController::class, 'index'])->name('riwayat-pinjaman.index');
         Route::get('/riwayat-simpanan', [RiwayatSimpananController::class, 'index'])->name('riwayat-simpanan.index');
     });
+});
 
 // Admin routes - requires admin role
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
