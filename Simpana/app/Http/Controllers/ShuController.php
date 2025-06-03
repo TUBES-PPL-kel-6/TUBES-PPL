@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\Simpanan;
 use App\Models\Pinjaman;
+use App\Models\LoanPayment;
+use App\Models\LoanApplication;
 
 class ShuController extends Controller
 {
@@ -31,38 +33,42 @@ class ShuController extends Controller
         ]);
 
         try {
-            // Get all transactions for the year
-            $totalSimpanan = Simpanan::whereYear('created_at', $request->tahun)
-                ->where('status', 'completed')
-                ->sum('jumlah');
+            // Total bunga pinjaman (hasil usaha koperasi)
+            $payments = \App\Models\LoanPayment::whereYear('payment_date', $request->tahun)
+                ->where('status', 'verified')
+                ->with('loanApplication')
+                ->get();
+            $totalInterest = $payments->sum(function($payment) {
+                $loan = $payment->loanApplication;
+                if (!$loan) return 0;
+                return $loan->loan_amount * ($loan->interest_rate / 100);
+            });
+            $totalSHU = $totalInterest;
 
-            $totalPinjaman = Pinjaman::whereYear('created_at', $request->tahun)
+            // Total simpanan & pinjaman anggota (untuk proporsi pembagian)
+            $totalSimpanan = \App\Models\Simpanan::whereYear('tanggal', $request->tahun)
                 ->where('status', 'approved')
-                ->sum('amount');
+                ->sum('jumlah');
+            $totalPinjaman = \App\Models\LoanApplication::whereYear('application_date', $request->tahun)
+                ->where('status', 'approved')
+                ->sum('loan_amount');
 
-            // Calculate SHU (10% from total pinjaman as example)
-            $shu = $totalPinjaman * 0.1;
-
-            // Get all users with transactions
-            $users = \App\Models\User::whereHas('simpanan', function($query) use ($request) {
-                $query->whereYear('created_at', $request->tahun);
-            })->orWhereHas('pinjaman', function($query) use ($request) {
-                $query->whereYear('created_at', $request->tahun);
-            })->get();
-
+            // Get all users
+            $users = \App\Models\User::all();
             foreach($users as $user) {
-                // Calculate individual contributions
-                $userSimpanan = $user->simpanan()
-                    ->whereYear('created_at', $request->tahun)
-                    ->where('status', 'completed')
-                    ->sum('jumlah');
-
-                $userPinjaman = $user->pinjaman()
-                    ->whereYear('created_at', $request->tahun)
+                $userSimpanan = $user->simpanans()
+                    ->whereYear('tanggal', $request->tahun)
                     ->where('status', 'approved')
-                    ->sum('amount');
+                    ->sum('jumlah');
+                $userPinjaman = $user->loanApplications()
+                    ->whereYear('application_date', $request->tahun)
+                    ->where('status', 'approved')
+                    ->sum('loan_amount');
 
-                // Create or update SHU record
+                $kontribusiSimpanan = $totalSimpanan > 0 ? ($userSimpanan / $totalSimpanan) * ($totalSHU * 0.4) : 0;
+                $kontribusiPinjaman = $totalPinjaman > 0 ? ($userPinjaman / $totalPinjaman) * ($totalSHU * 0.6) : 0;
+                $jumlah_shu = $kontribusiSimpanan + $kontribusiPinjaman;
+
                 \App\Models\Shu::updateOrCreate(
                     [
                         'user_id' => $user->id,
@@ -71,18 +77,12 @@ class ShuController extends Controller
                     [
                         'total_simpanan' => $userSimpanan,
                         'total_pinjaman' => $userPinjaman,
-                        'kontribusi_simpanan' => $totalSimpanan > 0 ? ($userSimpanan / $totalSimpanan) * ($shu * 0.4) : 0,
-                        'kontribusi_pinjaman' => $totalPinjaman > 0 ? ($userPinjaman / $totalPinjaman) * ($shu * 0.6) : 0,
-                        'jumlah_shu' => 0, // Will be calculated below
+                        'kontribusi_simpanan' => $kontribusiSimpanan,
+                        'kontribusi_pinjaman' => $kontribusiPinjaman,
+                        'jumlah_shu' => $jumlah_shu,
+                        'tanggal_generate' => now(),
                     ]
                 );
-            }
-
-            // Update total SHU for each user
-            $shus = \App\Models\Shu::where('tahun', $request->tahun)->get();
-            foreach($shus as $shuRecord) {
-                $shuRecord->jumlah_shu = $shuRecord->kontribusi_simpanan + $shuRecord->kontribusi_pinjaman;
-                $shuRecord->save();
             }
 
             return redirect()->route('admin.shu.index')->with('success', 'SHU berhasil digenerate untuk tahun ' . $request->tahun);
@@ -96,14 +96,17 @@ class ShuController extends Controller
     {
         $year = $request->tahun ?? date('Y');
 
-        // Get total pendapatan
-        $totalPinjaman = Transaksi::whereYear('created_at', $year)
-            ->where('jenis_transaksi', 'pinjaman')
-            ->where('status', 'completed')
-            ->sum('jumlah');
-
-        $bungaPinjaman = $totalPinjaman * 0.1; // 10% bunga
-        $totalSHU = $bungaPinjaman;
+        // Get all verified payments for the year
+        $payments = LoanPayment::whereYear('payment_date', $year)
+            ->where('status', 'verified')
+            ->with('loanApplication')
+            ->get();
+        $totalInterest = $payments->sum(function($payment) {
+            $loan = $payment->loanApplication;
+            if (!$loan) return 0;
+            return $loan->loan_amount * ($loan->interest_rate / 100);
+        });
+        $totalSHU = $totalInterest;
 
         // Pembagian SHU
         $komponenPembagian = [
@@ -133,16 +136,18 @@ class ShuController extends Controller
             ]
         ];
 
+        $shus = \App\Models\Shu::where('tahun', $year)->with('user')->get();
+
         $data = [
             'tahun' => $year,
-            'totalPinjaman' => $totalPinjaman,
-            'bungaPinjaman' => $bungaPinjaman,
+            'totalPinjaman' => null,
+            'bungaPinjaman' => $totalInterest,
             'totalSHU' => $totalSHU,
-            'komponenPembagian' => $komponenPembagian
+            'komponenPembagian' => $komponenPembagian,
+            'shus' => $shus,
         ];
 
         $pdf = PDF::loadView('admin.shu.pdf', $data);
-
         return $pdf->download('laporan-shu-'.$year.'.pdf');
     }
 }

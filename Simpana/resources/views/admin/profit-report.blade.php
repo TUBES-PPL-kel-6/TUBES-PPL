@@ -9,12 +9,13 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Total Laba Bersih Tahun {{ $year }}</h6>
-                    <h2 class="card-title mb-0 text-success">Rp {{ number_format($totalLaba, 0, ',', '.') }}</h2>
+                    <h6 class="card-subtitle mb-2 text-muted">Simplified Gross Profit Tahun {{ $year }}</h6>
+                    <h2 class="card-title mb-0 text-success">Rp {{ number_format($simplifiedGrossProfit, 0, ',', '.') }}</h2>
                     <div class="mt-2">
-                        <div>Laba Simpanan: <b>Rp {{ number_format($labaSimpanan, 0, ',', '.') }}</b></div>
-                        <div>Laba Pinjaman: <b>Rp {{ number_format($labaPinjaman, 0, ',', '.') }}</b></div>
-                        <div class="text-danger">Pengeluaran Pinjaman: <b>Rp {{ number_format($pengeluaranPinjaman, 0, ',', '.') }}</b></div>
+                        <div>Total Calculated Interest: <b>Rp {{ number_format($totalCalculatedInterest, 0, ',', '.') }}</b></div>
+                         <div>Total Loan Payments Received: <b>Rp {{ number_format($totalLoanPaymentsReceived, 0, ',', '.') }}</b></div>
+                        <div>Total Savings Collected: <b>Rp {{ number_format($totalSimpananCollected, 0, ',', '.') }}</b></div>
+                        <div class="text-danger">Total Loans Disbursed: <b>Rp {{ number_format($totalLoansDisbursed, 0, ',', '.') }}</b></div>
                     </div>
                 </div>
             </div>
@@ -47,20 +48,22 @@
                     <thead class="table-light">
                         <tr>
                             <th>Bulan</th>
-                            <th>Laba Simpanan</th>
-                            <th>Laba Pinjaman</th>
-                            <th class="text-danger">Pengeluaran</th>
-                            <th>Total Laba Bersih</th>
+                            <th>Simpanan Collected</th>
+                            <th>Loan Payments Received</th>
+                            <th>Calculated Interest</th>
+                            <th class="text-danger">Loans Disbursed</th>
+                            <th>Simplified Gross Profit</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($monthly as $row)
                         <tr>
                             <td>{{ DateTime::createFromFormat('!m', $row['bulan'])->format('F') }}</td>
-                            <td>Rp {{ number_format($row['laba_simpanan'], 0, ',', '.') }}</td>
-                            <td>Rp {{ number_format($row['laba_pinjaman'], 0, ',', '.') }}</td>
-                            <td class="text-danger">Rp {{ number_format($row['pengeluaran'], 0, ',', '.') }}</td>
-                            <td><b>Rp {{ number_format($row['total_laba'], 0, ',', '.') }}</b></td>
+                            <td>Rp {{ number_format($row['simpanan_collected'], 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($row['loan_payments_received'], 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($row['calculated_interest'], 0, ',', '.') }}</td>
+                            <td class="text-danger">Rp {{ number_format($row['loans_disbursed'], 0, ',', '.') }}</td>
+                            <td><b>Rp {{ number_format($row['simplified_gross_profit'], 0, ',', '.') }}</b></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -78,18 +81,44 @@ document.addEventListener('DOMContentLoaded', function() {
         labels: {!! json_encode(array_map(fn($r) => DateTime::createFromFormat('!m', $r['bulan'])->format('F'), $monthly)) !!},
         datasets: [
             {
-                label: 'Laba Simpanan',
-                data: {!! json_encode(array_column($monthly, 'laba_simpanan')) !!},
-                borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderWidth: 2
+                label: 'Laba Kotor Sederhana',
+                data: {!! json_encode(array_column($monthly, 'simplified_gross_profit')) !!},
+                borderColor: 'rgba(34, 197, 94, 1)',
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                borderWidth: 2,
+                fill: true
+            },
+             {
+                label: 'Bunga Terhitung',
+                data: {!! json_encode(array_column($monthly, 'calculated_interest')) !!},
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                borderWidth: 2,
+                hidden: true
             },
             {
-                label: 'Laba Pinjaman',
-                data: {!! json_encode(array_column($monthly, 'laba_pinjaman')) !!},
+                label: 'Simpanan Terkumpul',
+                data: {!! json_encode(array_column($monthly, 'simpanan_collected')) !!},
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 2,
+                 hidden: true
+            },
+            {
+                label: 'Pembayaran Pinjaman Diterima',
+                data: {!! json_encode(array_column($monthly, 'loan_payments_received')) !!},
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 2
+                borderWidth: 2,
+                 hidden: true
+            },
+             {
+                label: 'Pinjaman Dicairkan',
+                data: {!! json_encode(array_column($monthly, 'loans_disbursed')) !!},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                 hidden: true
             }
         ]
     };

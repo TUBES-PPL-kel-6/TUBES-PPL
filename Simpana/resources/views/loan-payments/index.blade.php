@@ -59,7 +59,7 @@
 
             <!-- Summary Cards -->
             <div class="p-6 bg-gray-50">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div class="bg-white p-4 rounded-lg border">
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Total Pinjaman</p>
                         <p class="text-lg font-bold text-gray-900">Rp {{ number_format($loan->loan_amount, 0, ',', '.') }}</p>
@@ -67,6 +67,11 @@
                     <div class="bg-white p-4 rounded-lg border">
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Cicilan/Bulan</p>
                         <p class="text-lg font-bold text-gray-900">Rp {{ number_format($loan->getMonthlyInstallmentAmount(), 0, ',', '.') }}</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Bunga</p>
+                        <p class="text-lg font-bold text-gray-900">{{ $loan->interest_rate }}% per bulan</p>
+                        <p class="text-sm text-gray-500">{{ $loan->interest_rate * 12 }}% per tahun</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border">
                         <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Progress</p>

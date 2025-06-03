@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('title')->nullable(); // <-- add this
             $table->string('type')->default('reminder');
             $table->text('message');
-            $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable(); // <-- add this
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

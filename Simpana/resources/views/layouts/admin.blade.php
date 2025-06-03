@@ -528,6 +528,10 @@
                     <i class="fas fa-tachometer-alt"></i>
                     Dashboard
                 </a>
+                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-user"></i>
+                    User Dashboard
+                </a>
                 <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
                     <i class="fas fa-users"></i>
                     Anggota

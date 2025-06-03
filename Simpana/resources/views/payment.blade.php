@@ -142,6 +142,13 @@
 
     <div class="relative flex justify-center items-center min-h-screen p-4">
         <div class="container flex flex-col lg:flex-row gap-8 max-w-5xl w-full animate-fade-in">
+            <!-- Back Button -->
+            <div class="absolute top-4 left-4 z-20">
+                <a href="{{ route('register') }}" class="inline-flex items-center px-2 py-1 border border-[#8C1414] bg-white text-[#8C1414] font-semibold rounded-lg shadow hover:bg-[#8C1414] hover:text-white transition-colors duration-200">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+
             <!-- User Info Card -->
             <div class="glass-morphism rounded-xl card-shadow overflow-hidden w-full max-w-xs lg:w-80 h-fit animate-slide-up">
                 <div class="bg-gradient-to-r from-primary to-secondary text-white p-6 relative overflow-hidden">

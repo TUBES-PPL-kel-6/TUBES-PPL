@@ -52,6 +52,29 @@
                     </div>
                 </div>
 
+                <!-- Interest Information -->
+                <div class="mb-8 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Informasi Bunga</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <div class="text-sm text-gray-500">Bunga per Bulan</div>
+                            <div class="font-semibold text-gray-800">{{ $loan->interest_rate }}%</div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-sm text-gray-500">Bunga per Tahun</div>
+                            <div class="font-semibold text-gray-800">{{ $loan->interest_rate * 12 }}%</div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-sm text-gray-500">Bunga per Angsuran</div>
+                            <div class="font-semibold text-gray-800">Rp {{ number_format($loan->loan_amount * ($loan->interest_rate / 100), 0, ',', '.') }}</div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="text-sm text-gray-500">Total Bunga</div>
+                            <div class="font-semibold text-gray-800">Rp {{ number_format($loan->loan_amount * ($loan->interest_rate / 100) * $loan->tenor, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Payment Form -->
                 <form method="POST" action="{{ route('loan-payments.store', $loan->id) }}" enctype="multipart/form-data" id="paymentForm" class="space-y-6">
                     @csrf

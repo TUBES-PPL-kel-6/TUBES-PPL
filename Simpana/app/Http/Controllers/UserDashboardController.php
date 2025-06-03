@@ -79,7 +79,7 @@ class UserDashboardController extends Controller
 
         // Jumlah notifikasi belum dibaca
         $unreadNotifications = \App\Models\Notification::where('user_id', $userId)
-            ->where('is_read', false)
+            ->whereNull('read_at')
             ->count();
 
         return view('layouts.dashboard', compact(
@@ -112,7 +112,7 @@ class UserDashboardController extends Controller
             ]);
 
             return redirect()->route('dashboard.profile')->with('success', 'Profil berhasil diperbarui!');
-            
+
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui profil.')->withInput();
         }

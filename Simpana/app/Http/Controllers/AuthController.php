@@ -22,7 +22,7 @@ class AuthController extends Controller
         ]);
 
         $user = \App\Models\User::where('email', $request->email)->first();
-        
+
         // First check if user exists
         if ($user) {
             // For regular users, check status
@@ -32,7 +32,7 @@ class AuthController extends Controller
                         'email' => 'Akun Anda telah ditolak.'
                     ])->withInput($request->only('email'));
                 }
-                
+
                 if ($user->status === 'pending') {
                     return back()->withErrors([
                         'email' => 'Akun Anda masih dalam proses persetujuan. Silakan tunggu hingga akun disetujui.'

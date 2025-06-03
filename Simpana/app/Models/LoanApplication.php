@@ -17,7 +17,8 @@ class LoanApplication extends Model
         'payment_method',
         'collateral',
         'documents',
-        'status'
+        'status',
+        'interest_rate'
     ];
 
     protected $casts = [
@@ -38,9 +39,10 @@ class LoanApplication extends Model
 
     public function getMonthlyInstallmentAmount()
     {
-        // Simple calculation (loan amount / tenor)
-        // In a real application, you would include interest calculation
-        return $this->loan_amount / $this->tenor;
+        // Flat interest: (pokok / tenor) + (pokok * bunga per bulan)
+        $principal = $this->loan_amount / $this->tenor;
+        $interest = $this->loan_amount * ($this->interest_rate / 100);
+        return $principal + $interest;
     }
 
     public function getRemainingBalance()

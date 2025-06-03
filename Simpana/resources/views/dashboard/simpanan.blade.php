@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container mx-auto">
+    <div class="mb-4">
+        <a href="{{ route('dashboard') }}" class="inline-flex items-center text-[#8C1414] hover:text-[#6f0f0f] transition-colors">
+            <i class="bi bi-arrow-left mr-2"></i>
+            Kembali ke Dashboard
+        </a>
+    </div>
+
     @if(session('success'))
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
         <p>{{ session('success') }}</p>

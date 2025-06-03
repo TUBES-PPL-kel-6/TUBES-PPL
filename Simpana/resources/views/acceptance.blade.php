@@ -39,6 +39,22 @@
             overflow-x: hidden;
         }
 
+        .back-button {
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            color: #6f0f0f;
+            transform: translateX(-5px);
+        }
+
         /* Card Styles */
         .card {
             max-width: 1000px;
@@ -181,7 +197,7 @@
             .sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .content-area {
                 margin-left: 0;
                 max-width: 100vw;
@@ -269,6 +285,10 @@
 
             <!-- Content Area -->
             <div class="col-md-10 content-area">
+                <a href="{{ route('acceptance.index') }}" class="back-button">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Kembali</span>
+                </a>
                 <div class="tab-content" id="status-tabContent">
                     <!-- Pending Tab -->
                     <div class="tab-pane fade show active" id="pending" role="tabpanel">

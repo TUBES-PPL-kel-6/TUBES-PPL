@@ -62,7 +62,7 @@ use Illuminate\Support\Facades\Auth;
             <div class="card p-3 h-100">
                 <h5 class="mb-3">Grafik Laba Bulanan Tahun {{ $year }}</h5>
                 <div>
-                    <canvas id="dashboardProfitChart" style="max-height:300px;"></canvas>
+                    <canvas id="dashboardProfitChart"></canvas>
                 </div>
             </div>
         </div>
@@ -148,18 +148,44 @@ document.addEventListener('DOMContentLoaded', function() {
         labels: {!! json_encode(array_map(fn($r) => DateTime::createFromFormat('!m', $r['bulan'])->format('F'), $monthly)) !!},
         datasets: [
             {
-                label: 'Laba Simpanan',
-                data: {!! json_encode(array_column($monthly, 'laba_simpanan')) !!},
-                borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderWidth: 2
+                label: 'Laba Kotor Sederhana',
+                data: {!! json_encode(array_column($monthly, 'simplified_gross_profit')) !!},
+                borderColor: 'rgba(34, 197, 94, 1)',
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                borderWidth: 2,
+                fill: true
+            },
+             {
+                label: 'Bunga Terhitung',
+                data: {!! json_encode(array_column($monthly, 'calculated_interest')) !!},
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                borderWidth: 2,
+                hidden: true
             },
             {
-                label: 'Laba Pinjaman',
-                data: {!! json_encode(array_column($monthly, 'laba_pinjaman')) !!},
+                label: 'Simpanan Terkumpul',
+                data: {!! json_encode(array_column($monthly, 'simpanan_collected')) !!},
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 2,
+                 hidden: true
+            },
+            {
+                label: 'Pembayaran Pinjaman Diterima',
+                data: {!! json_encode(array_column($monthly, 'loan_payments_received')) !!},
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderWidth: 2
+                borderWidth: 2,
+                 hidden: true
+            },
+             {
+                label: 'Pinjaman Dicairkan',
+                data: {!! json_encode(array_column($monthly, 'loans_disbursed')) !!},
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                 hidden: true
             }
         ]
     };

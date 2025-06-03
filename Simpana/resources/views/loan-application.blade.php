@@ -86,9 +86,9 @@
                     <!-- Nominal Pinjaman -->
                     <div>
                         <label for="loan_amount" class="block text-sm font-medium text-gray-700 mb-1">Masukkan Nominal Pinjaman</label>
-                        <input type="text" name="loan_amount" id="loan_amount" 
-                               class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" 
-                               placeholder="100.000" 
+                        <input type="text" name="loan_amount" id="loan_amount"
+                               class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none"
+                               placeholder="100.000"
                                value="{{ old('loan_amount', '') }}"
                                oninput="this.value = this.value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.')">
                     </div>
@@ -98,6 +98,43 @@
                         <label for="tenor" class="block text-sm font-medium text-gray-700 mb-1">Tenor</label>
                         <div class="relative">
                             <input type="number" name="tenor" id="tenor" min="1" max="100" class="w-full p-3 border rounded-md focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="1 - 12 bulan">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interest Rate Information -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">Informasi Bunga</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Bunga per Bulan</p>
+                            <p class="font-medium">1%</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Bunga per Tahun</p>
+                            <p class="font-medium">12%</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">* Bunga dihitung secara flat dari pokok pinjaman</p>
+                </div>
+
+                <!-- Payment Schedule Preview -->
+                <div id="paymentSchedule" class="bg-gray-50 rounded-lg p-4 mb-6 hidden">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">Preview Angsuran</h3>
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Angsuran per Bulan</p>
+                                <p id="monthlyInstallment" class="font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Total Bunga</p>
+                                <p id="totalInterest" class="font-medium">-</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Pembayaran</p>
+                            <p id="totalPayment" class="font-medium">-</p>
                         </div>
                     </div>
                 </div>
@@ -138,7 +175,7 @@
         <!-- Riwayat Pinjaman Section -->
         <div class="bg-white rounded-lg shadow-lg p-8">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6">Riwayat Pinjaman</h2>
-            
+
             @if(session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                     {{ session('success') }}
@@ -193,7 +230,7 @@
                                 </td>
                                 <td class="border border-gray-300 px-4 py-3 text-sm">
                                     @if(in_array($loan->status, ['approved', 'rejected']))
-                                        <a href="{{ route('loan.downloadApprovalLetter', $loan->id) }}" 
+                                        <a href="{{ route('loan.downloadApprovalLetter', $loan->id) }}"
                                            class="inline-flex items-center px-3 py-2 bg-blue-500 text-white text-xs font-medium rounded-md hover:bg-blue-600 transition-colors">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -230,72 +267,98 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Get the loan amount input field
         const loanAmountInput = document.getElementById('loan_amount');
-        
+
         // Format the input value initially if it has a value
         if (loanAmountInput.value) {
             loanAmountInput.value = formatRupiah(loanAmountInput.value);
         }
-        
+
         // Add event listener for input changes with proper cursor position handling
         loanAmountInput.addEventListener('input', function(e) {
             const cursorPos = this.selectionStart;
             const oldLength = this.value.length;
             const oldValue = this.value;
-            
+
             // Remove all non-digits for formatting
             const cleanValue = this.value.replace(/\D/g, '');
-            
+
             // Format with thousand separators
             this.value = formatRupiah(cleanValue);
-            
+
             // Adjust cursor position after formatting
             const newLength = this.value.length;
             const cursorAdjust = newLength - oldLength;
-            
+
             if (cursorPos < oldLength) {
                 this.setSelectionRange(cursorPos + cursorAdjust, cursorPos + cursorAdjust);
             }
         });
-        
+
         // Set default dates
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('application_date').value = today;
         document.getElementById('first_payment_date').value = today;
+
+        // Add payment schedule calculation
+        function calculatePaymentSchedule() {
+            const loanAmount = parseInt(document.getElementById('loan_amount').value.replace(/\D/g, '')) || 0;
+            const tenor = parseInt(document.getElementById('tenor').value) || 0;
+            const interestRate = 1; // 1% per month
+
+            if (loanAmount > 0 && tenor > 0) {
+                const principal = loanAmount / tenor;
+                const monthlyInterest = loanAmount * (interestRate / 100);
+                const monthlyInstallment = principal + monthlyInterest;
+                const totalInterest = monthlyInterest * tenor;
+                const totalPayment = loanAmount + totalInterest;
+
+                document.getElementById('monthlyInstallment').textContent = 'Rp ' + formatRupiah(Math.round(monthlyInstallment));
+                document.getElementById('totalInterest').textContent = 'Rp ' + formatRupiah(Math.round(totalInterest));
+                document.getElementById('totalPayment').textContent = 'Rp ' + formatRupiah(Math.round(totalPayment));
+                document.getElementById('paymentSchedule').classList.remove('hidden');
+            } else {
+                document.getElementById('paymentSchedule').classList.add('hidden');
+            }
+        }
+
+        // Add event listeners for loan amount and tenor
+        document.getElementById('loan_amount').addEventListener('input', calculatePaymentSchedule);
+        document.getElementById('tenor').addEventListener('input', calculatePaymentSchedule);
     });
-    
+
     // Format number with thousand separators
     function formatRupiah(angka) {
         if (!angka || angka === '') return '';
-        
+
         // Convert to string and add thousand separators
         return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-    
+
     // Calculate total amount
     function calculateTotal() {
         const loanAmountInput = document.getElementById('loan_amount');
         let value = loanAmountInput.value.replace(/\D/g, '') || '0';
         const total = parseInt(value, 10);
-        
+
         // If there's a total_amount element on the page, update it
         const totalAmountElement = document.getElementById('total_amount');
         if (totalAmountElement) {
             totalAmountElement.textContent = 'Rp' + total.toLocaleString('id-ID');
         }
     }
-    
+
     // Validate file sizes before submission
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
         const fileInput = document.querySelector('input[type="file"]');
         const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-        
+
         // Add submit event listener to the form
         form.addEventListener('submit', function(event) {
             if (fileInput.files.length > 0) {
                 let isValid = true;
                 let oversizedFiles = [];
-                
+
                 // Check each file size
                 for (let i = 0; i < fileInput.files.length; i++) {
                     if (fileInput.files[i].size > maxSize) {
@@ -303,7 +366,7 @@
                         oversizedFiles.push(fileInput.files[i].name);
                     }
                 }
-                
+
                 // If any files exceed the limit, prevent submission and show error
                 if (!isValid) {
                     event.preventDefault();
@@ -311,38 +374,38 @@
                 }
             }
         });
-        
+
         // Initialize other features as before
         const loanAmountInput = document.getElementById('loan_amount');
         // Rest of your existing initialization code...
     });
-    
+
     // Handle file selection with size validation
     function handleFileSelect(event) {
         const files = event.target.files;
         const previewContainer = document.getElementById('preview-container');
         const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-        
+
         // Clear previous previews
         if (previewContainer) {
             previewContainer.innerHTML = '';
-            
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                
+
                 // Create a text-based preview
                 const preview = document.createElement('div');
                 preview.className = 'flex items-center justify-between w-full p-2 border rounded-md bg-gray-50 mb-2';
-                
+
                 // File name
                 const fileName = document.createElement('span');
                 fileName.className = 'text-sm text-gray-700 truncate';
                 fileName.textContent = file.name;
-                
+
                 // File size with warning if too large
                 const fileSize = document.createElement('span');
                 const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-                
+
                 if (file.size > maxSize) {
                     fileSize.className = 'text-xs text-red-500 ml-2 font-bold';
                     fileSize.textContent = `(${sizeMB} MB) - Ukuran melebihi batas!`;
@@ -350,7 +413,7 @@
                     fileSize.className = 'text-xs text-gray-500 ml-2';
                     fileSize.textContent = `(${sizeMB} MB)`;
                 }
-                
+
                 // Delete button
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'text-red-500 text-sm font-semibold hover:underline ml-4';
@@ -358,24 +421,24 @@
                 deleteBtn.onclick = function() {
                     preview.remove();
                 };
-                
+
                 // Append elements to the preview
                 preview.appendChild(fileName);
                 preview.appendChild(fileSize);
                 preview.appendChild(deleteBtn);
-                
+
                 // Append the preview to the container
                 previewContainer.appendChild(preview);
             }
         }
     }
-    
+
     // Add file input change listener
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput) {
         fileInput.addEventListener('change', handleFileSelect);
     }
-    
+
     @if(session('success'))
     Swal.fire({
       icon: 'success',
