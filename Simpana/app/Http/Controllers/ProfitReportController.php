@@ -37,10 +37,10 @@ class ProfitReportController extends Controller
             if (!$loan) return 0;
             // This calculates the interest portion of this specific payment based on the loan's total interest rate
             // Note: A more precise method would be needed for complex interest calculations (e.g., declining balance)
-             $monthlyInterestRate = $loan->interest_rate / 100 / 12; // assuming monthly payment & annual rate
+             $monthlyInterestRate = $loan->interest_rate / 100; // assuming monthly payment & annual rate
              // Simple calculation for interest portion of a payment (approximation for flat rate)
              $principalPerMonth = $loan->loan_amount / $loan->tenor;
-             $interestPerMonth = $loan->loan_amount * ($loan->interest_rate / 100 / 12);
+             $interestPerMonth = $loan->loan_amount * ($loan->interest_rate / 100);
              // If the payment amount equals the expected monthly installment, we can use the calculated monthly interest
              if ($payment->amount >= ($principalPerMonth + $interestPerMonth) * 0.95 && $payment->amount <= ($principalPerMonth + $interestPerMonth) * 1.05) { // Allow small tolerance
                  return $interestPerMonth;
@@ -82,11 +82,11 @@ class ProfitReportController extends Controller
                  if (!$loan) return 0;
                   // Simple calculation for interest portion of a payment (approximation for flat rate)
                  $principalPerMonth = $loan->loan_amount / $loan->tenor;
-                 $interestPerMonth = $loan->loan_amount * ($loan->interest_rate / 100 / 12);
+                 $interestPerMonth = $loan->loan_amount * ($loan->interest_rate / 100);
                  if ($payment->amount >= ($principalPerMonth + $interestPerMonth) * 0.95 && $payment->amount <= ($principalPerMonth + $interestPerMonth) * 1.05) { // Allow small tolerance
                       return $interestPerMonth;
                   } else {
-                      return $loan->loan_amount * ($loan->interest_rate / 100 / 12); // Revert to simple monthly interest for now
+                      return $loan->loan_amount * ($loan->interest_rate / 100 ); // Revert to simple monthly interest for now
                   }
             });
 
