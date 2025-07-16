@@ -23,28 +23,36 @@ class AuthController extends Controller
 
         $user = \App\Models\User::where('email', $request->email)->first();
         
-        // First check if user exists
-        if ($user) {
-            // For regular users, check status
-            if ($user->role !== 'admin') {
-                if ($user->status === 'rejected') {
-                    return back()->withErrors([
-                        'email' => 'Akun Anda telah ditolak.'
-                    ])->withInput($request->only('email'));
-                }
-                
-                if ($user->status === 'pending') {
-                    return back()->withErrors([
-                        'email' => 'Akun Anda masih dalam proses persetujuan. Silakan tunggu hingga akun disetujui.'
-                    ])->withInput($request->only('email'));
-                }
-            }
-            // Admin bypasses status check
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak ditemukan.'
+            ])->withInput($request->only('email'));
         }
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+        // Check if user is admin
+        if ($user->role === 'admin') {
+            if (Auth::attempt($request->only('email', 'password'))) {
+                $request->session()->regenerate();
+                return redirect()->route('admin.index');
+            }
+        } else {
+            // For regular users, check status
+            if ($user->status === 'rejected') {
+                return back()->withErrors([
+                    'email' => 'Akun Anda telah ditolak.'
+                ])->withInput($request->only('email'));
+            }
+            
+            if ($user->status === 'pending') {
+                return back()->withErrors([
+                    'email' => 'Akun Anda masih dalam proses persetujuan. Silakan tunggu hingga akun disetujui.'
+                ])->withInput($request->only('email'));
+            }
+
+            if (Auth::attempt($request->only('email', 'password'))) {
+                $request->session()->regenerate();
+                return redirect()->route('user.dashboard');
+            }
         }
 
         return back()->withErrors([

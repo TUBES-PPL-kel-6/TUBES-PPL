@@ -168,7 +168,7 @@
                 'is_read' => false
             ]);
 
-            return redirect()->route('loanApproval')
+            return redirect()->route('admin.loanApproval')
                 ->with('success', 'Pengajuan pinjaman berhasil disetujui.');
         }
 
@@ -205,7 +205,7 @@
         public function reject(LoanApplication $loanApplication)
         {
             $loanApplication->update(['status' => 'rejected']);
-            return redirect()->route('loanApproval')
+            return redirect()->route('admin.loanApproval')
                 ->with('success', 'Pengajuan pinjaman berhasil ditolak.');
         }
 

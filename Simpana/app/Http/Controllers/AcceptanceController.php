@@ -24,10 +24,10 @@ class AcceptanceController extends Controller
             $user->status = 'approved';
             $user->save();
 
-            return redirect()->route('acceptance.index')
+            return redirect()->route('admin.acceptance.index')
                 ->with('success', $user->nama . ' telah DITERIMA');
         } catch (\Exception $e) {
-            return redirect()->route('acceptance.index')
+            return redirect()->route('admin.acceptance.index')
                 ->with('error', 'Gagal mengubah status anggota. Silakan coba lagi.');
         }
     }
@@ -39,10 +39,10 @@ class AcceptanceController extends Controller
             $user->status = 'rejected';
             $user->save();
 
-            return redirect()->route('acceptance.index')
+            return redirect()->route('admin.acceptance.index')
                 ->with('error', $user->nama . ' telah DITOLAK');
         } catch (\Exception $e) {
-            return redirect()->route('acceptance.index')
+            return redirect()->route('admin.acceptance.index')
                 ->with('error', 'Gagal mengubah status anggota. Silakan coba lagi.');
         }
     }

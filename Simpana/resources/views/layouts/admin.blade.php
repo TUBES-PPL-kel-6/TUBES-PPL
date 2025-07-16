@@ -536,11 +536,11 @@
                     <i class="fas fa-wallet"></i>
                     Verifikasi Pembayaran
                 </a>
-                <a href="{{ route('loanApproval') }}" class="{{ request()->routeIs('loanApproval') ? 'active' : '' }}">
+                <a href="{{ route('admin.loanApproval') }}" class="{{ request()->routeIs('admin.loanApproval') ? 'active' : '' }}">
                     <i class="fas fa-file-signature"></i>
                     Verifikasi Pinjaman
                 </a>
-                <a href="{{ route('profit-report.index') }}" class="{{ request()->routeIs('profit-report.index') ? 'active' : '' }}">
+                <a href="{{ route('admin.profit-report.index') }}" class="{{ request()->routeIs('admin.profit-report.index') ? 'active' : '' }}">
                     <i class="fas fa-chart-line"></i>
                     Laporan Laba
                 </a>

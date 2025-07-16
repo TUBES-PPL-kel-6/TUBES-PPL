@@ -12,6 +12,7 @@ class PinjamanController extends Controller
     {
         $pinjaman = Pinjaman::where('user_id', Auth::id())->get();
         return view('user.riwayat-pinjaman', compact('pinjaman'));
+        
     }
 
     public function store(Request $request)

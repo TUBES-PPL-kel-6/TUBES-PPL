@@ -122,7 +122,7 @@ use Illuminate\Support\Facades\Auth;
             </a>
         </div>
         <div class="col-md-4 mb-3">
-            <a href="{{ route('loanApproval') }}" class="btn btn-lg btn-success w-100 d-flex align-items-center justify-content-center gap-2">
+            <a href="{{ route('admin.loanApproval') }}" class="btn btn-lg btn-success w-100 d-flex align-items-center justify-content-center gap-2">
                 <i class="fa-solid fa-file-signature"></i> Verifikasi Pinjaman
             </a>
         </div>

@@ -289,10 +289,10 @@
                                             <div class="user-main-info">
                                                 <div class="user-name">{{ $user->nama }}</div>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('acceptance.approve', $user->id) }}" class="btn btn-success">
+                                                    <a href="{{ route('admin.acceptance.approve', $user->id) }}" class="btn btn-success">
                                                         <i class="bi bi-check-lg"></i> Terima
                                                     </a>
-                                                    <a href="{{ route('acceptance.reject', $user->id) }}" class="btn btn-danger" onclick="return confirm('Yakin ingin menolak pengguna ini?')">
+                                                    <a href="{{ route('admin.acceptance.reject', $user->id) }}" class="btn btn-danger" onclick="return confirm('Yakin ingin menolak pengguna ini?')">
                                                         <i class="bi bi-x-lg"></i> Tolak
                                                     </a>
                                                 </div>

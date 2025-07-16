@@ -13,7 +13,7 @@
 
     @section('content')
     <div class="d-flex justify-content-end mb-3">
-        <a href="{{ route('acceptance.index') }}" class="btn btn-primary">
+        <a href="{{ route('admin.acceptance.index') }}" class="btn btn-primary">
             <i class="bi bi-person-check"></i> Halaman Persetujuan Anggota
         </a>
     </div>
